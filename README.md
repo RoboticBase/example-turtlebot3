@@ -1,12 +1,12 @@
-# RoboticBase-core
+# RoboticBase example: Deploy robot programs on TurtleBot3
 
-This repository is a core components of "RoboticBase".
+This repository is example of "RoboticBase-core".
 
 ## Description
-"RoboticBase" is a robot management platform based on [FIWARE](http://www.fiware.org/) which enables you to manage and operate many kinds of robots and IoT devices as interactions of contexts.
+~~"RoboticBase" is a robot management platform based on [FIWARE](http://www.fiware.org/) which enables you to manage and operate many kinds of robots and IoT devices as interactions of contexts.~~
 
-"RoboticBase" allows robots to collaborate with IoT devices, Open Data, human beings and so on. You can connect a robot to "RoboticBase" using the open APIs of the robot, and operate the robot through those APIs. In turn, "RoboticBase" has an ability to manage ROS. If you connect a ROS robot to "RoboticBase", you can operate the robot directly without restrictions.  
-For example, you can deploy a ROS program to the robot and access the raw data of the robot through "RoboticBase".
+~~"RoboticBase" allows robots to collaborate with IoT devices, Open Data, human beings and so on. You can connect a robot to "RoboticBase" using the open APIs of the robot, and operate the robot through those APIs. In turn, "RoboticBase" has an ability to manage ROS. If you connect a ROS robot to "RoboticBase", you can operate the robot directly without restrictions.  ~~
+~~For example, you can deploy a ROS program to the robot and access the raw data of the robot through "RoboticBase".~~
 
 ![roboticbase-core-architecture.png](/docs/images/roboticbase-core-architecture.png)
 
@@ -119,16 +119,14 @@ Please see this repository [ogcaizu/ogc-poc1](https://github.com/ogcaizu/ogc-poc
     $ cp minikube/env.template minikube/env
     $ vi env
     ```
-1. prepare minikube -- [/docs/minikube/01_prepare_minikube.ipynb](/docs/minikube/01_prepare_minikube.ipynb).
-1. start pods on minikube -- [/docs/minikube/02_start_pods.ipynb](/docs/minikube/02_start_pods.ipynb).
-1. register iot device & robot to fiware -- [/docs/minikube/03_register_device.ipynb](/docs/minikube/03_register_device.ipynb).
-1. register business logic to FIWARE -- [/docs/minikube/04_register_business_logic.ipynb](/docs/minikube/04_register_business_logic.ipynb).
-1. start monitoring and logging on minikube -- [/doss/minikube/05_start_monitoring_and_logging.ipynb](/docs/minikube/05_start_monitoring_and_logging.ipynb).
-1. prepare minikube in turtlebot3, and start `mqtt-kube-operator` in order to enable remote deployment -- [/docs/minikube/06_prepare_remote_deploy.ipynb](/docs/minikube/06_prepare_remote_deploy.ipynb).
-1. deploy programs to turtlebot3 through FIWARE -- [/docs/minikube/07_deploy_containers_to_turtlebot3.ipynb](/docs/minikube/07_deploy_containers_to_turtlebot3.ipynb).
-1. operate turtlebot3 step by step using [/docs/minikube/08_operate_turtlebot3.ipynb](/docs/minikube/08_operate_turtlebot3.ipynb).
-1. visualize the data of turtlebot3 step by step using [/docs/minikube/09_visualize_data.ipynb](/docs/minikube/09_visualize_data.ipynb).
-1. delete programs from turtlebot3 through FIWARE -- [/docs/minikube/10_delete_containers_from_turtlebot3.ipynb](/docs/minikube/10_delete_containers_from_turtlebot3.ipynb).
+1. start pods on minikube -- [/docs/minikube/01_start_pods.ipynb](/docs/minikube/01_start_pods.ipynb).
+1. register iot device & robot to fiware -- [/docs/minikube/02_register_device.ipynb](/docs/minikube/02_register_device.ipynb).
+1. register business logic to FIWARE -- [/docs/minikube/03_register_business_logic.ipynb](/docs/minikube/03_register_business_logic.ipynb).
+1. prepare minikube in turtlebot3, and start `mqtt-kube-operator` in order to enable remote deployment -- [/docs/minikube/04_prepare_remote_deploy.ipynb](/docs/minikube/04_prepare_remote_deploy.ipynb).
+1. deploy programs to turtlebot3 through FIWARE -- [/docs/minikube/05_deploy_containers_to_turtlebot3.ipynb](/docs/minikube/05_deploy_containers_to_turtlebot3.ipynb).
+1. operate turtlebot3 step by step using [/docs/minikube/06_operate_turtlebot3.ipynb](/docs/minikube/06_operate_turtlebot3.ipynb).
+1. visualize the data of turtlebot3 step by step using [/docs/minikube/07_visualize_data.ipynb](/docs/minikube/07_visualize_data.ipynb).
+1. delete programs from turtlebot3 through FIWARE -- [/docs/minikube/08_delete_containers_from_turtlebot3.ipynb](/docs/minikube/08_delete_containers_from_turtlebot3.ipynb).
 
 
 ## Related Repositories (Cloud)
