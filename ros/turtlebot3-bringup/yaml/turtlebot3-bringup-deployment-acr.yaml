@@ -18,7 +18,7 @@ spec:
       - name: "${ACR_NAME}"
       containers:
       - name: turtlebot3-bringup
-        image: "${REPOSITORY}/tech-sketch/turtlebot3-bringup:0.2.0"
+        image: "${REPOSITORY}/roboticbase/turtlebot3-bringup:0.2.0"
         imagePullPolicy: Always
         command:
         - "/opt/kube_entrypoint.sh"
