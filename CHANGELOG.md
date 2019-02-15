@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## [0.4.0]
+### Changed
+* split repository ([core](https://github.com/RoboticBase/core) and [example-turtlebot3](https://github.com/RoboticBase/example-turtlebot3))
+* update components and documents to adjust [FIWARE Release 7.5.1](https://github.com/Fiware/catalogue/releases)
+
+* cmd-proxy
+    * techsketch/fiware-cmd-proxy:0.1.1 -> roboticbase/fiware-cmd-proxy:0.2.0
+* robot-visualization
+    * techsketch/fiware-robot-visualization:0.2.0 -> roboticbase/fiware-robot-visualization:0.2.1
+    * change `CYGNUS_MONGO_ATTR_PERSISTENCE` (column -> row)
+
 ## [0.3.0]
 ### Added
 * employed "Cygnus ElasticsearchSink"
