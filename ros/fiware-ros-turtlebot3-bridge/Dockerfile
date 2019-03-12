@@ -9,7 +9,7 @@ ARG MSGS_GIT_REV="master"
 
 ARG BRIDGE_NAME="fiware_ros_turtlebot3_bridge"
 ARG BRIDGE_GIT_REPO="https://github.com/RoboticBase/fiware_ros_turtlebot3_bridge.git"
-ARG BRIDGE_GIT_REV="0.2.1"
+ARG BRIDGE_GIT_REV="0.2.2"
 
 COPY ./kube_entrypoint.sh /opt/kube_entrypoint.sh
 WORKDIR /opt/ros_ws

@@ -18,7 +18,7 @@ spec:
       - name: "${ACR_NAME}"
       containers:
       - name: ros-bridge
-        image: "${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-bridge:0.2.1"
+        image: "${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-bridge:0.2.2"
         imagePullPolicy: Always
         command:
         - "/opt/kube_entrypoint.sh"
