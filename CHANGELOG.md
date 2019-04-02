@@ -1,6 +1,7 @@
 # Change Log
 
 ## [Unreleased]
+* We will update components and documents to adjust [FIWARE Release 7.6](https://github.com/Fiware/catalogue/releases)
 
 ## [0.4.0]
 ### Changed
