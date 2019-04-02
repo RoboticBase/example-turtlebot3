@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmd-proxy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cmd-proxy
+  template:
+    metadata:
+      labels:
+        app: cmd-proxy
+    spec:
+      containers:
+      - name: fiware-cmd-proxy
+        image: roboticbase/fiware-cmd-proxy:0.2.0
+        imagePullPolicy: Always
+        env:
+        - name: LISTEN_PORT
+          value: "8888"
+        - name: ORION_ENDPOINT
+          value: "http://orion:1026"
+        - name: PREFIX
+          value: "/controller"
+        - name: LOG_LEVEL
+          value: "DEBUG"
+        - name: FIWARE_SERVICE
+          value: "${FIWARE_SERVICE}"
+        - name: FIWARE_SERVICEPATH
+          value: "${ROBOT_SERVICEPATH}"
+        - name: ROBOT_ID
+          value: "${ROBOT_ID}"
+        - name: ROBOT_TYPE
+          value: "${ROBOT_TYPE}"
+        ports:
+          - name: cmd-proxy
+            containerPort: 8888

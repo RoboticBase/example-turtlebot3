@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cmd-proxy
+  labels:
+    app: cmd-proxy
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  controller-mapping
+      prefix: /controller/
+      host_regex: true
+      service: http://cmd-proxy:8888
+spec:
+  type: ClusterIP
+  selector:
+    app: cmd-proxy
+  ports:
+  - name: cmd-proxy
+    port: 8888
+    targetPort: 8888

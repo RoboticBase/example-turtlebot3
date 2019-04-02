@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: robot-visualization
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: robot-visualization
+  template:
+    metadata:
+      labels:
+        app: robot-visualization
+    spec:
+      containers:
+      - name: fiware-robot-visualization
+        image: roboticbase/fiware-robot-visualization:0.2.1
+        imagePullPolicy: Always
+        env:
+        - name: LISTEN_PORT
+          value: "8888"
+        - name: PREFIX
+          value: "/visualizer"
+        - name: LOG_LEVEL
+          value: "DEBUG"
+        - name: BEARER_AUTH
+          value: "${BEARER_AUTH}"
+        - name: MONGODB_ENDPOINT
+          value: "mongodb-client:27017"
+        - name: MONGODB_REPLICASET
+          value: "rs0"
+        - name: MONGODB_DATABASE
+          value: "${MONGODB_DATABASE}"
+        - name: MONGODB_COLLECTION
+          value: "${MONGODB_COLLECTION}"
+        - name: CYGNUS_MONGO_ATTR_PERSISTENCE
+          value: "row"
+        ports:
+          - name: robot-vis
+            containerPort: 8888
