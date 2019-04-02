@@ -34,6 +34,9 @@ class MockResponse:
     def json(self):
         return self.json_data
 
+    def text(self):
+        return ''
+
 
 TEST_YAML = '''
 apiVersion: v1
@@ -66,7 +69,7 @@ def test_main_no_yaml(yaml_path):
 @pytest.mark.parametrize('delete', [True, False])
 @patch('deploy_yaml.requests')
 def test_main_apply(mocked_requests, delete):
-    mocked_requests.post.return_value = MockResponse({'result': 'success'}, 200)
+    mocked_requests.patch.return_value = MockResponse({'result': 'success'}, 200)
 
     args = MockArgs()
     args.delete = delete
@@ -78,28 +81,18 @@ def test_main_apply(mocked_requests, delete):
         args.yaml_path = f.name
         main(args)
 
-    mocked_requests.post.assert_called_once()
-    called_args = mocked_requests.post.call_args_list[0]
-    assert called_args[0] == ('https://api.example.com/orion/v1/updateContext', )
+    mocked_requests.patch.assert_called_once()
+    called_args = mocked_requests.patch.call_args_list[0]
+    assert called_args[0] == ('https://api.example.com/orion/v2/entities/entity_id/attrs?type=entity_type', )
     assert called_args[1]['headers'] == {
         'Content-Type': 'application/json',
         'Authorization': 'bearer dummytoken',
         'Fiware-Service': 'fiware_service',
         'Fiware-Servicepath': 'fiware_servicepath',
     }
+    cmd = 'delete' if args.delete else 'apply'
     assert called_args[1]['json'] == {
-        'contextElements': [
-            {
-                'id': 'entity_id',
-                'isPattern': False,
-                'type': 'entity_type',
-                'attributes': [
-                    {
-                        'name': 'delete' if args.delete else 'apply',
-                        'value': QUATED_DATA,
-                    }
-                ]
-            }
-        ],
-        'updateAction': 'UPDATE'
+        cmd: {
+            'value': QUATED_DATA,
+        }
     }

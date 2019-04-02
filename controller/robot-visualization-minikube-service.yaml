@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: robot-visualization
+  labels:
+    app: robot-visualization
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  visualizer-mapping
+      prefix: /visualizer/
+      service: http://robot-visualization:8888
+spec:
+  type: ClusterIP
+  selector:
+    app: robot-visualization
+  ports:
+  - name: robot-vis
+    port: 8888
+    targetPort: 8888

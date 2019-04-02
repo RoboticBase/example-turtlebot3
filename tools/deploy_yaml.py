@@ -32,7 +32,8 @@ def main(args):
     with open(args.yaml_path) as f:
         data = json.dumps(yaml.load(f))
 
-    url = urllib.parse.urljoin(args.endpoint, '/orion/v1/updateContext')
+    path = '/orion/v2/entities/' + args.entity_id + '/attrs?type=' + args.entity_type
+    url = urllib.parse.urljoin(args.endpoint, path)
     headers = {
         'Content-Type': 'application/json',
         'Authorization': f'bearer {args.token}',
@@ -41,23 +42,12 @@ def main(args):
     }
 
     payload = {
-        'contextElements': [
-            {
-                'id': args.entity_id,
-                'isPattern': False,
-                'type': args.entity_type,
-                'attributes': [
-                    {
-                        'name': command,
-                        'value': urllib.parse.quote(data),
-                    }
-                ]
-            }
-        ],
-        'updateAction': 'UPDATE'
+        command: {
+            'value': urllib.parse.quote(data)
+        }
     }
-    response = requests.post(url, json=payload, headers=headers)
-    print(f'{json.dumps(response.json(), indent=4)}\n')
+    response = requests.patch(url, json=payload, headers=headers)
+    print(f'status_code={response.status_code}, body={response.text}\n')
 
 
 if __name__ == '__main__':
