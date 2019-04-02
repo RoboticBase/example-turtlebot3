@@ -89,6 +89,7 @@ Please see this repository [ogcaizu/ogc-poc1](https://github.com/ogcaizu/ogc-poc
 |kubernetes|1.12.5|
 
 ## getting started
+1. deploy [RoboticBase-core](https://github.com/RoboticBase/core)
 
 1. install jupyter notebook
 
