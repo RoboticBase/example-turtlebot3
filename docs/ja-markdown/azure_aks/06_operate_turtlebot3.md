@@ -104,25 +104,14 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 ## D.WEBコントローラーでturtlebot3を操作
 
 
-## 環境設定
-
+## 環境変数の設定
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -133,18 +122,23 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/azure_aks/env
-    $ source $PJ_ROOT/docs/azure_aks/env
+    $ source $CORE_ROOT/docs/environments/azure_aks/env
+    $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
-
 
 ## Webコントローラでturtlebot3を操作
 
 1. web controllerの表示
+  * macOS
 
-    ```
-    $ xdg-open https://api.${DOMAIN}/controller/web/
-    ```
+  ```
+  $ open https://api.${DOMAIN}/controller/web/
+  ```
+  * Ubuntu
+
+  ```
+  $ xdg-open https://api.${DOMAIN}/controller/web/
+  ```
 
 
 ## gamepadでturtlebot3を操作

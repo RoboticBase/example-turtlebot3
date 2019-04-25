@@ -1,31 +1,20 @@
 ﻿# Turtlebot3 試験環境 インストールマニュアル #8
 
 
-## 構築環境(2019年3月16日現在)
+## 構築環境(2019年4月26日現在)
 
 
 # turtlebot3コンテナの削除
 
 
-## 環境設定
-
+## 環境変数の設定
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -36,8 +25,8 @@
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/azure_aks/env
-    $ source $PJ_ROOT/docs/azure_aks/env
+    $ source $CORE_ROOT/docs/environments/azure_aks/env
+    $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
 
 ## A.turtlebot3シミュレータの場合
@@ -45,8 +34,12 @@
 1. turtlebot3-fake-deployment-acrの削除
 
     ```
+    $ export TURTLEBOT3_USER=turtlebot3
+    $ export TURTLEBOT3_UID=1000
+    $ envsubst < ${PJ_ROOT}/ros/turtlebot3-fake/yaml/turtlebot3-fake-deployment-acr.yaml > /tmp/turtlebot3-fake-deployment-acr.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py --delete ${PJ_ROOT}/ros/turtlebot3-fake/yaml/turtlebot3-fake-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ ./tools/deploy_yaml.py --delete /tmp/turtlebot3-fake-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ rm /tmp/turtlebot3-fake-deployment-acr.yaml
     ```
 
 1. turtlebot3-fake-serviceの削除

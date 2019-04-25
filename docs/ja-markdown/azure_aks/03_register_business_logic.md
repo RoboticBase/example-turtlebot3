@@ -1,28 +1,19 @@
 ﻿# Turtlebot3 試験環境 インストールマニュアル #3
 
 
-## 構築環境(2019年3月5日現在)
+## 構築環境(2019年4月26日現在)
 
 
 # Azure Kubernetes Service(AKS)のfiwareにbusiness logicを登録
 
+## 環境変数の設定
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -33,38 +24,35 @@
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/azure_aks/env
-    $ source $PJ_ROOT/docs/azure_aks/env
+    $ source $CORE_ROOT/docs/environments/azure_aks/env
+    $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
-
 
 ## cmd-proxyの購読者登録
-
 1. cmd-proxyの購読者登録
 
-    ```
-    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
-    {
-      "subject": {
-        "entities": [{
-          "idPattern": "${GAMEPAD_ID}.*",
-          "type": "${GAMEPAD_TYPE}"
-        }],
-        "condition": {
-          "attrs": ["button"]
-        }
-      },
-      "notification": {
-        "http": {
-          "url": "http://cmd-proxy:8888/gamepad/"
-        },
+  ```
+  $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+  $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
+  {
+    "subject": {
+      "entities": [{
+        "idPattern": "${GAMEPAD_ID}.*",
+        "type": "${GAMEPAD_TYPE}"
+      }],
+      "condition": {
         "attrs": ["button"]
       }
+    },
+    "notification": {
+      "http": {
+        "url": "http://cmd-proxy:8888/gamepad/"
+      },
+      "attrs": ["button"]
     }
-    __EOS__
-
-    ```
+  }
+  __EOS__
+  ```
 
     - 実行結果（例）
 
@@ -87,10 +75,10 @@
 
     - 実行結果（例）
 
-      ```
+      ```json
       [
         {
-          "id": "5c7f89b8207d0e5abee03ee8",
+          "id": "5cc1a019e94c6631c96628f2",
           "status": "active",
           "subject": {
             "entities": [
@@ -106,8 +94,8 @@
             }
           },
           "notification": {
-            "timesSent": 4,
-            "lastNotification": "2019-03-07T06:45:41.00Z",
+            "timesSent": 2,
+            "lastNotification": "2019-04-25T12:09:50.00Z",
             "attrs": [
               "button"
             ],
@@ -115,12 +103,12 @@
             "http": {
               "url": "http://cygnus-mongo:5050/notify"
             },
-            "lastFailure": "2019-03-07T04:55:00.00Z",
-            "lastSuccess": "2019-03-07T06:45:41.00Z"
+            "lastSuccess": "2019-04-25T12:09:50.00Z",
+            "lastSuccessCode": 200
           }
         },
         {
-          "id": "5c80b50b95aa76486e093459",
+          "id": "5cc1a62de94c6631c96628f5",
           "status": "active",
           "subject": {
             "entities": [
@@ -136,8 +124,8 @@
             }
           },
           "notification": {
-            "timesSent": 3,
-            "lastNotification": "2019-03-07T06:45:41.00Z",
+            "timesSent": 1,
+            "lastNotification": "2019-04-25T12:21:01.00Z",
             "attrs": [
               "button"
             ],
@@ -145,8 +133,8 @@
             "http": {
               "url": "http://cmd-proxy:8888/gamepad/"
             },
-            "lastFailure": "2019-03-07T06:40:22.00Z",
-            "lastSuccess": "2019-03-07T06:45:41.00Z"
+            "lastSuccess": "2019-04-25T12:21:01.00Z",
+            "lastSuccessCode": 200
           }
         }
       ]
@@ -219,13 +207,13 @@
 
     - 実行結果（例）
 
-      ```
+      ```json
       {
         "id": "gamepad",
         "type": "gamepad",
         "TimeInstant": {
           "type": "ISO8601",
-          "value": "2019-02-27T13:55:23.1551243323+0900",
+          "value": "2019-04-25T21:21:59.1556194919+0900",
           "metadata": {}
         },
         "button": {
@@ -234,7 +222,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-27T13:55:23.1551243323+0900"
+              "value": "2019-04-25T21:21:59.1556194919+0900"
             }
           }
         }
@@ -250,13 +238,13 @@
 
     - 実行結果（例）
 
-      ```
+      ```json
       {
         "id": "turtlebot3",
         "type": "robot",
         "TimeInstant": {
           "type": "ISO8601",
-          "value": "2019-02-26T09:00:29.00Z",
+          "value": "2019-04-25T12:22:21.00Z",
           "metadata": {}
         },
         "capacity": {
@@ -285,7 +273,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T09:00:29.870Z"
+              "value": "2019-04-25T12:16:05.676Z"
             }
           }
         },
@@ -295,7 +283,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-27T13:55:23.270Z"
+              "value": "2019-04-25T12:22:21.300Z"
             }
           }
         },
@@ -310,7 +298,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -325,7 +313,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -335,7 +323,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -345,7 +333,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -416,13 +404,13 @@
 
     - 実行結果（例）
 
-      ```
+      ```json
       {
         "id": "turtlebot3",
         "type": "robot",
         "TimeInstant": {
           "type": "ISO8601",
-          "value": "2019-02-27T05:06:17.00Z",
+          "value": "2019-04-25T12:24:02.00Z",
           "metadata": {}
         },
         "capacity": {
@@ -451,7 +439,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-27T05:06:17.591Z"
+              "value": "2019-04-25T12:24:02.171Z"
             }
           }
         },
@@ -461,7 +449,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-27T05:06:17.591Z"
+              "value": "2019-04-25T12:24:02.171Z"
             }
           }
         },
@@ -476,7 +464,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -491,7 +479,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -501,7 +489,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },
@@ -511,7 +499,7 @@
           "metadata": {
             "TimeInstant": {
               "type": "ISO8601",
-              "value": "2019-02-26T17:41:17.1551170477+0900"
+              "value": "2019-04-25T21:11:28.1556194288+0900"
             }
           }
         },

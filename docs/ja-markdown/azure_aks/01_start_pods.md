@@ -1,20 +1,12 @@
 ﻿# Turtlebot3 試験環境 インストールマニュアル #1
 
 
-## 構築環境(2019年2月28日現在)
+## 構築環境(2019年4月26日現在)
 
 
 # roboticbaseのインストール
 
-
-## 環境変数の設定
-
-1. gitのインストール
-
-    ```
-    $ sudo apt-get -y install git
-    ```
-
+## RoboticBase/example-turtlebot3の取得
 1. ベースファイルの取得
 
     ```
@@ -22,26 +14,11 @@
     $ git clone https://github.com/RoboticBase/example-turtlebot3
     ```
 
-1. MINIKUBE_NAMEの環境変数を設定
-
-    ```
-    $ export MINIKUBE_NAME="minikube"; echo "MINIKUBE_NAME=${MINIKUBE_NAME}"
-    ```
-
+## 環境変数の設定
 1. 環境変数の設定
 
     ```
     $ export CORE_ROOT=$HOME/core
-    $ cd $CORE_ROOT;pwd
-    ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-    ```
     $ export PJ_ROOT=$HOME/example-turtlebot3
     $ cd $PJ_ROOT;pwd
     ```
@@ -57,17 +34,30 @@
     ```
     $ cd $PJ_ROOT/docs/example-turtlebot3
     $ cp env.template env
+    ```
+
+1. 環境ファイルの設定
+
+    ```
+    $ vi env
+    ```
+
+    * `MQTT__raspberrypi` と `MQTT__ros` の値値（どちらもMQTTユーザのパスワード）を変更してください
+
+1. プロジェクトルートに移動
+
+    ```
     $ cd $PJ_ROOT
     ```
 
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/azure_aks/env
-    $ source $PJ_ROOT/docs/azure_aks/env
+    $ source $CORE_ROOT/docs/environments/azure_aks/env
+    $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
 
-## command proxy serviceの設定
+## AKSでcommand proxy serviceを起動
 
 1. cmd-proxy-serviceの作成
 
@@ -122,7 +112,7 @@
         ```
 
 
-## robot visualizationの設定
+## AKSでrobot visualizationを起動
 
 1. robot-visualization-serviceの作成
 

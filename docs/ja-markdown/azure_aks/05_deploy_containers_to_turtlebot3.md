@@ -1,7 +1,7 @@
 ﻿# Turtlebot3 試験環境 インストールマニュアル #5
 
 
-## 構築環境(2019年3月11日現在)
+## 構築環境(2019年4月26日現在)
 
 - libffi6 3.2.1-4
 - libssl-dev 1.0.2g-1ubuntu4.15
@@ -13,26 +13,14 @@
 
 # Turtlebot3コンテナーの作成
 
-
-## 環境設定
-
+## 環境変数の設定
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -43,10 +31,9 @@
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/azure_aks/env
-    $ source $PJ_ROOT/docs/azure_aks/env
+    $ source $CORE_ROOT/docs/environments/azure_aks/env
+    $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
-
 
 ## minikubeにturtlebot3のprivate registryを登録
 
@@ -56,15 +43,7 @@
 
     ```
     $ EXIST_ACR_ID=$(az ad sp list --display-name ${ACR_NAME}sp --query "[0].appId" -o tsv)
-az ad sp delete --id ${EXIST_ACR_ID}
-    ```
-
-    ```
-    $ ACR_ID=$(az acr show --resource-group ${AKS_RG} --name ${ACR_NAME} --query "id" --output tsv)
-    $ az ad sp create-for-rbac --scopes ${ACR_ID} --role Reader --name ${ACR_NAME}sp > /tmp/acrsp
-    $ export ACR_USERNAME=$(cat /tmp/acrsp | jq .appId -r);echo "ACR_USERNAME=${ACR_USERNAME}"
-    $ export ACR_PASSWORD=$(cat /tmp/acrsp | jq .password -r);echo "ACR_PASSWORD=${ACR_PASSWORD}"
-    $ rm /tmp/acrsp
+    $ az ad sp delete --id ${EXIST_ACR_ID}
     ```
 
 1. Azure ACRにservice principalを作成 
@@ -429,8 +408,8 @@ az ad sp delete --id ${EXIST_ACR_ID}
     - 実行結果（例）
 
         ```
-        NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-        ros-master   1         1         1            1           4d
+        NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+        ros-master   1/1     1            1           18s
         ```
 
 1. ros-masterのpods確認【turtlebot3-pc】
@@ -1111,18 +1090,31 @@ az ad sp delete --id ${EXIST_ACR_ID}
         ```
 
 1. ユーザ名とパスワードの設定
+   * macOS
 
-    ```
-    $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64 -w0
-    mqtt:
-      host: "mqtt.${DOMAIN}"
-      port: 8883
-      username: "ros"
-      password: "${MQTT__ros}"
-      use_ca: true
-    __EOS__
-    )
-    ```
+   ```
+   $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64
+   mqtt:
+     host: "mqtt.${DOMAIN}"
+     port: 8883
+     username: "ros"
+     password: "${MQTT__ros}"
+     use_ca: true
+   __EOS__)
+   ```
+   * Ubuntu
+
+   ```
+   $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64 -w0
+   mqtt:
+     host: "mqtt.${DOMAIN}"
+     port: 8883
+     username: "ros"
+     password: "${MQTT__ros}"
+     use_ca: true
+   __EOS__
+   )
+   ```
 
 1. fiware-ros-turtlebot3-bridgeの作成
 
@@ -1151,31 +1143,6 @@ az ad sp delete --id ${EXIST_ACR_ID}
         ```
         NAME                 TYPE      DATA      AGE
         ros-bridge-secrets   Opaque    1         7m
-        ```
-
-1. sercretの値を確認【turtlebot3-pc】
-
-    ```
-    turtlebot3-pc$ kubectl get secret ros-bridge-secrets -o=yaml
-    ```
-
-    - 実行結果（例）
-
-        ```
-        apiVersion: v1
-        data:
-          mqtt.yaml: bXF0dDoKICBob3N0OiAibXF0dC5maXdhcmUtdGVzdC53b3JrIgogIHBvcnQ6IDg4ODMKICB1c2VybmFtZTogInJvcyIKICBwYXNzd29yZDogInBhc3N3b3JkX29mX3JvcyIKICB1c2VfY2E6IHRydWUK
-        kind: Secret
-        metadata:
-            creationTimestamp: 2019-03-05T04:04:20Z
-            labels:
-            app: ros-bridge
-            name: ros-bridge-secrets
-            namespace: default
-            resourceVersion: "558216"
-            selfLink: /api/v1/namespaces/default/secrets/ros-bridge-secrets
-            uid: c0f8959c-3efb-11e9-a2dc-b86b23c71f8e
-        type: Opaque
         ```
 
 1. fiware-ros-turtlebot3-bridge-configmapの作成
@@ -1257,8 +1224,8 @@ az ad sp delete --id ${EXIST_ACR_ID}
     - 実行結果（例）
 
         ```
-        NAME         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-        ros-bridge   1         1         1            0           20h
+        NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+        ros-bridge   1/1     1            1           18s
         ```
 
 1. fiware-ros-turtlebot3-bridge-deployment-acrのpods確認【turtlebot3-pc】
@@ -1271,7 +1238,7 @@ az ad sp delete --id ${EXIST_ACR_ID}
 
         ```
         NAME                          READY     STATUS    RESTARTS   AGE
-        ros-bridge-6788f68d4f-9ndvm   1/1       Running   0          4d
+        ros-bridge-6788f68d4f-9ndvm   1/1       Running   0          40s
         ```
 
 1. ログの確認【turtlebot3-pc】
@@ -1283,7 +1250,6 @@ az ad sp delete --id ${EXIST_ACR_ID}
     - 実行結果（例）
 
         ```
-        ca.crt': No such file or directory
         Base path: /opt/ros_ws
         Source space: /opt/ros_ws/src
         Build space: /opt/ros_ws/build
@@ -1310,7 +1276,7 @@ az ad sp delete --id ${EXIST_ACR_ID}
         -- Using CATKIN_DEVEL_PREFIX: /opt/ros_ws/devel
         -- Using CMAKE_PREFIX_PATH: /opt/ros/kinetic
         -- This workspace overlays: /opt/ros/kinetic
-        -- Found PythonInterp: /usr/bin/python (found version "2.7.12")
+        -- Found PythonInterp: /usr/bin/python (found version "2.7.12") 
         -- Using PYTHON_EXECUTABLE: /usr/bin/python
         -- Using Debian Python package layout
         -- Using empy: /usr/bin/empy
@@ -1326,7 +1292,7 @@ az ad sp delete --id ${EXIST_ACR_ID}
         -- Looking for pthread_create in pthreads - not found
         -- Looking for pthread_create in pthread
         -- Looking for pthread_create in pthread - found
-        -- Found Threads: TRUE
+        -- Found Threads: TRUE  
         -- Found gtest sources under '/usr/src/gmock': gtests will be built
         -- Using Python nosetests: /usr/bin/nosetests-2.7
         -- catkin 0.7.14
@@ -1346,74 +1312,92 @@ az ad sp delete --id ${EXIST_ACR_ID}
         -- Generating done
         -- Build files have been written to: /opt/ros_ws/build
         ####
-        #### Running command: "make -j4 -l4" in "/opt/ros_ws/build"
+        #### Running command: "make -j2 -l2" in "/opt/ros_ws/build"
         ####
-        Scanning dependencies of target _fiware_ros_turtlebot3_msgs_generate_messages_check_deps_r_pos
-        [  0%] Built target _fiware_ros_turtlebot3_msgs_generate_messages_check_deps_r_pos
-        Scanning dependencies of target std_msgs_generate_messages_cpp
-        [  0%] Built target std_msgs_generate_messages_cpp
-        Scanning dependencies of target std_msgs_generate_messages_lisp
-        [  0%] Built target std_msgs_generate_messages_lisp
-        Scanning dependencies of target std_msgs_generate_messages_py
-        [  0%] Built target std_msgs_generate_messages_py
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_cpp
-        [ 14%] Generating C++ code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [ 14%] Built target fiware_ros_turtlebot3_msgs_generate_messages_cpp
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_lisp
-        [ 28%] Generating Lisp code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [ 28%] Built target fiware_ros_turtlebot3_msgs_generate_messages_lisp
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_py
-        [ 42%] Generating Python from MSG fiware_ros_turtlebot3_msgs/r_pos
-        [ 57%] Generating Python msg __init__.py for fiware_ros_turtlebot3_msgs
-        [ 57%] Built target fiware_ros_turtlebot3_msgs_generate_messages_py
-        Scanning dependencies of target std_msgs_generate_messages_eus
-        [ 57%] Built target std_msgs_generate_messages_eus
         Scanning dependencies of target std_msgs_generate_messages_nodejs
-        [ 57%] Built target std_msgs_generate_messages_nodejs
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_eus
-        [ 71%] Generating EusLisp code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [ 85%] Generating EusLisp manifest code for fiware_ros_turtlebot3_msgs
-        [ 85%] Built target fiware_ros_turtlebot3_msgs_generate_messages_eus
+        Scanning dependencies of target _fiware_ros_turtlebot3_msgs_generate_messages_check_deps_r_pos
+        [  0%] Built target std_msgs_generate_messages_nodejs
+        Scanning dependencies of target std_msgs_generate_messages_eus
+        [  0%] Built target std_msgs_generate_messages_eus
+        Scanning dependencies of target std_msgs_generate_messages_cpp
+        [  0%] Built target _fiware_ros_turtlebot3_msgs_generate_messages_check_deps_r_pos
+        Scanning dependencies of target std_msgs_generate_messages_lisp
+        [  0%] Built target std_msgs_generate_messages_cpp
+        Scanning dependencies of target std_msgs_generate_messages_py
+        [  0%] Built target std_msgs_generate_messages_lisp
+        [  0%] Built target std_msgs_generate_messages_py
         Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_nodejs
-        [100%] Generating Javascript code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages_nodejs
+        [ 14%] Generating Javascript code from fiware_ros_turtlebot3_msgs/r_pos.msg
+        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_eus
+        [ 28%] Generating EusLisp code from fiware_ros_turtlebot3_msgs/r_pos.msg
+        [ 28%] Built target fiware_ros_turtlebot3_msgs_generate_messages_nodejs
+        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_cpp
+        [ 42%] Generating EusLisp manifest code for fiware_ros_turtlebot3_msgs
+        [ 57%] Generating C++ code from fiware_ros_turtlebot3_msgs/r_pos.msg
+        [ 57%] Built target fiware_ros_turtlebot3_msgs_generate_messages_cpp
+        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_lisp
+        [ 71%] Generating Lisp code from fiware_ros_turtlebot3_msgs/r_pos.msg
+        [ 71%] Built target fiware_ros_turtlebot3_msgs_generate_messages_lisp
+        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_py
+        [ 85%] Generating Python from MSG fiware_ros_turtlebot3_msgs/r_pos
+        [100%] Generating Python msg __init__.py for fiware_ros_turtlebot3_msgs
+        [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages_py
+        [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages_eus
         Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages
         [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages
-        ... logging to /root/.ros/log/bc8b9f4e-3e5f-11e9-b689-0242ac110004/roslaunch-ros-bridge-5f7b98758-bnjrj-467.log
+        ... logging to /root/.ros/log/a5f74462-6764-11e9-a94c-0242ac110004/roslaunch-ros-bridge-7645695cd6-wbsq4-458.log
         Checking log directory for disk usage. This may take awhile.
         Press Ctrl-C to interrupt
         Done checking log file disk usage. Usage is <1GB.
 
-        started roslaunch server http://ros-bridge:41731/
+        started roslaunch server http://ros-bridge:33483/
 
         SUMMARY
         ========
 
         PARAMETERS
-        * /rosdistro: kinetic
-        * /rosversion: 1.12.14
-        * /turtlebot3_attrs/mqtt/cafile: /opt/ros_ws/src/f...
-        * /turtlebot3_attrs/thresholds/battery_state/send_delta_millisec: 1000
-        * /turtlebot3_attrs/timezone: Asia/Tokyo
-        * /turtlebot3_attrs/topics/mqtt: /robot/turtlebot3...
-        * /turtlebot3_attrs/topics/ros/battery_state: /battery_state
-        * /turtlebot3_attrs/topics/ros/pos: /turtlebot3_bridg...
-        * /turtlebot3_cmd/mqtt/cafile: /opt/ros_ws/src/f...
-        * /turtlebot3_cmd/topics/mqtt/cmd: /robot/turtlebot3...
-        * /turtlebot3_cmd/topics/mqtt/result: /robot/turtlebot3...
-        * /turtlebot3_cmd/topics/ros: /turtlebot3_bridg...
+         * /rosdistro: kinetic
+         * /rosversion: 1.12.14
+         * /turtlebot3_attrs/mqtt/cafile: /opt/ros_ws/src/f...
+         * /turtlebot3_attrs/mqtt/host: mqtt.cloudconduct...
+         * /turtlebot3_attrs/mqtt/password: ros_0GC
+         * /turtlebot3_attrs/mqtt/port: 8883
+         * /turtlebot3_attrs/mqtt/use_ca: True
+         * /turtlebot3_attrs/mqtt/username: ros
+         * /turtlebot3_attrs/thresholds/battery_state/send_delta_millisec: 1000
+         * /turtlebot3_attrs/timezone: Asia/Tokyo
+         * /turtlebot3_attrs/topics/mqtt: /robot/turtlebot3...
+         * /turtlebot3_attrs/topics/ros/battery_state: /battery_state
+         * /turtlebot3_attrs/topics/ros/pos: /turtlebot3_bridg...
+         * /turtlebot3_cmd/mqtt/cafile: /opt/ros_ws/src/f...
+         * /turtlebot3_cmd/mqtt/host: mqtt.cloudconduct...
+         * /turtlebot3_cmd/mqtt/password: ros_0GC
+         * /turtlebot3_cmd/mqtt/port: 8883
+         * /turtlebot3_cmd/mqtt/use_ca: True
+         * /turtlebot3_cmd/mqtt/username: ros
+         * /turtlebot3_cmd/topics/mqtt/cmd: /robot/turtlebot3...
+         * /turtlebot3_cmd/topics/mqtt/result: /robot/turtlebot3...
+         * /turtlebot3_cmd/topics/ros: /turtlebot3_bridg...
 
         NODES
-            /
+          /
             turtlebot3_attrs (fiware_ros_turtlebot3_bridge/turtlebot3_attrs.py)
             turtlebot3_cmd (fiware_ros_turtlebot3_bridge/turtlebot3_cmd.py)
 
         ROS_MASTER_URI=http://ros-master:11311
 
         running rosparam delete /turtlebot3_cmd/
+        ERROR: parameter [/turtlebot3_cmd] is not set
         running rosparam delete /turtlebot3_attrs/
-        process[turtlebot3_cmd-1]: started with pid [484]
-        process[turtlebot3_attrs-2]: started with pid [485]
+        ERROR: parameter [/turtlebot3_attrs] is not set
+        process[turtlebot3_cmd-1]: started with pid [475]
+        process[turtlebot3_attrs-2]: started with pid [476]
+        [INFO] [1556202217.750522]: [fiware_ros_turtlebot3_bridge.base:CmdBridge.connect] try to Connect mqtt broker, host=mqtt.example.com
+        [INFO] [1556202217.863663]: [fiware_ros_turtlebot3_bridge.cmd_bridge:CmdBridge.start] CmdBridge start
+        [INFO] [1556202217.878809]: [fiware_ros_turtlebot3_bridge.base:CmdBridge._on_connect] connected to mqtt broker, status=0
+        [INFO] [1556202217.998204]: [fiware_ros_turtlebot3_bridge.base:AttrsBridge.connect] try to Connect mqtt broker, host=mqtt.example.com
+        [INFO] [1556202218.118933]: [fiware_ros_turtlebot3_bridge.attrs_bridge:AttrsBridge.start] AttrsBridge start
+        [INFO] [1556202218.134209]: [fiware_ros_turtlebot3_bridge.base:AttrsBridge._on_connect] connected to mqtt broker, status=0
         ```
 
 
@@ -1981,8 +1965,8 @@ az ad sp delete --id ${EXIST_ACR_ID}
     - 実行結果（例）
 
         ```
-        NAME                  DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-        turtlebot3-operator   1         1         1            1           47s
+        NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
+        turtlebot3-operator   1/1     1            1           14s
         ```
 
 1. fiware-ros-turtlebot3-operator-deployment-acr-wideのpods確認【turtlebot3-pc】
@@ -2251,8 +2235,8 @@ az ad sp delete --id ${EXIST_ACR_ID}
     - 実行結果（例）
 
         ```
-        NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-        turtlebot3-fake   1         1         1            1           29s
+        NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+        turtlebot3-fake   1/1     1            1           77s
         ```
 
 1. turtlebot3-fakeのpods状態確認【turtlebot3-pc】
@@ -2581,7 +2565,7 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
 1. telepresenceのインストール【turtlebot3-pc】
 
     ```
-    turtlebot3-pc$ sudo apt install --no-install-recommends telepresence=0.95
+    turtlebot3-pc$ sudo apt install --no-install-recommends telepresence
     ```
 
     - 実行結果（例）
@@ -2711,7 +2695,7 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
         ####
         ```
 
-1. turtlebot3の起動【turtlebot3-pc】
+1. Rviz上でturtlebot3のシミュレータを起動【turtlebot3-pc】
 
     ```
     @minikube|bash-4.3$ roslaunch turtlebot3_fake turtlebot3_fake.launch
@@ -2829,8 +2813,8 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
     - 実行結果（例）
 
         ```
-        NAME                 DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-        turtlebot3-bringup   1         1         1            1           1m
+        NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+        turtlebot3-bringup   1/1     1            1           45s
         ```
 
 1. turtlebot3-bringupのpods状態確認【turtlebot3-pc】
@@ -2852,3 +2836,12 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
     ```
     turtlebot3-pc$ kubectl logs -f $(kubectl get pods -l app=turtlebot3-bringup -o template --template "{{(index .items 0).metadata.name}}")
     ```
+
+## grafanaの確認
+1. Turtlebot3のROS Nodeデプロイ状況のグラフ画面をリロードすると、ROS Node（turtlebot3-operator）のデプロイ状況が表示される
+
+    ![grafana012](images/grafana/grafana012.png)
+
+1. ブラウザを終了
+
+1. Ctrl-Cでport-forwardingを終了し、別ターミナル閉じる

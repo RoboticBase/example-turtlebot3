@@ -1,31 +1,20 @@
 ﻿# Turtlebot3 試験環境 インストールマニュアル #7
 
 
-## 構築環境(2019年3月16日現在)
+## 構築環境(2019年4月26日現在)
 
 
 # データの視覚化
 
 
-## 環境設定
-
+## 環境変数の設定
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -36,18 +25,24 @@
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/azure_aks/env
-    $ source $PJ_ROOT/docs/azure_aks/env
+    $ source $CORE_ROOT/docs/environments/azure_aks/env
+    $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
 
 
 ## turtlebot3の軌跡を表示
 
 1. turtlebot3の軌跡を表示
+  * macOS
 
-    ```
-    $ xdg-open https://api.${DOMAIN}/visualizer/locus/
-    ```
+  ```
+  $ open https://api.${DOMAIN}/visualizer/locus/
+  ```
+  * Ubuntu
+
+  ```
+  $ xdg-open https://api.${DOMAIN}/visualizer/locus/
+  ```
 
 1. ユーザ名とパスワードの確認
 
