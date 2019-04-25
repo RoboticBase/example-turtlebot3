@@ -1,4 +1,4 @@
-﻿# Turtlebot3 試験環境 インストールマニュアル #4
+# Turtlebot3 試験環境 インストールマニュアル #4
 
 
 ## 構築環境(2019年4月26日現在)
@@ -40,18 +40,28 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     + .bashrcに環境変数の設定(VirtualBox側)
 
         ```
-        $ vi .bashrc
-        set export LIBGL_ALWAYS_SOFTWARE=1
+        turtlebot3-pc$ vi .bashrc
+        ```
 
-        $ source .bashrc
+        ```bash
+        export LIBGL_ALWAYS_SOFTWARE=1
+        ```
+
+        ```
+        turtlebot3-pc$ source .bashrc
         ```
   
 1. .bashrcに下記を設定【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ vi .bashrc
-    export TURTLEBOT3_MODEL=waffle
+    ```
 
+    ```bash
+    export TURTLEBOT3_MODEL=waffle
+    ```
+
+    ```
     turtlebot3-pc$ source .bashrc
     ```
 
@@ -355,46 +365,46 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      o   minikube v1.0.0 on linux (amd64)
-      $   Downloading Kubernetes v1.13.5 images in the background ...
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      >   Creating none VM (CPUs=1, Memory=2048MB, Disk=20000MB) ...
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
-      -   "minikube" IP address is 192.168.0.8
-      -   Configuring Docker as the container runtime ...
-      -   Version of container runtime is 18.09.5
-      :   Waiting for image downloads to complete ...
-      E0425 21:41:04.778588   18711 start.go:209] Error caching images:  Caching images for kubeadm: caching images: caching image /home/turtlebot3/.minikube/cache/images/k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64_1.14.8: Get https://storage.googleapis.com/asia.artifacts.google-containers.appspot.com/containers/images/sha256:c2ce1ffb51ed60c54057f53b8756231f5b4b792ce04113c6755339a1beb25943: dial tcp: lookup storage.googleapis.com on 127.0.1.1:53: read udp 127.0.0.1:39465->127.0.1.1:53: i/o timeout
-      -   Preparing Kubernetes environment ...
-      X   Unable to load cached images: loading cached images: loading image /home/turtlebot3/.minikube/cache/images/k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64_1.14.8: stat /home/turtlebot3/.minikube/cache/images/k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64_1.14.8: no such file or directory
-      @   Downloading kubeadm v1.13.5
-      @   Downloading kubelet v1.13.5
-      -   Pulling images required by Kubernetes v1.13.5 ...
-      -   Launching Kubernetes v1.13.5 using kubeadm ... 
-      :   Waiting for pods: apiserver proxy etcd scheduler controller dns
-      -   Configuring cluster permissions ...
-      -   Verifying component health .....
-      >   Configuring local host environment ...
+        ```
+        o   minikube v1.0.0 on linux (amd64)
+        $   Downloading Kubernetes v1.13.5 images in the background ...
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        >   Creating none VM (CPUs=1, Memory=2048MB, Disk=20000MB) ...
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        2019/04/25 21:40:30 No matching credentials were found, falling back on anonymous
+        -   "minikube" IP address is 192.168.0.8
+        -   Configuring Docker as the container runtime ...
+        -   Version of container runtime is 18.09.5
+        :   Waiting for image downloads to complete ...
+        E0425 21:41:04.778588   18711 start.go:209] Error caching images:  Caching images for kubeadm: caching images: caching image /home/turtlebot3/.minikube/cache/images/k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64_1.14.8: Get https://storage.googleapis.com/asia.artifacts.google-containers.appspot.com/containers/images/sha256:c2ce1ffb51ed60c54057f53b8756231f5b4b792ce04113c6755339a1beb25943: dial tcp: lookup storage.googleapis.com on 127.0.1.1:53: read udp 127.0.0.1:39465->127.0.1.1:53: i/o timeout
+        -   Preparing Kubernetes environment ...
+        X   Unable to load cached images: loading cached images: loading image /home/turtlebot3/.minikube/cache/images/k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64_1.14.8: stat /home/turtlebot3/.minikube/cache/images/k8s.gcr.io/k8s-dns-dnsmasq-nanny-amd64_1.14.8: no such file or directory
+        @   Downloading kubeadm v1.13.5
+        @   Downloading kubelet v1.13.5
+        -   Pulling images required by Kubernetes v1.13.5 ...
+        -   Launching Kubernetes v1.13.5 using kubeadm ... 
+        :   Waiting for pods: apiserver proxy etcd scheduler controller dns
+        -   Configuring cluster permissions ...
+        -   Verifying component health .....
+        >   Configuring local host environment ...
 
-      !   The 'none' driver provides limited isolation and may reduce system security and reliability.
-      !   For more information, see:
-      -   https://github.com/kubernetes/minikube/blob/master/docs/vmdriver-none.md
+        !   The 'none' driver provides limited isolation and may reduce system security and reliability.
+        !   For more information, see:
+        -   https://github.com/kubernetes/minikube/blob/master/docs/vmdriver-none.md
 
-      +   kubectl is now configured to use "minikube"
-      =   Done! Thank you for using minikube!
-      ```
+        +   kubectl is now configured to use "minikube"
+        =   Done! Thank you for using minikube!
+        ```
 
 1. minikubeのバージョン確認【turtlebot3-pc】
 
@@ -404,10 +414,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCommit:"b7394102d6ef778017f2ca4046abbaa23b88c290", GitTreeState:"clean", BuildDate:"2019-04-08T17:11:31Z", GoVersion:"go1.12.1", Compiler:"gc", Platform:"linux/amd64"}
-      Server Version: version.Info{Major:"1", Minor:"13", GitVersion:"v1.13.5", GitCommit:"2166946f41b36dea2c4626f90a77706f426cdea2", GitTreeState:"clean", BuildDate:"2019-03-25T15:19:22Z", GoVersion:"go1.11.5", Compiler:"gc", Platform:"linux/amd64"}
-      ```
+        ```
+        Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCommit:"b7394102d6ef778017f2ca4046abbaa23b88c290", GitTreeState:"clean", BuildDate:"2019-04-08T17:11:31Z", GoVersion:"go1.12.1", Compiler:"gc", Platform:"linux/amd64"}
+        Server Version: version.Info{Major:"1", Minor:"13", GitVersion:"v1.13.5", GitCommit:"2166946f41b36dea2c4626f90a77706f426cdea2", GitTreeState:"clean", BuildDate:"2019-03-25T15:19:22Z", GoVersion:"go1.11.5", Compiler:"gc", Platform:"linux/amd64"}
+        ```
 
 1. minikubeのnodes確認【turtlebot3-pc】
 
@@ -417,10 +427,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      NAME       STATUS   ROLES    AGE     VERSION
-      minikube   Ready    master   3m49s   v1.13.5
-      ```
+        ```
+        NAME       STATUS   ROLES    AGE     VERSION
+        minikube   Ready    master   3m49s   v1.13.5
+        ```
 
 1. 全podが起動していることを確認【turtlebot3-pc】
 
@@ -430,17 +440,17 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
-      kube-system   etcd-minikube                      1/1     Running   0          3m21s
-      kube-system   kube-addon-manager-minikube        1/1     Running   0          3m19s
-      kube-system   kube-apiserver-minikube            1/1     Running   0          3m15s
-      kube-system   kube-controller-manager-minikube   1/1     Running   0          3m18s
-      kube-system   kube-dns-86b8794d97-dm8rc          3/3     Running   0          4m9s
-      kube-system   kube-proxy-kmgcl                   1/1     Running   0          4m9s
-      kube-system   kube-scheduler-minikube            1/1     Running   0          3m9s
-      kube-system   storage-provisioner                1/1     Running   0          4m7s
-      ```
+        ```
+        NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
+        kube-system   etcd-minikube                      1/1     Running   0          3m21s
+        kube-system   kube-addon-manager-minikube        1/1     Running   0          3m19s
+        kube-system   kube-apiserver-minikube            1/1     Running   0          3m15s
+        kube-system   kube-controller-manager-minikube   1/1     Running   0          3m18s
+        kube-system   kube-dns-86b8794d97-dm8rc          3/3     Running   0          4m9s
+        kube-system   kube-proxy-kmgcl                   1/1     Running   0          4m9s
+        kube-system   kube-scheduler-minikube            1/1     Running   0          3m9s
+        kube-system   storage-provisioner                1/1     Running   0          4m7s
+        ```
 
 ## minikubeのDNS設定確認
 
@@ -469,18 +479,18 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 1. kube-dns-configmapファイルの作成
 
-   ```yaml:/tmp/kube-dns-configmap.yaml
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-     name: kube-dns
-     namespace: kube-system
-     labels:
-       addonmanager.kubernetes.io/mode: EnsureExists
-   data:
-     upstreamNameservers: |-
-       ["8.8.8.8", "8.8.4.4"]
-   ```
+    ```yaml:/tmp/kube-dns-configmap.yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: kube-dns
+      namespace: kube-system
+      labels:
+        addonmanager.kubernetes.io/mode: EnsureExists
+    data:
+      upstreamNameservers: |-
+        ["8.8.8.8", "8.8.4.4"]
+    ```
 
 1. kube-dns-configmapの作成
 
@@ -560,27 +570,27 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 1. deployer serviceの登録
 
-  ```
-  $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-  $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${DEPLOYER_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/idas/ul20/manage/iot/services/ -X POST -d @- <<__EOS__
-  {
-    "services": [
-      {
-        "apikey": "${DEPLOYER_TYPE}",
-        "cbroker": "http://orion:1026",
-        "resource": "/iot/d",
-        "entity_type": "${DEPLOYER_TYPE}"
-      }
-    ]
-  }
-  __EOS__
-  ```
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${DEPLOYER_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/idas/ul20/manage/iot/services/ -X POST -d @- <<__EOS__
+    {
+      "services": [
+        {
+          "apikey": "${DEPLOYER_TYPE}",
+          "cbroker": "http://orion:1026",
+          "resource": "/iot/d",
+          "entity_type": "${DEPLOYER_TYPE}"
+        }
+      ]
+    }
+    __EOS__
+    ```
 
     - 実行結果（例）
 
-      ```json
-      {}
-      ```
+        ```json
+        {}
+        ```
 
 ## 登録されているservice確認
 
@@ -593,98 +603,98 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```json
-      {
-        "count": 1,
-        "services": [
-          {
-            "commands": [],
-            "lazy": [],
-            "attributes": [],
-            "_id": "5cc1ad34b3d72f000f4f4c8f",
-            "resource": "/iot/d",
-            "apikey": "deployer",
-            "service": "fiwaredemo",
-            "subservice": "/deployer",
-            "__v": 0,
-            "static_attributes": [],
-            "internal_attributes": [],
-            "entity_type": "deployer"
-          }
-        ]
-      }
-      ```
+        ```json
+        {
+          "count": 1,
+          "services": [
+            {
+              "commands": [],
+              "lazy": [],
+              "attributes": [],
+              "_id": "5cc1ad34b3d72f000f4f4c8f",
+              "resource": "/iot/d",
+              "apikey": "deployer",
+              "service": "fiwaredemo",
+              "subservice": "/deployer",
+              "__v": 0,
+              "static_attributes": [],
+              "internal_attributes": [],
+              "entity_type": "deployer"
+            }
+          ]
+        }
+        ```
 
 ## deployer deviceの登録 
 
 1. idas側でdeployer deviceの登録
 
-  ```
-  $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-  $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${DEPLOYER_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/idas/ul20/manage/iot/devices/ -X POST -d @- <<__EOS__
-  {
-    "devices": [
-      {
-        "device_id": "${DEPLOYER_ID}",
-        "entity_name": "${DEPLOYER_ID}",
-        "entity_type": "${DEPLOYER_TYPE}",
-        "timezone": "Asia/Tokyo",
-        "protocol": "UL20",
-        "attributes": [
-          {
-            "name": "deployment",
-            "type": "string"
-          },
-          {
-            "name": "label",
-            "type": "string"
-          },
-          {
-            "name": "desired",
-            "type": "integer"
-          },
-          {
-            "name": "current",
-            "type": "integer"
-          },
-          {
-            "name": "updated",
-            "type": "integer"
-          },
-          {
-            "name": "ready",
-            "type": "integer"
-          },
-          {
-            "name": "unavailable",
-            "type": "integer"
-          },
-          {
-            "name": "available",
-            "type": "integer"
-          }
-        ],
-        "commands": [
-          {
-            "name": "apply",
-            "type": "string"
-          }, {
-            "name": "delete",
-            "type": "string"
-          }
-        ],
-        "transport": "AMQP"
-      }
-    ]
-  }
-  __EOS__
-  ```
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${DEPLOYER_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/idas/ul20/manage/iot/devices/ -X POST -d @- <<__EOS__
+    {
+      "devices": [
+        {
+          "device_id": "${DEPLOYER_ID}",
+          "entity_name": "${DEPLOYER_ID}",
+          "entity_type": "${DEPLOYER_TYPE}",
+          "timezone": "Asia/Tokyo",
+          "protocol": "UL20",
+          "attributes": [
+            {
+              "name": "deployment",
+              "type": "string"
+            },
+            {
+              "name": "label",
+              "type": "string"
+            },
+            {
+              "name": "desired",
+              "type": "integer"
+            },
+            {
+              "name": "current",
+              "type": "integer"
+            },
+            {
+              "name": "updated",
+              "type": "integer"
+            },
+            {
+              "name": "ready",
+              "type": "integer"
+            },
+            {
+              "name": "unavailable",
+              "type": "integer"
+            },
+            {
+              "name": "available",
+              "type": "integer"
+            }
+          ],
+          "commands": [
+            {
+              "name": "apply",
+              "type": "string"
+            }, {
+              "name": "delete",
+              "type": "string"
+            }
+          ],
+          "transport": "AMQP"
+        }
+      ]
+    }
+    __EOS__
+    ```
 
     - 実行結果（例）
 
-      ```json
-      {}
-      ```
+        ```json
+        {}
+        ```
 
 1. idas側でdeployer deviceの登録確認
 
@@ -695,73 +705,73 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```json
-      {
-        "device_id": "deployer_01",
-        "service": "fiwaredemo",
-        "service_path": "/deployer",
-        "entity_name": "deployer_01",
-        "entity_type": "deployer",
-        "transport": "AMQP",
-        "attributes": [
-          {
-            "object_id": "deployment",
-            "name": "deployment",
-            "type": "string"
-          },
-          {
-            "object_id": "label",
-            "name": "label",
-            "type": "string"
-          },
-          {
-            "object_id": "desired",
-            "name": "desired",
-            "type": "integer"
-          },
-          {
-            "object_id": "current",
-            "name": "current",
-            "type": "integer"
-          },
-          {
-            "object_id": "updated",
-            "name": "updated",
-            "type": "integer"
-          },
-          {
-            "object_id": "ready",
-            "name": "ready",
-            "type": "integer"
-          },
-          {
-            "object_id": "unavailable",
-            "name": "unavailable",
-            "type": "integer"
-          },
-          {
-            "object_id": "available",
-            "name": "available",
-            "type": "integer"
-          }
-        ],
-        "lazy": [],
-        "commands": [
-          {
-            "object_id": "apply",
-            "name": "apply",
-            "type": "string"
-          },
-          {
-            "object_id": "delete",
-            "name": "delete",
-            "type": "string"
-          }
-        ],
-        "static_attributes": [],
-        "protocol": "UL20"
-      }
-      ```
+        ```json
+        {
+          "device_id": "deployer_01",
+          "service": "fiwaredemo",
+          "service_path": "/deployer",
+          "entity_name": "deployer_01",
+          "entity_type": "deployer",
+          "transport": "AMQP",
+          "attributes": [
+            {
+              "object_id": "deployment",
+              "name": "deployment",
+              "type": "string"
+            },
+            {
+              "object_id": "label",
+              "name": "label",
+              "type": "string"
+            },
+            {
+              "object_id": "desired",
+              "name": "desired",
+              "type": "integer"
+            },
+            {
+              "object_id": "current",
+              "name": "current",
+              "type": "integer"
+            },
+            {
+              "object_id": "updated",
+              "name": "updated",
+              "type": "integer"
+            },
+            {
+              "object_id": "ready",
+              "name": "ready",
+              "type": "integer"
+            },
+            {
+              "object_id": "unavailable",
+              "name": "unavailable",
+              "type": "integer"
+            },
+            {
+              "object_id": "available",
+              "name": "available",
+              "type": "integer"
+            }
+          ],
+          "lazy": [],
+          "commands": [
+            {
+              "object_id": "apply",
+              "name": "apply",
+              "type": "string"
+            },
+            {
+              "object_id": "delete",
+              "name": "delete",
+              "type": "string"
+            }
+          ],
+          "static_attributes": [],
+          "protocol": "UL20"
+        }
+        ```
 
 1. orion側でdeployer deviceの登録確認
 
@@ -772,87 +782,87 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```json
-      {
-        "id": "deployer_01",
-        "type": "deployer",
-        "TimeInstant": {
-          "type": "ISO8601",
-          "value": " ",
-          "metadata": {}
-        },
-        "apply_info": {
-          "type": "commandResult",
-          "value": " ",
-          "metadata": {}
-        },
-        "apply_status": {
-          "type": "commandStatus",
-          "value": "UNKNOWN",
-          "metadata": {}
-        },
-        "available": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "current": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "delete_info": {
-          "type": "commandResult",
-          "value": " ",
-          "metadata": {}
-        },
-        "delete_status": {
-          "type": "commandStatus",
-          "value": "UNKNOWN",
-          "metadata": {}
-        },
-        "deployment": {
-          "type": "string",
-          "value": " ",
-          "metadata": {}
-        },
-        "desired": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "label": {
-          "type": "string",
-          "value": " ",
-          "metadata": {}
-        },
-        "ready": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "unavailable": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "updated": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "apply": {
-          "type": "string",
-          "value": "",
-          "metadata": {}
-        },
-        "delete": {
-          "type": "string",
-          "value": "",
-          "metadata": {}
+        ```json
+        {
+          "id": "deployer_01",
+          "type": "deployer",
+          "TimeInstant": {
+            "type": "ISO8601",
+            "value": " ",
+            "metadata": {}
+          },
+          "apply_info": {
+            "type": "commandResult",
+            "value": " ",
+            "metadata": {}
+          },
+          "apply_status": {
+            "type": "commandStatus",
+            "value": "UNKNOWN",
+            "metadata": {}
+          },
+          "available": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "current": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "delete_info": {
+            "type": "commandResult",
+            "value": " ",
+            "metadata": {}
+          },
+          "delete_status": {
+            "type": "commandStatus",
+            "value": "UNKNOWN",
+            "metadata": {}
+          },
+          "deployment": {
+            "type": "string",
+            "value": " ",
+            "metadata": {}
+          },
+          "desired": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "label": {
+            "type": "string",
+            "value": " ",
+            "metadata": {}
+          },
+          "ready": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "unavailable": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "updated": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "apply": {
+            "type": "string",
+            "value": "",
+            "metadata": {}
+          },
+          "delete": {
+            "type": "string",
+            "value": "",
+            "metadata": {}
+          }
         }
-      }
-      ```
+        ```
 
 ## deployerをTurtlebot3に設定
 
@@ -909,103 +919,103 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 1. mqtt-kube-operator.yamlの編集
 
-   ```yaml:/tmp/mqtt-kube-operator.yaml
-   apiVersion: v1
-   kind: ServiceAccount
-   metadata:
-     name: mqtt-kube-operator
-   ---
-   apiVersion: rbac.authorization.k8s.io/v1
-   kind: Role
-   metadata:
-     name: mqtt-kube-operator
-     namespace: default
-   rules:
-   - apiGroups: [""]
-     resources: ["services", "configmaps", "secrets"]
-     verbs: ["get", "list", "create", "update", "delete"]
-   - apiGroups: ["apps"]
-     resources: ["deployments"]
-     verbs: ["get", "list", "create", "update", "delete"]
-   ---
-   apiVersion: rbac.authorization.k8s.io/v1
-   kind: RoleBinding
-   metadata:
-     name: mqtt-kube-operator
-     namespace: default
-   roleRef:
-     apiGroup: rbac.authorization.k8s.io
-     kind: Role
-     name: mqtt-kube-operator
-   subjects:
-   - kind: ServiceAccount
-     name: mqtt-kube-operator
-     namespace: default
-   ---
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: mqtt-kube-operator
-   spec:
-     replicas: 1
-     selector:
-       matchLabels:
-         app: mqtt-kube-operator
-     template:
-       metadata:
-         labels:
-           app: mqtt-kube-operator
-       spec:
-         serviceAccountName: mqtt-kube-operator
-         containers:
-         - name: mqtt-kube-operator
-           image: roboticbase/mqtt-kube-operator:0.2.0
-           imagePullPolicy: Always
-           env:
-           - name: LOG_LEVEL
-             value: "info"
-           - name: MQTT_USERNAME
-             valueFrom:
-               secretKeyRef:
-                 name: mqtt-username-password
-                 key: mqtt_username
-           - name: MQTT_PASSWORD
-             valueFrom:
-               secretKeyRef:
-                 name: mqtt-username-password
-                 key: mqtt_password
-           - name: MQTT_USE_TLS
-             valueFrom:
-               configMapKeyRef:
-                 name: mqtt-config
-                 key: mqtt_use_tls
-           - name: MQTT_HOST
-             valueFrom:
-               configMapKeyRef:
-                 name: mqtt-config
-                 key: mqtt_host
-           - name: MQTT_PORT
-             valueFrom:
-               configMapKeyRef:
-                 name: mqtt-config
-                 key: mqtt_port
-           - name: DEVICE_TYPE
-             valueFrom:
-               configMapKeyRef:
-                 name: mqtt-config
-                 key: device_type
-           - name: DEVICE_ID
-             valueFrom:
-               configMapKeyRef:
-                 name: mqtt-config
-                 key: device_id
-           - name: REPORT_INTERVAL_SEC
-             value: "1"
-           - name: USE_DEPLOYMENT_STATE_REPORTER
-             value: "true"
-           - name: REPORT_TARGET_LABEL_KEY
-             value: "report"
-   ```
+    ```yaml:/tmp/mqtt-kube-operator.yaml
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: mqtt-kube-operator
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: Role
+    metadata:
+      name: mqtt-kube-operator
+      namespace: default
+    rules:
+    - apiGroups: [""]
+      resources: ["services", "configmaps", "secrets"]
+      verbs: ["get", "list", "create", "update", "delete"]
+    - apiGroups: ["apps"]
+      resources: ["deployments"]
+      verbs: ["get", "list", "create", "update", "delete"]
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: mqtt-kube-operator
+      namespace: default
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: mqtt-kube-operator
+    subjects:
+    - kind: ServiceAccount
+      name: mqtt-kube-operator
+      namespace: default
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: mqtt-kube-operator
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: mqtt-kube-operator
+      template:
+        metadata:
+          labels:
+            app: mqtt-kube-operator
+        spec:
+          serviceAccountName: mqtt-kube-operator
+          containers:
+          - name: mqtt-kube-operator
+            image: roboticbase/mqtt-kube-operator:0.2.0
+            imagePullPolicy: Always
+            env:
+            - name: LOG_LEVEL
+              value: "info"
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-username-password
+                  key: mqtt_username
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mqtt-username-password
+                  key: mqtt_password
+            - name: MQTT_USE_TLS
+              valueFrom:
+                configMapKeyRef:
+                  name: mqtt-config
+                  key: mqtt_use_tls
+            - name: MQTT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mqtt-config
+                  key: mqtt_host
+            - name: MQTT_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mqtt-config
+                  key: mqtt_port
+            - name: DEVICE_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  name: mqtt-config
+                  key: device_type
+            - name: DEVICE_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: mqtt-config
+                  key: device_id
+            - name: REPORT_INTERVAL_SEC
+              value: "1"
+            - name: USE_DEPLOYMENT_STATE_REPORTER
+              value: "true"
+            - name: REPORT_TARGET_LABEL_KEY
+              value: "report"
+    ```
 
 1. mqtt-kube-operatorの作成【turtlebot3-pc】
 
@@ -1030,37 +1040,37 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果(例）
 
-      ```
-      2019-04-25T13:39:02.908Z	INFO	mqtt-kube-operator/main.go:183	start main
-      2019-04-25T13:39:03.066Z	INFO	mqtt-kube-operator/main.go:163	Connected to MQTT Broker(tls://mqtt.example.com:8883), start loop
-      ```
+        ```
+        2019-04-25T13:39:02.908Z	INFO	mqtt-kube-operator/main.go:183	start main
+        2019-04-25T13:39:03.066Z	INFO	mqtt-kube-operator/main.go:163	Connected to MQTT Broker(tls://mqtt.example.com:8883), start loop
+        ```
 
 ## applyコマンドでdeployerの確認
 
 1. applyを指示するコマンドの作成
 
-  ```
-  $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-  $ echo -e "curl -i -H \"Authorization: bearer ${TOKEN}\" -H \"Fiware-Service: ${FIWARE_SERVICE}\" -H \"Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}\" -H \"Content-Type: application/json\" https://api.${DOMAIN}/orion/v2/entities/${DEPLOYER_ID}/attrs?type=${DEPLOYER_TYPE} -X PATCH -d @-<<__EOS__
-  {
-    \"apply\": {
-      \"value\": \"{}\"
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ echo -e "curl -i -H \"Authorization: bearer ${TOKEN}\" -H \"Fiware-Service: ${FIWARE_SERVICE}\" -H \"Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}\" -H \"Content-Type: application/json\" https://api.${DOMAIN}/orion/v2/entities/${DEPLOYER_ID}/attrs?type=${DEPLOYER_TYPE} -X PATCH -d @-<<__EOS__
+    {
+      \"apply\": {
+        \"value\": \"{}\"
+      }
     }
-  }
-  __EOS__"
-  ```
+    __EOS__"
+    ```
 
     - 実行結果(例）
 
-      ```
-      curl -i -H "Authorization: bearer upiQx3NcixLDYlQo5sW0ExMSnsRgTXwi" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /deployer" -H "Content-Type: application/json" https://api.example.com/orion/v2/entities/deployer_01/attrs?type=deployer -X PATCH -d @-<<__EOS__
-      {
-          "apply": {
-              "value": "{}"
-          }
-      }
-      __EOS__ 
-      ```
+        ```
+        curl -i -H "Authorization: bearer upiQx3NcixLDYlQo5sW0ExMSnsRgTXwi" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /deployer" -H "Content-Type: application/json" https://api.example.com/orion/v2/entities/deployer_01/attrs?type=deployer -X PATCH -d @-<<__EOS__
+        {
+            "apply": {
+                "value": "{}"
+            }
+        }
+        __EOS__ 
+        ```
 
 
 1. コマンドの受信待機
@@ -1138,123 +1148,123 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      {
-        "id": "deployer_01",
-        "type": "deployer",
-        "TimeInstant": {
-          "type": "ISO8601",
-          "value": "2019-04-25T13:44:21.00Z",
-          "metadata": {}
-        },
-        "apply_info": {
-          "type": "commandResult",
-          "value": "invalid format, skip this message",
-          "metadata": {
-            "TimeInstant": {
-              "type": "ISO8601",
-              "value": "2019-04-25T13:44:21.743Z"
+        ```json
+        {
+          "id": "deployer_01",
+          "type": "deployer",
+          "TimeInstant": {
+            "type": "ISO8601",
+            "value": "2019-04-25T13:44:21.00Z",
+            "metadata": {}
+          },
+          "apply_info": {
+            "type": "commandResult",
+            "value": "invalid format, skip this message",
+            "metadata": {
+              "TimeInstant": {
+                "type": "ISO8601",
+                "value": "2019-04-25T13:44:21.743Z"
+              }
             }
-          }
-        },
-        "apply_status": {
-          "type": "commandStatus",
-          "value": "OK",
-          "metadata": {
-            "TimeInstant": {
-              "type": "ISO8601",
-              "value": "2019-04-25T13:44:21.743Z"
+          },
+          "apply_status": {
+            "type": "commandStatus",
+            "value": "OK",
+            "metadata": {
+              "TimeInstant": {
+                "type": "ISO8601",
+                "value": "2019-04-25T13:44:21.743Z"
+              }
             }
+          },
+          "available": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "current": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "delete_info": {
+            "type": "commandResult",
+            "value": " ",
+            "metadata": {}
+          },
+          "delete_status": {
+            "type": "commandStatus",
+            "value": "UNKNOWN",
+            "metadata": {}
+          },
+          "deployment": {
+            "type": "string",
+            "value": " ",
+            "metadata": {}
+          },
+          "desired": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "label": {
+            "type": "string",
+            "value": " ",
+            "metadata": {}
+          },
+          "ready": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "unavailable": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "updated": {
+            "type": "integer",
+            "value": " ",
+            "metadata": {}
+          },
+          "apply": {
+            "type": "string",
+            "value": "",
+            "metadata": {}
+          },
+          "delete": {
+            "type": "string",
+            "value": "",
+            "metadata": {}
           }
-        },
-        "available": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "current": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "delete_info": {
-          "type": "commandResult",
-          "value": " ",
-          "metadata": {}
-        },
-        "delete_status": {
-          "type": "commandStatus",
-          "value": "UNKNOWN",
-          "metadata": {}
-        },
-        "deployment": {
-          "type": "string",
-          "value": " ",
-          "metadata": {}
-        },
-        "desired": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "label": {
-          "type": "string",
-          "value": " ",
-          "metadata": {}
-        },
-        "ready": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "unavailable": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "updated": {
-          "type": "integer",
-          "value": " ",
-          "metadata": {}
-        },
-        "apply": {
-          "type": "string",
-          "value": "",
-          "metadata": {}
-        },
-        "delete": {
-          "type": "string",
-          "value": "",
-          "metadata": {}
         }
-      }
-      ```
+        ```
 
 1. deployerデバイスのcygnus-elasticsearchを登録
 
-  ```
-  $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-  $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}"  -H "Content-Type: application/json" https://api.${DOMAIN}/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
-  {
-    "subject": {
-      "entities": [{
-        "idPattern": "${DEPLOYER_ID}.*",
-        "type": "${DEPLOYER_TYPE}"
-      }],
-      "condition": {
-        "attrs": ["deployment", "label", "desired", "current", "updated", "ready", "unavailable", "available"]
-      }
-    },
-    "notification": {
-      "http": {
-        "url": "http://cygnus-elasticsearch:5050/notify"
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}"  -H "Content-Type: application/json" https://api.${DOMAIN}/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
+    {
+      "subject": {
+        "entities": [{
+          "idPattern": "${DEPLOYER_ID}.*",
+          "type": "${DEPLOYER_TYPE}"
+        }],
+        "condition": {
+          "attrs": ["deployment", "label", "desired", "current", "updated", "ready", "unavailable", "available"]
+        }
       },
-      "attrs": ["deployment", "label", "desired", "current", "updated", "ready", "unavailable", "available"],
-      "attrsFormat": "legacy"
+      "notification": {
+        "http": {
+          "url": "http://cygnus-elasticsearch:5050/notify"
+        },
+        "attrs": ["deployment", "label", "desired", "current", "updated", "ready", "unavailable", "available"],
+        "attrsFormat": "legacy"
+      }
     }
-  }
-  __EOS__
-  ```
+    __EOS__
+    ```
 
     - 実行結果（例）
 
@@ -1277,19 +1287,34 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      [
-        {
-          "id": "5cc1ba4aec7807f34fd73eff",
-          "status": "active",
-          "subject": {
-            "entities": [
-              {
-                "idPattern": "deployer_01.*",
-                "type": "deployer"
+        ```json
+        [
+          {
+            "id": "5cc1ba4aec7807f34fd73eff",
+            "status": "active",
+            "subject": {
+              "entities": [
+                {
+                  "idPattern": "deployer_01.*",
+                  "type": "deployer"
+                }
+              ],
+              "condition": {
+                "attrs": [
+                  "deployment",
+                  "label",
+                  "desired",
+                  "current",
+                  "updated",
+                  "ready",
+                  "unavailable",
+                  "available"
+                ]
               }
-            ],
-            "condition": {
+            },
+            "notification": {
+              "timesSent": 1,
+              "lastNotification": "2019-04-25T13:46:50.00Z",
               "attrs": [
                 "deployment",
                 "label",
@@ -1299,30 +1324,15 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
                 "ready",
                 "unavailable",
                 "available"
-              ]
-            }
-          },
-          "notification": {
-            "timesSent": 1,
-            "lastNotification": "2019-04-25T13:46:50.00Z",
-            "attrs": [
-              "deployment",
-              "label",
-              "desired",
-              "current",
-              "updated",
-              "ready",
-              "unavailable",
-              "available"
-            ],
-            "attrsFormat": "legacy",
-            "http": {
-              "url": "http://cygnus-elasticsearch:5050/notify"
+              ],
+              "attrsFormat": "legacy",
+              "http": {
+                "url": "http://cygnus-elasticsearch:5050/notify"
+              }
             }
           }
-        }
-      ]
-      ```
+        ]
+        ```
 
 ## kibanaの設定
 
@@ -1396,10 +1406,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     - 実行結果（例）
 
-      ```
-      Forwarding from 127.0.0.1:3000 -> 3000
-      Forwarding from [::1]:3000 -> 3000
-      ```
+        ```
+        Forwarding from 127.0.0.1:3000 -> 3000
+        Forwarding from [::1]:3000 -> 3000
+        ```
 
 1. ブラウザでgrafanaにアクセス
   * macOS
