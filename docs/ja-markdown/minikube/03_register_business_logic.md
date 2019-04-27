@@ -1,28 +1,19 @@
-﻿# Turtlebot3 試験環境 インストールマニュアル #3
+# Turtlebot3 試験環境 インストールマニュアル #3
 
 
-## 構築環境(2019年3月6日現在)
+## 構築環境(2019年4月26日現在)
 
 
 # minikubeのfiwareにbusiness logicを登録
 
+## 環境変数の設定
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -33,10 +24,9 @@
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/minikube/env
-    $ source $PJ_ROOT/docs/minikube/env
+    $ source $CORE_ROOT/docs/environments/minikube/env
+    $ source $PJ_ROOT/docs/environments/minikube/env
     ```
-
 
 ## cmd-proxyの購読者登録
 
@@ -46,21 +36,21 @@
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
     {
-    "subject": {
+      "subject": {
         "entities": [{
-        "idPattern": "${GAMEPAD_ID}.*",
-        "type": "${GAMEPAD_TYPE}"
+          "idPattern": "${GAMEPAD_ID}.*",
+          "type": "${GAMEPAD_TYPE}"
         }],
         "condition": {
-        "attrs": ["button"]
+          "attrs": ["button"]
         }
-    },
-    "notification": {
+      },
+      "notification": {
         "http": {
-        "url": "http://cmd-proxy:8888/gamepad/"
+          "url": "http://cmd-proxy:8888/gamepad/"
         },
         "attrs": ["button"]
-    }
+      }
     }
     __EOS__
     ```
@@ -86,68 +76,68 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         [
-        {
-            "id": "5c7f89b8207d0e5abee03ee8",
+          {
+            "id": "5cc1a019e94c6631c96628f2",
             "status": "active",
             "subject": {
-            "entities": [
+              "entities": [
                 {
-                "idPattern": "gamepad.*",
-                "type": "gamepad"
+                  "idPattern": "gamepad.*",
+                  "type": "gamepad"
                 }
-            ],
-            "condition": {
+              ],
+              "condition": {
                 "attrs": [
-                "button"
+                  "button"
                 ]
-            }
+              }
             },
             "notification": {
-            "timesSent": 4,
-            "lastNotification": "2019-03-07T06:45:41.00Z",
-            "attrs": [
+              "timesSent": 2,
+              "lastNotification": "2019-04-25T12:09:50.00Z",
+              "attrs": [
                 "button"
-            ],
-            "attrsFormat": "legacy",
-            "http": {
+              ],
+              "attrsFormat": "legacy",
+              "http": {
                 "url": "http://cygnus-mongo:5050/notify"
-            },
-            "lastFailure": "2019-03-07T04:55:00.00Z",
-            "lastSuccess": "2019-03-07T06:45:41.00Z"
+              },
+              "lastSuccess": "2019-04-25T12:09:50.00Z",
+              "lastSuccessCode": 200
             }
-        },
-        {
-            "id": "5c80b50b95aa76486e093459",
+          },
+          {
+            "id": "5cc1a62de94c6631c96628f5",
             "status": "active",
             "subject": {
-            "entities": [
+              "entities": [
                 {
-                "idPattern": "gamepad.*",
-                "type": "gamepad"
+                  "idPattern": "gamepad.*",
+                  "type": "gamepad"
                 }
-            ],
-            "condition": {
+              ],
+              "condition": {
                 "attrs": [
-                "button"
+                  "button"
                 ]
-            }
+              }
             },
             "notification": {
-            "timesSent": 3,
-            "lastNotification": "2019-03-07T06:45:41.00Z",
-            "attrs": [
+              "timesSent": 1,
+              "lastNotification": "2019-04-25T12:21:01.00Z",
+              "attrs": [
                 "button"
-            ],
-            "attrsFormat": "normalized",
-            "http": {
+              ],
+              "attrsFormat": "normalized",
+              "http": {
                 "url": "http://cmd-proxy:8888/gamepad/"
-            },
-            "lastFailure": "2019-03-07T06:40:22.00Z",
-            "lastSuccess": "2019-03-07T06:45:41.00Z"
+              },
+              "lastSuccess": "2019-04-25T12:21:01.00Z",
+              "lastSuccessCode": 200
             }
-        }
+          }
         ]
         ```
 
@@ -164,7 +154,7 @@
     - 実行結果（例）
 
         ```
-        mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-03-07T15:45:14.1551941114+0900|button|triangle"
+        mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-04-25T21:21:59.1556194919+0900|button|triangle"
         ```
 
 1. エミュレーションコマンドの受信待機
@@ -186,7 +176,7 @@
 1. 別ターミナルで作成したエミュレーションコマンドの実行
 
     ```
-    $ mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-03-07T15:45:14.1551941114+0900|button|triangle"
+    $ mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-04-25T21:21:59.1556194919+0900|button|triangle"
     ```
 
     - 実行結果（例）
@@ -202,7 +192,7 @@
 
     ```
     Client mosqsub/11062-roboticba received PUBLISH (d0, q0, r0, m0, '/gamepad/gamepad/attrs', ... (51 bytes))
-    2019-03-07T15:45:14.1551941114+0900|button|triangle
+    2019-04-25T21:21:59.1556194919+0900|button|triangle
     Client mosqsub/11062-roboticba received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/cmd', ... (24 bytes))
     turtlebot3@move|triangle
     ```
@@ -216,25 +206,25 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "id": "gamepad",
-        "type": "gamepad",
-        "TimeInstant": {
+          "id": "gamepad",
+          "type": "gamepad",
+          "TimeInstant": {
             "type": "ISO8601",
-            "value": "2019-03-07T15:45:14.1551941114+0900",
+            "value": "2019-04-25T21:21:59.1556194919+0900",
             "metadata": {}
-        },
-        "button": {
+          },
+          "button": {
             "type": "string",
             "value": "triangle",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T15:45:14.1551941114+0900"
+                "value": "2019-04-25T21:21:59.1556194919+0900"
+              }
             }
-            }
-        }
+          }
         }
         ```
 
@@ -247,110 +237,110 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "id": "turtlebot3",
-        "type": "robot",
-        "TimeInstant": {
+          "id": "turtlebot3",
+          "type": "robot",
+          "TimeInstant": {
             "type": "ISO8601",
-            "value": "2019-03-07T06:45:44.00Z",
+            "value": "2019-04-25T12:22:21.00Z",
             "metadata": {}
-        },
-        "capacity": {
+          },
+          "capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "charge": {
+          },
+          "charge": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "current": {
+          },
+          "current": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "design_capacity": {
+          },
+          "design_capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "move_info": {
+          },
+          "move_info": {
             "type": "commandResult",
             "value": "executed square command",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T05:35:34.827Z"
+                "value": "2019-04-25T12:16:05.676Z"
+              }
             }
-            }
-        },
-        "move_status": {
+          },
+          "move_status": {
             "type": "commandStatus",
             "value": "PENDING",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T06:45:44.139Z"
+                "value": "2019-04-25T12:22:21.300Z"
+              }
             }
-            }
-        },
-        "percentage": {
+          },
+          "percentage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "theta": {
+          },
+          "theta": {
             "type": "float32",
             "value": "0.4",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "voltage": {
+          },
+          "voltage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "x": {
+          },
+          "x": {
             "type": "float32",
             "value": "0.1",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "y": {
+          },
+          "y": {
             "type": "float32",
             "value": "0.2",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "z": {
+          },
+          "z": {
             "type": "float32",
             "value": "0.3",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "move": {
+          },
+          "move": {
             "type": "string",
             "value": "",
             "metadata": {}
-        }
+          }
         }
         ```
 
@@ -413,109 +403,109 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "id": "turtlebot3",
-        "type": "robot",
-        "TimeInstant": {
+          "id": "turtlebot3",
+          "type": "robot",
+          "TimeInstant": {
             "type": "ISO8601",
-            "value": "2019-03-07T06:49:15.00Z",
+            "value": "2019-04-25T12:24:02.00Z",
             "metadata": {}
-        },
-        "capacity": {
+          },
+          "capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "charge": {
+          },
+          "charge": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "current": {
+          },
+          "current": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "design_capacity": {
+          },
+          "design_capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "move_info": {
+          },
+          "move_info": {
             "type": "commandResult",
             "value": "executed triangle command",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T06:49:15.204Z"
+                "value": "2019-04-25T12:24:02.171Z"
+              }
             }
-            }
-        },
-        "move_status": {
+          },
+          "move_status": {
             "type": "commandStatus",
             "value": "OK",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T06:49:15.204Z"
+                "value": "2019-04-25T12:24:02.171Z"
+              }
             }
-            }
-        },
-        "percentage": {
+          },
+          "percentage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "theta": {
+          },
+          "theta": {
             "type": "float32",
             "value": "0.4",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "voltage": {
+          },
+          "voltage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "x": {
+          },
+          "x": {
             "type": "float32",
             "value": "0.1",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "y": {
+          },
+          "y": {
             "type": "float32",
             "value": "0.2",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "z": {
+          },
+          "z": {
             "type": "float32",
             "value": "0.3",
             "metadata": {
-            "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            }
-        },
-        "move": {
+          },
+          "move": {
             "type": "string",
             "value": "",
             "metadata": {}
-        }
+          }
         }
         ```

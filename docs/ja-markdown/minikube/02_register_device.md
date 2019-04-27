@@ -1,32 +1,20 @@
-﻿# Turtlebot3 試験環境 インストールマニュアル #2
+# Turtlebot3 試験環境 インストールマニュアル #2
 
 
-## 構築環境(2019年3月6日現在)
+## 構築環境(2019年4月26日現在)
 
 
 # minikubeのfiwareにデバイスを登録
 
 
 ## 環境変数の設定
-
-
 1. 環境変数の設定
 
-   ```
-   $ export CORE_ROOT=$HOME/core
-   $ cd $CORE_ROOT;pwd
-   ```
-
-    - 実行結果（例）
-
-        ```
-        /home/fiware/core
-        ```
-
-   ```
-   $ export PJ_ROOT=$HOME/example-turtlebot3
-   $ cd $PJ_ROOT;pwd
-   ```
+    ```
+    $ export CORE_ROOT=$HOME/core
+    $ export PJ_ROOT=$HOME/example-turtlebot3
+    $ cd $PJ_ROOT;pwd
+    ```
 
     - 実行結果（例）
 
@@ -37,17 +25,16 @@
 1. 環境ファイルの実行
 
     ```
-    $ source $CORE_ROOT/docs/minikube/env
-    $ source $PJ_ROOT/docs/minikube/env
+    $ source $CORE_ROOT/docs/environments/minikube/env
+    $ source $PJ_ROOT/docs/environments/minikube/env
     ```
-
 
 ## RabbitMQのユーザ設定
 
 1. RabbitMQのユーザ登録
 
     ```
-    for e in $(env); do
+    $ for e in $(env); do
     if [[ "${e}" =~ ^MQTT__([[:alnum:]_-]+)=([[:alnum:]_-]+)$ ]]; then
         username=${BASH_REMATCH[1]}
         password=${BASH_REMATCH[2]}
@@ -62,7 +49,13 @@
 
         ```
         Adding user "iotagent" ...
+        User "iotagent" already exists
+        command terminated with exit code 70
         Setting permissions for user "iotagent" in vhost "/" ...
+        Adding user "ros" ...
+        Setting permissions for user "ros" in vhost "/" ...
+        Adding user "raspberrypi" ...
+        Setting permissions for user "raspberrypi" in vhost "/" ...
         ```
 
 1. RabbitMQのユーザ確認
@@ -90,23 +83,23 @@
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/idas/ul20/manage/iot/services/ -X POST -d @- <<__EOS__
+    $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/idas/ul20/manage/iot/services/ -X POST -d @- <<__EOS__
     {
-    "services": [
+      "services": [
         {
-        "apikey": "${GAMEPAD_TYPE}",
-        "cbroker": "http://orion:1026",
-        "resource": "/iot/d",
-        "entity_type": "${GAMEPAD_TYPE}"
+          "apikey": "${GAMEPAD_TYPE}",
+          "cbroker": "http://orion:1026",
+          "resource": "/iot/d",
+          "entity_type": "${GAMEPAD_TYPE}"
         }
-    ]
+      ]
     }
     __EOS__
     ```
 
     - 実行結果（例）
 
-        ```
+        ```json
         {}
         ```
 
@@ -119,25 +112,25 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "count": 1,
-        "services": [
+          "count": 1,
+          "services": [
             {
-            "commands": [],
-            "lazy": [],
-            "attributes": [],
-            "_id": "5c7f867b41e336001076cb96",
-            "resource": "/iot/d",
-            "apikey": "gamepad",
-            "service": "fiwaredemo",
-            "subservice": "/gamepad",
-            "__v": 0,
-            "static_attributes": [],
-            "internal_attributes": [],
-            "entity_type": "gamepad"
+              "commands": [],
+              "lazy": [],
+              "attributes": [],
+              "_id": "5cc19f5303576c000f3d0b1a",
+              "resource": "/iot/d",
+              "apikey": "gamepad",
+              "service": "fiwaredemo",
+              "subservice": "/gamepad",
+              "__v": 0,
+              "static_attributes": [],
+              "internal_attributes": [],
+              "entity_type": "gamepad"
             }
-        ]
+          ]
         }
         ```
 
@@ -150,29 +143,29 @@
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/idas/ul20/manage/iot/devices/ -X POST -d @- <<__EOS__
     {
-    "devices": [
+      "devices": [
         {
-        "device_id": "${GAMEPAD_ID}",
-        "entity_name": "${GAMEPAD_ID}",
-        "entity_type": "${GAMEPAD_TYPE}",
-        "timezone": "Asia/Tokyo",
-        "protocol": "UL20",
-        "attributes": [
+          "device_id": "${GAMEPAD_ID}",
+          "entity_name": "${GAMEPAD_ID}",
+          "entity_type": "${GAMEPAD_TYPE}",
+          "timezone": "Asia/Tokyo",
+          "protocol": "UL20",
+          "attributes": [
             {
-            "name": "button",
-            "type": "string"
+              "name": "button",
+              "type": "string"
             }
-        ],
-        "transport": "AMQP"
+          ],
+          "transport": "AMQP"
         }
-    ]
+      ]
     }
     __EOS__
     ```
 
     - 実行結果（例）
 
-        ```
+        ```json
         {}
         ```
 
@@ -185,25 +178,25 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "device_id": "gamepad",
-        "service": "fiwaredemo",
-        "service_path": "/gamepad",
-        "entity_name": "gamepad",
-        "entity_type": "gamepad",
-        "transport": "AMQP",
-        "attributes": [
+          "device_id": "gamepad",
+          "service": "fiwaredemo",
+          "service_path": "/gamepad",
+          "entity_name": "gamepad",
+          "entity_type": "gamepad",
+          "transport": "AMQP",
+          "attributes": [
             {
-            "object_id": "button",
-            "name": "button",
-            "type": "string"
+              "object_id": "button",
+              "name": "button",
+              "type": "string"
             }
-        ],
-        "lazy": [],
-        "commands": [],
-        "static_attributes": [],
-        "protocol": "UL20"
+          ],
+          "lazy": [],
+          "commands": [],
+          "static_attributes": [],
+          "protocol": "UL20"
         }
         ```
 
@@ -216,20 +209,20 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "id": "gamepad",
-        "type": "gamepad",
-        "TimeInstant": {
+          "id": "gamepad",
+          "type": "gamepad",
+          "TimeInstant": {
             "type": "ISO8601",
             "value": " ",
             "metadata": {}
-        },
-        "button": {
+          },
+          "button": {
             "type": "string",
             "value": " ",
             "metadata": {}
-        }
+          }
         }
         ```
 
@@ -239,25 +232,25 @@
 1. cygnus-mongoをgamepad deviceの購読者として登録
 
     ```
-    TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
     {
-    "subject": {
+      "subject": {
         "entities": [{
-        "idPattern": "${GAMEPAD_ID}.*",
-        "type": "${GAMEPAD_TYPE}"
+          "idPattern": "${GAMEPAD_ID}.*",
+          "type": "${GAMEPAD_TYPE}"
         }],
         "condition": {
-        "attrs": ["button"]
+          "attrs": ["button"]
         }
-    },
-    "notification": {
+      },
+      "notification": {
         "http": {
-        "url": "http://cygnus-mongo:5050/notify"
+          "url": "http://cygnus-mongo:5050/notify"
         },
         "attrs": ["button"],
         "attrsFormat": "legacy"
-    }
+      }
     }
     __EOS__
     ```
@@ -283,38 +276,40 @@
 
     - 実行結果（例）
 
-    ```
-    [
-    {
-        "id": "5c7f89b8207d0e5abee03ee8",
-        "status": "active",
-        "subject": {
-        "entities": [
-            {
-            "idPattern": "gamepad.*",
-            "type": "gamepad"
+        ```json
+        [
+          {
+            "id": "5cc1a019e94c6631c96628f2",
+            "status": "active",
+            "subject": {
+              "entities": [
+                {
+                  "idPattern": "gamepad.*",
+                  "type": "gamepad"
+                }
+              ],
+              "condition": {
+                "attrs": [
+                  "button"
+                ]
+              }
+            },
+            "notification": {
+              "timesSent": 1,
+              "lastNotification": "2019-04-25T11:55:05.00Z",
+              "attrs": [
+                "button"
+              ],
+              "attrsFormat": "legacy",
+              "http": {
+                "url": "http://cygnus-mongo:5050/notify"
+              },
+              "lastSuccess": "2019-04-25T11:55:05.00Z",
+              "lastSuccessCode": 200
             }
-        ],
-        "condition": {
-            "attrs": [
-            "button"
-            ]
-        }
-        },
-        "notification": {
-        "timesSent": 1,
-        "lastNotification": "2019-03-06T08:50:00.00Z",
-        "attrs": [
-            "button"
-        ],
-        "attrsFormat": "legacy",
-        "http": {
-            "url": "http://cygnus-mongo:5050/notify"
-        }
-        }
-    }
-    ]
-    ```
+          }
+        ]
+        ```
 
 
 ## robot serviceの設定
@@ -322,24 +317,24 @@
 1. robot serviceの登録
 
     ```
-    TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${ROBOT_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/idas/ul20/manage/iot/services/ -X POST -d @- <<__EOS__
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${ROBOT_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/idas/ul20/manage/iot/services/ -X POST -d @- <<__EOS__
     {
-    "services": [
+      "services": [
         {
-        "apikey": "${ROBOT_TYPE}",
-        "cbroker": "http://orion:1026",
-        "resource": "/iot/d",
-        "entity_type": "${ROBOT_TYPE}"
+          "apikey": "${ROBOT_TYPE}",
+          "cbroker": "http://orion:1026",
+          "resource": "/iot/d",
+          "entity_type": "${ROBOT_TYPE}"
         }
-    ]
+      ]
     }
     __EOS__
     ```
 
     - 実行結果（例）
 
-        ```
+        ```json
         {}
         ```
 
@@ -352,25 +347,25 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "count": 1,
-        "services": [
+          "count": 1,
+          "services": [
             {
-            "commands": [],
-            "lazy": [],
-            "attributes": [],
-            "_id": "5c7f8a6ad20f21001193feb9",
-            "resource": "/iot/d",
-            "apikey": "robot",
-            "service": "fiwaredemo",
-            "subservice": "/robot",
-            "__v": 0,
-            "static_attributes": [],
-            "internal_attributes": [],
-            "entity_type": "robot"
+              "commands": [],
+              "lazy": [],
+              "attributes": [],
+              "_id": "5cc1a0e0b3d72f000f4f4c8d",
+              "resource": "/iot/d",
+              "apikey": "robot",
+              "service": "fiwaredemo",
+              "subservice": "/robot",
+              "__v": 0,
+              "static_attributes": [],
+              "internal_attributes": [],
+              "entity_type": "robot"
             }
-        ]
+          ]
         }
         ```
 
@@ -383,71 +378,71 @@
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ curl -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${ROBOT_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/idas/ul20/manage/iot/devices/ -X POST -d @- <<__EOS__
     {
-    "devices": [
+      "devices": [
         {
-        "device_id": "${ROBOT_ID}",
-        "entity_name": "${ROBOT_ID}",
-        "entity_type": "${ROBOT_TYPE}",
-        "timezone": "Asia/Tokyo",
-        "protocol": "UL20",
-        "attributes": [
+          "device_id": "${ROBOT_ID}",
+          "entity_name": "${ROBOT_ID}",
+          "entity_type": "${ROBOT_TYPE}",
+          "timezone": "Asia/Tokyo",
+          "protocol": "UL20",
+          "attributes": [
             {
-            "name": "x",
-            "type": "float32"
+              "name": "x",
+              "type": "float32"
             },
             {
-            "name": "y",
-            "type": "float32"
+              "name": "y",
+              "type": "float32"
             },
             {
-            "name": "z",
-            "type": "float32"
+              "name": "z",
+              "type": "float32"
             },
             {
-            "name": "theta",
-            "type": "float32"
+              "name": "theta",
+              "type": "float32"
             },
             {
-            "name": "voltage",
-            "type": "float32"
+              "name": "voltage",
+              "type": "float32"
             },
             {
-            "name": "current",
-            "type": "float32"
+              "name": "current",
+              "type": "float32"
             },
             {
-            "name": "charge",
-            "type": "float32"
+              "name": "charge",
+              "type": "float32"
             },
             {
-            "name": "capacity",
-            "type": "float32"
+              "name": "capacity",
+              "type": "float32"
             },
             {
-            "name": "design_capacity",
-            "type": "float32"
+              "name": "design_capacity",
+              "type": "float32"
             },
             {
-            "name": "percentage",
-            "type": "float32"
+              "name": "percentage",
+              "type": "float32"
             }
-        ],
-        "commands": [
+          ],
+          "commands": [
             {
-            "name": "move",
-            "type": "string"
+              "name": "move",
+              "type": "string"
             }
-        ],
-        "transport": "AMQP"
+          ],
+          "transport": "AMQP"
         }
-    ]
+      ]
     }
     __EOS__
     ```
 
     - 実行結果（例）
 
-        ```
+        ```json
         {}
         ```
 
@@ -460,78 +455,79 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "device_id": "turtlebot3",
-        "service": "fiwaredemo",
-        "service_path": "/robot",
-        "entity_name": "turtlebot3",
-        "entity_type": "robot",
-        "transport": "AMQP",
-        "attributes": [
+          "device_id": "turtlebot3",
+          "service": "fiwaredemo",
+          "service_path": "/robot",
+          "entity_name": "turtlebot3",
+          "entity_type": "robot",
+          "transport": "AMQP",
+          "attributes": [
             {
-            "object_id": "x",
-            "name": "x",
-            "type": "float32"
+              "object_id": "x",
+              "name": "x",
+              "type": "float32"
             },
             {
-            "object_id": "y",
-            "name": "y",
-            "type": "float32"
+              "object_id": "y",
+              "name": "y",
+              "type": "float32"
             },
             {
-            "object_id": "z",
-            "name": "z",
-            "type": "float32"
+              "object_id": "z",
+              "name": "z",
+              "type": "float32"
             },
             {
-            "object_id": "theta",
-            "name": "theta",
-            "type": "float32"
+              "object_id": "theta",
+              "name": "theta",
+              "type": "float32"
             },
             {
-            "object_id": "voltage",
-            "name": "voltage",
-            "type": "float32"
+              "object_id": "voltage",
+              "name": "voltage",
+              "type": "float32"
             },
             {
-            "object_id": "current",
-            "name": "current",
-            "type": "float32"
+              "object_id": "current",
+              "name": "current",
+              "type": "float32"
             },
             {
-            "object_id": "charge",
-            "name": "charge",
-            "type": "float32"
+              "object_id": "charge",
+              "name": "charge",
+              "type": "float32"
             },
             {
-            "object_id": "capacity",
-            "name": "capacity",
-            "type": "float32"
+              "object_id": "capacity",
+              "name": "capacity",
+              "type": "float32"
             },
             {
-            "object_id": "design_capacity",
-            "name": "design_capacity",
-            "type": "float32"
+              "object_id": "design_capacity",
+              "name": "design_capacity",
+              "type": "float32"
             },
             {
-            "object_id": "percentage",
-            "name": "percentage",
-            "type": "float32"
+              "object_id": "percentage",
+              "name": "percentage",
+              "type": "float32"
             }
-        ],
-        "lazy": [],
-        "commands": [
+          ],
+          "lazy": [],
+          "commands": [
             {
-            "object_id": "move",
-            "name": "move",
-            "type": "string"
+              "object_id": "move",
+              "name": "move",
+              "type": "string"
             }
-        ],
-        "static_attributes": [],
-        "protocol": "UL20"
+          ],
+          "static_attributes": [],
+          "protocol": "UL20"
         }
         ```
+
 
 1. orion側のrobot deviceの登録確認
 
@@ -542,80 +538,80 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-        "id": "turtlebot3",
-        "type": "robot",
-        "TimeInstant": {
+          "id": "turtlebot3",
+          "type": "robot",
+          "TimeInstant": {
             "type": "ISO8601",
             "value": " ",
             "metadata": {}
-        },
-        "capacity": {
+          },
+          "capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "charge": {
+          },
+          "charge": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "current": {
+          },
+          "current": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "design_capacity": {
+          },
+          "design_capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "move_info": {
+          },
+          "move_info": {
             "type": "commandResult",
             "value": " ",
             "metadata": {}
-        },
-        "move_status": {
+          },
+          "move_status": {
             "type": "commandStatus",
             "value": "UNKNOWN",
             "metadata": {}
-        },
-        "percentage": {
+          },
+          "percentage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "theta": {
+          },
+          "theta": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "voltage": {
+          },
+          "voltage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "x": {
+          },
+          "x": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "y": {
+          },
+          "y": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "z": {
+          },
+          "z": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-        },
-        "move": {
+          },
+          "move": {
             "type": "string",
             "value": "",
             "metadata": {}
-        }
+          }
         }
         ```
 
@@ -628,22 +624,22 @@
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${ROBOT_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/orion/v2/subscriptions/ -X POST -d @- <<__EOS__
     {
-    "subject": {
+      "subject": {
         "entities": [{
-        "idPattern": "${ROBOT_ID}.*",
-        "type": "${ROBOT_TYPE}"
+          "idPattern": "${ROBOT_ID}.*",
+          "type": "${ROBOT_TYPE}"
         }],
         "condition": {
-        "attrs": ["x", "y", "z", "theta", "move_status", "move_info"]
+          "attrs": ["x", "y", "z", "theta", "move_status", "move_info"]
         }
-    },
-    "notification": {
+      },
+      "notification": {
         "http": {
-        "url": "http://cygnus-mongo:5050/notify"
+          "url": "http://cygnus-mongo:5050/notify"
         },
         "attrs": ["x", "y", "z", "theta", "move_status", "move_info"],
         "attrsFormat": "legacy"
-    }
+      }
     }
     __EOS__
     ```
@@ -669,50 +665,50 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         [
-        {
-            "id": "5c7f8d3976d1de49620cdc43",
+          {
+            "id": "5cc1a2aae94c6631c96628f4",
             "status": "active",
             "subject": {
-            "entities": [
+              "entities": [
                 {
-                "idPattern": "turtlebot3.*",
-                "type": "robot"
+                  "idPattern": "turtlebot3.*",
+                  "type": "robot"
                 }
-            ],
-            "condition": {
+              ],
+              "condition": {
                 "attrs": [
-                "x",
-                "y",
-                "z",
-                "theta",
-                "move_status",
-                "move_info"
+                  "x",
+                  "y",
+                  "z",
+                  "theta",
+                  "move_status",
+                  "move_info"
                 ]
-            }
+              }
             },
             "notification": {
-            "timesSent": 1,
-            "lastNotification": "2019-03-06T09:04:57.00Z",
-            "attrs": [
+              "timesSent": 1,
+              "lastNotification": "2019-04-25T12:06:02.00Z",
+              "attrs": [
                 "x",
                 "y",
                 "z",
                 "theta",
                 "move_status",
                 "move_info"
-            ],
-            "attrsFormat": "legacy",
-            "http": {
+              ],
+              "attrsFormat": "legacy",
+              "http": {
                 "url": "http://cygnus-mongo:5050/notify"
-            },
-            "lastSuccess": "2019-03-06T09:04:57.00Z"
+              },
+              "lastSuccess": "2019-04-25T12:06:02.00Z",
+              "lastSuccessCode": 200
             }
-        }
+          }
         ]
         ```
-
 
 ## gamepadのボタンテスト
 
@@ -762,9 +758,12 @@
 
 1. 受信待機側の端末で下記が表示されていることを確認
 
-    ```
-    Client mosqpub/31264-roboticba sending PUBLISH (d0, q0, r0, m1, '/gamepad/gamepad/attrs', ... (49 bytes))
-    ```
+    - 実行結果（例）
+
+        ```
+        Client mosqpub/31264-roboticba sending PUBLISH (d0, q0, r0, m1, '/gamepad/gamepad/attrs', ... (49 bytes))
+        2019-04-25T21:07:07.1556194027+0900|button|circle
+        ```
 
 1. gamepad entityの確認
 
@@ -775,26 +774,26 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-		  "id": "gamepad",
-		  "type": "gamepad",
-		  "TimeInstant": {
-		    "type": "ISO8601",
-		    "value": "2019-02-26T17:22:51.1551169371+0900",
-		    "metadata": {}
-		  },
-		  "button": {
-		    "type": "string",
-		    "value": "circle",
-		    "metadata": {
-		      "TimeInstant": {
-		        "type": "ISO8601",
-		        "value": "2019-02-26T17:22:51.1551169371+0900"
-		      }
-		    }
-		  }
-		}
+          "id": "gamepad",
+          "type": "gamepad",
+          "TimeInstant": {
+            "type": "ISO8601",
+            "value": "2019-04-25T21:07:07.1556194027+0900",
+            "metadata": {}
+          },
+          "button": {
+            "type": "string",
+            "value": "circle",
+            "metadata": {
+              "TimeInstant": {
+                "type": "ISO8601",
+                "value": "2019-04-25T21:07:07.1556194027+0900"
+              }
+            }
+          }
+        }
         ```
 
 1. cygnus-mongoの確認
@@ -806,11 +805,11 @@
     - 実行結果（例）
 
         ```
-        MongoDB shell version v4.0.6
-        connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?gssapiServiceName=mongodb
-        Implicit session: session { "id" : UUID("850ebd6b-edfc-46bc-b785-07ecdf18d2f8") }
-        MongoDB server version: 4.0.6
-        { "_id" : ObjectId("5c946ba198f9e000117f0c67"), "recvTime" : ISODate("2019-02-26T08:22:51.155Z"), "attrName" : "button", "attrType" : "string", "attrValue" : "circle" }
+        MongoDB shell version v4.1.10
+        connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?compressors=disabled&gssapiServiceName=mongodb
+        Implicit session: session { "id" : UUID("937dccec-3160-4689-bbf4-ff38877d46a1") }
+        MongoDB server version: 4.1.10
+        { "_id" : ObjectId("5cc1a391650bcb0011bff77e"), "recvTime" : ISODate("2019-04-25T12:07:07.155Z"), "attrName" : "button", "attrType" : "string", "attrValue" : "circle" }
         ```
 
 
@@ -864,7 +863,7 @@
 
     ```
     Client mosqsub/1414-roboticbas received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/attrs', ... (63 bytes))
-    2019-03-07T14:18:18.1551935898+0900|x|0.1|y|0.2|z|0.3|theta|0.4
+    2019-04-25T21:11:28.1556194288+0900|x|0.1|y|0.2|z|0.3|theta|0.4
     ```
 
 1. robot entityの確認
@@ -876,100 +875,100 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-            "id": "turtlebot3",
-            "type": "robot",
-            "TimeInstant": {
+          "id": "turtlebot3",
+          "type": "robot",
+          "TimeInstant": {
             "type": "ISO8601",
-            "value": "2019-03-07T14:18:18.1551935898+0900",
+            "value": "2019-04-25T21:11:28.1556194288+0900",
             "metadata": {}
-            },
-            "capacity": {
+          },
+          "capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "charge": {
+          },
+          "charge": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "current": {
+          },
+          "current": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "design_capacity": {
+          },
+          "design_capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "move_info": {
+          },
+          "move_info": {
             "type": "commandResult",
             "value": " ",
             "metadata": {}
-            },
-            "move_status": {
+          },
+          "move_status": {
             "type": "commandStatus",
             "value": "UNKNOWN",
             "metadata": {}
-            },
-            "percentage": {
+          },
+          "percentage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "theta": {
+          },
+          "theta": {
             "type": "float32",
             "value": "0.4",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "voltage": {
+          },
+          "voltage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "x": {
+          },
+          "x": {
             "type": "float32",
             "value": "0.1",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "y": {
+          },
+          "y": {
             "type": "float32",
             "value": "0.2",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "z": {
+          },
+          "z": {
             "type": "float32",
             "value": "0.3",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "move": {
+          },
+          "move": {
             "type": "string",
             "value": "",
             "metadata": {}
-            }
+          }
         }
         ```
 
@@ -983,16 +982,16 @@
     - 実行結果（例）
 
         ```
-        MongoDB shell version v4.0.6
-        connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?gssapiServiceName=mongodb
-        Implicit session: session { "id" : UUID("ce222934-a813-4536-b109-84467d3aa8aa") }
-        MongoDB server version: 4.0.6
-        { "_id" : ObjectId("5c80aa07897011001304dd1e"), "recvTime" : ISODate("2019-03-07T05:20:06.123Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1a"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1b"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1c"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1d"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
-        { "_id" : ObjectId("5c7f8d3f0c76920012d54c48"), "recvTime" : ISODate("2019-03-06T09:04:57.425Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+        MongoDB shell version v4.1.10
+        connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?compressors=disabled&gssapiServiceName=mongodb
+        Implicit session: session { "id" : UUID("618344b8-fabf-4b30-8883-3d5e2f05bcf5") }
+        MongoDB server version: 4.1.10
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb9"), "recvTime" : ISODate("2019-04-25T12:11:47.631Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb5"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb6"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb7"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb8"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
+        { "_id" : ObjectId("5cc1a2ad0a25f60012cd9bb4"), "recvTime" : ISODate("2019-04-25T12:06:02.803Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
         ```
 
 
@@ -1004,9 +1003,9 @@
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ echo -e "curl -i -H \"Authorization: bearer ${TOKEN}\" -H \"Fiware-Service: ${FIWARE_SERVICE}\" -H \"Fiware-Servicepath: ${ROBOT_SERVICEPATH}\" -H \"Content-Type: application/json\" http://${HOST_IPADDR}:8080/orion/v2/entities/${ROBOT_ID}/attrs?type=${ROBOT_TYPE} -X PATCH -d @-<<__EOS__
     {
-    \"move\": {
+      \"move\": {
         \"value\": \"square\"
-    }
+      }
     }
     __EOS__"
     ```
@@ -1016,9 +1015,9 @@
         ```
         curl -i -H "Authorization: bearer 5Z9KpEAE5z3XR7ZsV5cGGeefZUOJFLv0" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /robot" -H "Content-Type: application/json" http://192.168.99.1:8080/orion/v2/entities/turtlebot3/attrs?type=robot -X PATCH -d @-<<__EOS__
         {
-            "move": {
+          "move": {
             "value": "square"
-            }
+          }
         }
         __EOS__
         ```
@@ -1078,105 +1077,105 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-            "id": "turtlebot3",
-            "type": "robot",
-            "TimeInstant": {
+          "id": "turtlebot3",
+          "type": "robot",
+          "TimeInstant": {
             "type": "ISO8601",
-            "value": "2019-03-07T05:23:25.00Z",
+            "value": "2019-04-25T12:14:46.00Z",
             "metadata": {}
-            },
-            "capacity": {
+          },
+          "capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "charge": {
+          },
+          "charge": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "current": {
+          },
+          "current": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "design_capacity": {
+          },
+          "design_capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "move_info": {
+          },
+          "move_info": {
             "type": "commandResult",
             "value": " ",
             "metadata": {}
-            },
-            "move_status": {
+          },
+          "move_status": {
             "type": "commandStatus",
             "value": "PENDING",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T05:23:25.767Z"
-                }
+                "value": "2019-04-25T12:14:46.714Z"
+              }
             }
-            },
-            "percentage": {
+          },
+          "percentage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "theta": {
+          },
+          "theta": {
             "type": "float32",
             "value": "0.4",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "voltage": {
+          },
+          "voltage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "x": {
+          },
+          "x": {
             "type": "float32",
             "value": "0.1",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "y": {
+          },
+          "y": {
             "type": "float32",
             "value": "0.2",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "z": {
+          },
+          "z": {
             "type": "float32",
             "value": "0.3",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "move": {
+          },
+          "move": {
             "type": "string",
             "value": "",
             "metadata": {}
-            }
+          }
         }
         ```
 
@@ -1226,6 +1225,7 @@
 
     ```
     Client mosqsub/3056-roboticbas received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/cmdexe', ... (39 bytes))
+    turtlebot3@move|executed square command
     ```
 
 1. robot entityの確認
@@ -1237,110 +1237,110 @@
 
     - 実行結果（例）
 
-        ```
+        ```json
         {
-            "id": "turtlebot3",
-            "type": "robot",
-            "TimeInstant": {
+          "id": "turtlebot3",
+          "type": "robot",
+          "TimeInstant": {
             "type": "ISO8601",
-            "value": "2019-03-07T05:35:34.00Z",
+            "value": "2019-04-25T12:16:05.00Z",
             "metadata": {}
-            },
-            "capacity": {
+          },
+          "capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "charge": {
+          },
+          "charge": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "current": {
+          },
+          "current": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "design_capacity": {
+          },
+          "design_capacity": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "move_info": {
+          },
+          "move_info": {
             "type": "commandResult",
             "value": "executed square command",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T05:35:34.827Z"
-                }
+                "value": "2019-04-25T12:16:05.676Z"
+              }
             }
-            },
-            "move_status": {
+          },
+          "move_status": {
             "type": "commandStatus",
             "value": "OK",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T05:35:34.827Z"
-                }
+                "value": "2019-04-25T12:16:05.676Z"
+              }
             }
-            },
-            "percentage": {
+          },
+          "percentage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "theta": {
+          },
+          "theta": {
             "type": "float32",
             "value": "0.4",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "voltage": {
+          },
+          "voltage": {
             "type": "float32",
             "value": " ",
             "metadata": {}
-            },
-            "x": {
+          },
+          "x": {
             "type": "float32",
             "value": "0.1",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "y": {
+          },
+          "y": {
             "type": "float32",
             "value": "0.2",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "z": {
+          },
+          "z": {
             "type": "float32",
             "value": "0.3",
             "metadata": {
-                "TimeInstant": {
+              "TimeInstant": {
                 "type": "ISO8601",
-                "value": "2019-03-07T14:18:18.1551935898+0900"
-                }
+                "value": "2019-04-25T21:11:28.1556194288+0900"
+              }
             }
-            },
-            "move": {
+          },
+          "move": {
             "type": "string",
             "value": "",
             "metadata": {}
-            }
+          }
         }
         ```
 
@@ -1354,25 +1354,25 @@
     - 実行結果（例）
 
         ```
-        MongoDB shell version v4.0.6
-        connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?gssapiServiceName=mongodb
-        Implicit session: session { "id" : UUID("eabba1b0-221f-4ef6-a694-a72bcc05a529") }
-        MongoDB server version: 4.0.6
-        { "_id" : ObjectId("5c80ada70669900016d2833b"), "recvTime" : ISODate("2019-03-07T05:35:34.827Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "OK" }
-        { "_id" : ObjectId("5c80ada70669900016d2833c"), "recvTime" : ISODate("2019-03-07T05:35:34.827Z"), "attrName" : "move_info", "attrType" : "commandResult", "attrValue" : "executed square command" }
-        { "_id" : ObjectId("5c80aace0669900016d28336"), "recvTime" : ISODate("2019-03-07T05:23:25.767Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "PENDING" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1e"), "recvTime" : ISODate("2019-03-07T05:20:06.123Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1a"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1b"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1c"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
-        { "_id" : ObjectId("5c80aa07897011001304dd1d"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
-        { "_id" : ObjectId("5c80aace0669900016d28332"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
-        { "_id" : ObjectId("5c80aace0669900016d28333"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
-        { "_id" : ObjectId("5c80aace0669900016d28334"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
-        { "_id" : ObjectId("5c80aace0669900016d28335"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
-        { "_id" : ObjectId("5c80ada70669900016d28337"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
-        { "_id" : ObjectId("5c80ada70669900016d28338"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
-        { "_id" : ObjectId("5c80ada70669900016d28339"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
-        { "_id" : ObjectId("5c80ada70669900016d2833a"), "recvTime" : ISODate("2019-03-07T05:18:18.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
-        { "_id" : ObjectId("5c7f8d3f0c76920012d54c48"), "recvTime" : ISODate("2019-03-06T09:04:57.425Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+        MongoDB shell version v4.1.10
+        connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?compressors=disabled&gssapiServiceName=mongodb
+        Implicit session: session { "id" : UUID("b9483e50-253b-4194-b07c-d81ec86da0cd") }
+        MongoDB server version: 4.1.10
+        { "_id" : ObjectId("5cc1a5050a25f60012cd9bc3"), "recvTime" : ISODate("2019-04-25T12:16:05.676Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "OK" }
+        { "_id" : ObjectId("5cc1a5050a25f60012cd9bc4"), "recvTime" : ISODate("2019-04-25T12:16:05.676Z"), "attrName" : "move_info", "attrType" : "commandResult", "attrValue" : "executed square command" }
+        { "_id" : ObjectId("5cc1a4b70a25f60012cd9bbe"), "recvTime" : ISODate("2019-04-25T12:14:46.714Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "PENDING" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb9"), "recvTime" : ISODate("2019-04-25T12:11:47.631Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb5"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb6"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb7"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
+        { "_id" : ObjectId("5cc1a4030a25f60012cd9bb8"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
+        { "_id" : ObjectId("5cc1a4b70a25f60012cd9bba"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
+        { "_id" : ObjectId("5cc1a4b70a25f60012cd9bbb"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
+        { "_id" : ObjectId("5cc1a4b70a25f60012cd9bbc"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
+        { "_id" : ObjectId("5cc1a4b70a25f60012cd9bbd"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
+        { "_id" : ObjectId("5cc1a5050a25f60012cd9bbf"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
+        { "_id" : ObjectId("5cc1a5050a25f60012cd9bc0"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
+        { "_id" : ObjectId("5cc1a5050a25f60012cd9bc1"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
+        { "_id" : ObjectId("5cc1a5050a25f60012cd9bc2"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
+        { "_id" : ObjectId("5cc1a2ad0a25f60012cd9bb4"), "recvTime" : ISODate("2019-04-25T12:06:02.803Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
         ```
