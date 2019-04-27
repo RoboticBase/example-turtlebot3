@@ -760,7 +760,7 @@
 
         ```
         Client mosqsub|24799-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/gamepad/gamepad/attrs', .     .. (49 bytes))
-        2019-02-26T17:22:51.1551169371+0900|button|circle
+        2019-04-25T21:07:07.1556194027+0900|button|circle
         ```
 
 1. gamepad entityの確認
@@ -860,7 +860,7 @@
 
     ```
     Client mosqsub|12080-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/attrs', ... (95 bytes))
-    2019-02-26T17:41:17.1551170477+0900|x|0.1|y|0.2|z|0.3|theta|0.4
+    2019-04-25T21:11:28.1556194288+0900|x|0.1|y|0.2|z|0.3|theta|0.4
     ```
 
 1. robot entityの確認
@@ -1012,9 +1012,9 @@
         ```
         curl -i -H "Authorization: bearer upiQx3NcixLDYlQo5sW0ExMSnsRgTXwi" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /robot" -H "Content-Type: application/json" https://api.example.com/orion/v2/entities/turtlebot3/attrs?type=robot -X PATCH -d @-<<__EOS__
         {
-            "move": {
-              "value": "square"
-            }
+          "move": {
+            "value": "square"
+          }
         }
         __EOS__
         ```

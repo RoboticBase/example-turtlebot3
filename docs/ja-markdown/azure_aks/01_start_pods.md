@@ -32,7 +32,7 @@
 1. 環境ファイルのコピー
 
     ```
-    $ cd $PJ_ROOT/docs/example-turtlebot3
+    $ cd $PJ_ROOT/docs/environments/azure_aks
     $ cp env.template env
     ```
 
@@ -42,7 +42,24 @@
     $ vi env
     ```
 
-    * `MQTT__raspberrypi` と `MQTT__ros` の値値（どちらもMQTTユーザのパスワード）を変更してください
+    ```bash
+    #!/bin/bash
+    export MQTT__raspberrypi="password_of_raspberrypi"; echo "MQTT__raspberrypi=${MQTT__raspberrypi}"
+    export MQTT__ros="password_of_ros"; echo "MQTT__ros=${MQTT__ros}"
+
+    export FIWARE_SERVICE="fiwaredemo"; echo "FIWARE_SERVICE=${FIWARE_SERVICE}"
+    export ROBOT_SERVICEPATH="/robot"; echo "ROBOT_SERVICEPATH=${ROBOT_SERVICEPATH}"
+    export ROBOT_ID="turtlebot3"; echo "ROBOT_ID=${ROBOT_ID}"
+    export ROBOT_TYPE="robot"; echo "ROBOT_TYPE=${ROBOT_TYPE}"
+    export GAMEPAD_SERVICEPATH="/gamepad"; echo "GAMEPAD_SERVICEPATH=${GAMEPAD_SERVICEPATH}"
+    export GAMEPAD_ID="gamepad"; echo "GAMEPAD_ID=${GAMEPAD_ID}"
+    export GAMEPAD_TYPE="gamepad"; echo "GAMEPAD_TYPE=${GAMEPAD_TYPE}"
+    export DEPLOYER_SERVICEPATH="/deployer"; echo "DEPLOYER_SERVICEPATH=${DEPLOYER_SERVICEPATH}"
+    export DEPLOYER_ID="deployer_01"; echo "DEPLOYER_ID=${DEPLOYER_ID}"
+    export DEPLOYER_TYPE="deployer"; echo "DEPLOYER_TYPE=${DEPLOYER_TYPE}"
+    ```
+
+    * `MQTT__raspberrypi` と `MQTT__ros` の値（どちらもMQTTユーザのパスワード）を変更してください
 
 1. プロジェクトルートに移動
 

@@ -3,14 +3,6 @@
 
 ## 構築環境(2019年4月26日現在)
 
-- libffi6 3.2.1-4
-- libssl-dev 1.0.2g-1ubuntu4.15
-- zlib1g 1.2.8.dfsg-2ubuntu4.1
-- zlib1g-dev 1.2.8.dfsg-2ubuntu4.1
-- Python 3.7.2
-- pip 18.1
-
-
 # Turtlebot3コンテナーの作成
 
 ## 環境変数の設定
@@ -88,82 +80,14 @@
         secret/rbcacr created
         ```
 
-
-## 必要なソフトのインストール
-
-1. pythonのインストール
+## リモートデプロイツールの準備
+1. python3.7のdocker imageをベースに、リモートデプロイ用のライブラリをインストールしたdocker imageを作成
 
     ```
-    $ sudo apt-get install -y libffi-dev zlib1g zlib1g-dev libssl-dev
-    $ cd /tmp
-    $ curl -O https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
-    $ tar zxvf Python-3.7.2.tgz
-    $ cd Python-3.7.2
-    $ ./configure
-    $ make
-    $ sudo make install
-    $ cd $PJ_ROOT
-    $ sudo rm -rf /tmp/Python-3.7.2
-    $ rm /tmp/Python-3.7.2.tgz
-    $ sudo rm /usr/bin/python
-    $ sudo ln -s /usr/local/bin/python3.7 /usr/bin/python
-    $ sudo rm /usr/bin/pip
-    $ sudo ln -s /usr/local/bin/pip3.7 /usr/bin/pip
+    $ docker run --name remote_deployer -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} python:3.7-alpine pip install -r ${PJ_ROOT}/tools/requirements.txt
+    $ docker commit remote_deployer example_turtlebot3:0.0.1
+    $ docker rm remote_deployer
     ```
-
-1. pythonのバージョン確認
-
-    ```
-    $ python --version
-    ```
-
-    - 実行結果（例）
-
-        ```
-        python 3.7.2
-        ```
-
-1. pipのバージョン確認
-
-    ```
-    $ pip -V
-    ```
-
-    - 実行結果（例）
-
-        ```
-        pip 18.1 from /usr/local/lib/python3.7/site-packages/pip (python 3.7)
-        ```
-
-
-## deploy_yaml.py用の環境構築
-
-1. deploy_yaml.pyを動かすために必要なライブラリをインストール
-
-    ```
-    $ pip install -r tools/requirements.txt
-    ```
-
-    - 実行結果（例）
-
-        ```
-        Collecting requests>=2.19 (from -r tools/requirements.txt (line 1))
-            Using cached https://files.pythonhosted.org/packages/7d/e3/20f3d364d6c8e5d2353c72a67778eb189176f08e873c9900e10c0287b84b/requests-2.21.0-py2.py3-none-any.whl
-        Collecting PyYAML>=3.13 (from -r tools/requirements.txt (line 2))
-        Collecting urllib3<1.25,>=1.21.1 (from requests>=2.19->-r tools/requirements.txt (line 1))
-            Using cached https://files.pythonhosted.org/packages/62/00/ee1d7de624db8ba7090d1226aebefab96a2c71cd5cfa7629d6ad3f61b79e/urllib3-1.24.1-py2.py3-none-any.whl
-        Collecting chardet<3.1.0,>=3.0.2 (from requests>=2.19->-r tools/requirements.txt (line 1))
-            Using cached https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl
-        Collecting idna<2.9,>=2.5 (from requests>=2.19->-r tools/requirements.txt (line 1))
-            Using cached https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl
-        Collecting certifi>=2017.4.17 (from requests>=2.19->-r tools/requirements.txt (line 1))
-            Using cached https://files.pythonhosted.org/packages/9f/e0/accfc1b56b57e9750eba272e24c4dddeac86852c2bebd1236674d7887e8a/certifi-2018.11.29-py2.py3-none-any.whl
-        Installing collected packages: urllib3, chardet, idna, certifi, requests, PyYAML
-            The script chardetect is installed in '/home/fiware/.local/bin' which is not on PATH.
-            Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
-        Successfully installed PyYAML-3.13 certifi-2018.11.29 chardet-3.0.4 idna-2.8 requests-2.21.0 urllib3-1.24.1
-        ```
-
 
 ## turtlebot3の準備
 
@@ -356,11 +280,12 @@
         0.2.0: digest: sha256:cf49498a0e1a59b0f862681956d0acb01d553d182428c9bef2e191064f2f6031 size: 1776
         ```
 
-1. ros-master-serviceの作成
+1. ros-masterのservice作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/ros-master/yaml/ros-master-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/ros-master/yaml/ros-master-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -383,12 +308,13 @@
         ros-master   ClusterIP   None         <none>        11311/TCP   3d
         ```
 
-1. ros-master-deployment-acrの作成
+1. ros-masterのdeployment作成
 
     ```
     $ envsubst < ${PJ_ROOT}/ros/ros-master/yaml/ros-master-deployment-acr.yaml > /tmp/ros-master-deployment-acr.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/ros-master-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/ros-master-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/ros-master-deployment-acr.yaml
     ```
 
@@ -1092,36 +1018,37 @@
 1. ユーザ名とパスワードの設定
    * macOS
 
-   ```
-   $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64
-   mqtt:
-     host: "mqtt.${DOMAIN}"
-     port: 8883
-     username: "ros"
-     password: "${MQTT__ros}"
-     use_ca: true
-   __EOS__)
-   ```
+       ```
+       $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64
+       mqtt:
+         host: "mqtt.${DOMAIN}"
+         port: 8883
+         username: "ros"
+         password: "${MQTT__ros}"
+         use_ca: true
+       __EOS__)
+       ```
    * Ubuntu
 
-   ```
-   $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64 -w0
-   mqtt:
-     host: "mqtt.${DOMAIN}"
-     port: 8883
-     username: "ros"
-     password: "${MQTT__ros}"
-     use_ca: true
-   __EOS__
-   )
-   ```
+       ```
+       $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64 -w0
+       mqtt:
+         host: "mqtt.${DOMAIN}"
+         port: 8883
+         username: "ros"
+         password: "${MQTT__ros}"
+         use_ca: true
+       __EOS__
+       )
+       ```
 
-1. fiware-ros-turtlebot3-bridgeの作成
+1. fiware-ros-turtlebot3-bridge用のsecret作成
 
     ```
     $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-secret.yaml > /tmp/fiware-ros-turtlebot3-bridge-secret.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-bridge-secret.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-bridge-secret.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/fiware-ros-turtlebot3-bridge-secret.yaml
     ```
 
@@ -1132,7 +1059,7 @@
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridgeのsecrets確認【turtlebot3-pc】
+1. fiware-ros-turtlebot3-bridge用のsecrets確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get secrets -l app=ros-bridge
@@ -1145,11 +1072,12 @@
         ros-bridge-secrets   Opaque    1         7m
         ```
 
-1. fiware-ros-turtlebot3-bridge-configmapの作成
+1. fiware-ros-turtlebot3-bridge用のconfigmapの作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -1159,7 +1087,7 @@
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridge-configmapのconfigmaps確認【turtlebot3-pc】
+1. fiware-ros-turtlebot3-bridge用のconfigmaps確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get configmaps -l app=ros-bridge
@@ -1172,11 +1100,12 @@
         ros-bridge-configmaps   2         20h
         ```
 
-1. fiware-ros-turtlebot3-bridge-serviceの作成
+1. fiware-ros-turtlebot3-bridgeのservice作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -1186,7 +1115,7 @@
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridge-serviceのservices確認【turtlebot3-pc】
+1. fiware-ros-turtlebot3-bridgeのservices確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get services -l app=ros-bridge
@@ -1199,12 +1128,13 @@
         ros-bridge   ClusterIP   None         <none>        11311/TCP   20h
         ```
 
-1. fiware-ros-turtlebot3-bridge-deployment-acrの作成
+1. fiware-ros-turtlebot3-bridgeのdeployment作成
 
     ```
     $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-deployment-acr.yaml > /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml
     ```
 
@@ -1886,11 +1816,12 @@
         0.2.1: digest: sha256:40cfb5dbe42a076161aa2403d8829256c2825b1ba0ee89c873088e309e459b8a size: 1776
         ```
 
-1. fiware-ros-turtlebot3-operator-configmapの作成
+1. fiware-ros-turtlebot3-operator用のconfigmap作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE}     ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE}     ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -1913,11 +1844,12 @@
         turtlebot3-operator-configmaps   1         1m
         ```
 
-1. fiware-ros-turtlebot3-operator-serviceの作成
+1. fiware-ros-turtlebot3-operatorのservice作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -1940,12 +1872,13 @@
         turtlebot3-operator   ClusterIP   None         <none>        11311/TCP   17d
         ```
 
-1. fiware-ros-turtlebot3-operator-deployment-acr-wideの作成
+1. fiware-ros-turtlebot3-operatorのdeployment (wide) の作成
 
     ```
     $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml > /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml
     ```
 
@@ -2202,7 +2135,8 @@
    
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/turtlebot3-fake/yaml/turtlebot3-fake-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/turtlebot3-fake/yaml/turtlebot3-fake-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
 1. サービスの起動確認【turtlebot3-pc】
@@ -2222,7 +2156,8 @@
     ```
     $ envsubst < ${PJ_ROOT}/ros/turtlebot3-fake/yaml/turtlebot3-fake-deployment-acr.yaml > /tmp/turtlebot3-fake-deployment-acr.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/turtlebot3-fake-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/turtlebot3-fake-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/turtlebot3-fake-deployment-acr.yaml
     ```
 
@@ -2780,7 +2715,8 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
    
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py ${PJ_ROOT}/ros/turtlebot3-bringup/yaml/turtlebot3-bringup-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/turtlebot3-bringup/yaml/turtlebot3-bringup-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
 1. サービスの起動確認【turtlebot3-pc】
@@ -2800,7 +2736,8 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
     ```
     $ envsubst < ${PJ_ROOT}/ros/turtlebot3-bringup/yaml/turtlebot3-bringup-deployment-acr.yaml > /tmp/turtlebot3-bringup-deployment-acr.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/turtlebot3-bringup-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/turtlebot3-bringup-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/turtlebot3-bringup-deployment-acr.yaml
     ```
 

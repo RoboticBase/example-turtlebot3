@@ -2,18 +2,11 @@
 
 
 ## 構築環境(2019年4月26日現在)
-- Ubuntu 16.04.5 LTS
-- git 2.7.4
-- apt-transport-https 1.2.29ubuntu0.1
-- ca-certificates 7.47.0-1ubuntu2.12
-- curl 7.47.0-1ubuntu2.12
-- software-properties-common 0.96.20.8
-- docker-ce  18.09.5
-- minikube v1.0.0
-- virtualbox 5.1.38
-- kubectl 1.14.1
-- kubeadm 1.13.5
-- kubelet 1.13.5
+* turtlebot3-pc
+    - Ubuntu 16.04.6 LTS
+    - docker-ce  18.09.5
+    - minikube v1.0.0
+    - kubectl 1.14.1
 
 
 # リモート環境の準備
@@ -191,16 +184,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     turtlebot3-pc$ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
     ```
 
-1. dockerコマンドの実行権限を付与【turtlebot3-pc】
-
-    ```
-    turtlebot3-pc$ sudo gpasswd -a $USER docker
-    ```
-
 1. インストール確認【turtlebot3-pc】
 
     ```
-    turtlebot3-pc$ docker run hello-world
+    turtlebot3-pc$ sudo docker run hello-world
     ```
 
     - 実行結果（例）
@@ -406,7 +393,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         =   Done! Thank you for using minikube!
         ```
 
-1. minikubeのバージョン確認【turtlebot3-pc】
+1. kubernetesのバージョン確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl version
@@ -477,9 +464,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## ネームサーバをkube-dnsに設定  
 
-1. kube-dns-configmapファイルの作成
+1. `/tmp/kube-dns-configmap.yaml` を作成
 
-    ```yaml:/tmp/kube-dns-configmap.yaml
+    ```
+    $ cat << __EOF__ > /tmp/kube-dns-configmap.yaml
     apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -490,6 +478,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     data:
       upstreamNameservers: |-
         ["8.8.8.8", "8.8.4.4"]
+    __EOF__
     ```
 
 1. kube-dns-configmapの作成
@@ -866,7 +855,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## deployerをTurtlebot3に設定
 
-1. ユーザ名とパスワードの作成
+1. ユーザ名とパスワードを登録するコマンドを生成
 
     ```
     $ echo "kubectl create secret generic mqtt-username-password --from-literal=mqtt_username=ros --from-literal=mqtt_password=${MQTT__ros}"
@@ -890,7 +879,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         secret/mqtt-username-password created
         ```
 
-1. MQTTエンドポイントのConfigmap設定ファイルの作成
+1. MQTTエンドポイントのConfigmapを登録するコマンドを生成
 
     ```
     $ echo "kubectl create configmap mqtt-config --from-literal=mqtt_use_tls=true --from-literal=mqtt_host=mqtt.${DOMAIN} --from-literal=mqtt_port=8883 --from-literal=device_type=${DEPLOYER_TYPE} --from-literal=device_id=${DEPLOYER_ID}"
@@ -917,9 +906,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## MQTT通信でリソースを操作するdeployerの起動【turtlebot3-pc】
 
-1. mqtt-kube-operator.yamlの編集
+1. `/tmp/mqtt-kube-operator.yaml` を作成
 
-    ```yaml:/tmp/mqtt-kube-operator.yaml
+    ```
+    $ cat << __EOF__ > /tmp/mqtt-kube-operator.yaml
     apiVersion: v1
     kind: ServiceAccount
     metadata:
@@ -1015,6 +1005,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
               value: "true"
             - name: REPORT_TARGET_LABEL_KEY
               value: "report"
+    __EOF__
     ```
 
 1. mqtt-kube-operatorの作成【turtlebot3-pc】
@@ -1115,12 +1106,14 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 1. 受信待機側の端末で下記が表示されていることを確認
 
-    ```
-    Client mosqsub|5838-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/deployer/deployer_01/cmd', ... (20 bytes))
-    deployer_01@apply|{}
-    Client mosqsub|5838-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/deployer/deployer_01/cmdexe', ... (51 bytes))
-    deployer_01@apply|invalid format, skip this message
-    ```
+    - 実行結果（例）
+
+        ```
+        Client mosqsub|5838-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/deployer/deployer_01/cmd', ... (20 bytes))
+        deployer_01@apply|{}
+        Client mosqsub|5838-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/deployer/deployer_01/cmdexe', ... (51 bytes))
+        deployer_01@apply|invalid format, skip this message
+        ```
 
 1. deployerログの確認【turtlebot3-pc】
 

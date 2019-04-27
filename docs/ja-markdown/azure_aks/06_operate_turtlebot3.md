@@ -9,7 +9,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
 ## C.gamepadでturtlebot3を操作
 
-## Raspberry Piにgamepadを接続
+### Raspberry Piにgamepadを接続
 
 1. sshでRaspberry Piに接続
 
@@ -19,7 +19,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     rasberrypi$ git clone https://github.com/RoboticBase/fiware-gamepad-controller.git
     ```
 
-## MQTTブローカーの設定
+### MQTTブローカーの設定
 
 1. 証明書ファイルのコピー
 
@@ -79,7 +79,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     raspoberypi$ pip install -r requirements/common.txt
     ```
 
-## gamepadの起動
+### gamepadの起動
 
 1. gemepadの起動
 
@@ -94,7 +94,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
         ```
         ※response_codeが0以外の場合は、pxkwcr-azure.yamlかca.crtあるいは、その両方が無効です
 
-## turtlebot3の動作確認
+### turtlebot3の動作確認
 
 1. gamepadの「〇」をクリック
 
@@ -104,7 +104,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 ## D.WEBコントローラーでturtlebot3を操作
 
 
-## 環境変数の設定
+### 環境変数の設定
 1. 環境変数の設定
 
     ```
@@ -126,22 +126,20 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
 
-## Webコントローラでturtlebot3を操作
+### Webコントローラでturtlebot3を操作
 
 1. web controllerの表示
-  * macOS
+    * macOS
 
-  ```
-  $ open https://api.${DOMAIN}/controller/web/
-  ```
-  * Ubuntu
+        ```
+        $ open https://api.${DOMAIN}/controller/web/
+        ```
+    * Ubuntu
 
-  ```
-  $ xdg-open https://api.${DOMAIN}/controller/web/
-  ```
+        ```
+        $ xdg-open https://api.${DOMAIN}/controller/web/
+        ```
 
-
-## gamepadでturtlebot3を操作
 
 1. ユーザ名とパスワードの確認
 
@@ -153,6 +151,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].password' -r
     ```
 
+### turtlebot3の動作確認
 1. turtlebot3の動作確認【turtlebot3-pc】
 
     1. 「ユーザ名」と「パスワード」を入力し、「OK」をクリック
@@ -174,7 +173,8 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py --delete ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py --delete ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -201,7 +201,8 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     ```
     $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml > /tmp/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml
     ```
 
@@ -239,7 +240,8 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py --delete ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py --delete ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-narrow.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例)
@@ -266,7 +268,8 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     ```
     $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml > /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ ./tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     $ rm /tmp/fiware-ros-turtlebot3-operator-deployment-acr-wide.yaml
     ```
 

@@ -153,7 +153,7 @@
     - 実行結果（例）
 
         ```
-        mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-02-27T13:55:23.1551243323+0900|button|triangle"
+        mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-04-25T21:21:59.1556194919+0900|button|triangle"
         ```
 
 1. エミュレーションコマンドの受信待機
@@ -175,7 +175,7 @@
 1. 別ターミナルで作成したエミュレーションコマンドの実行
 
     ```
-    $ mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-02-27T13:55:23.1551243323+0900|button|triangle"
+    $ mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-04-25T21:21:59.1556194919+0900|button|triangle"
     ```
 
     - 実行結果（例）
@@ -193,7 +193,7 @@
 
         ```
         Client mosqsub|12971-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/gamepad/gamepad/attrs', ... (51 bytes))
-        2019-02-27T13:55:23.1551243323+0900|button|triangle
+        2019-04-25T21:21:59.1556194919+0900|button|triangle
         Client mosqsub|6736-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/cmd', ... (24 bytes))
         turtlebot3@move|triangle
         ```

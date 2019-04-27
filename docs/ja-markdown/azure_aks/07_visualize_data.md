@@ -33,16 +33,16 @@
 ## turtlebot3の軌跡を表示
 
 1. turtlebot3の軌跡を表示
-  * macOS
+    * macOS
 
-  ```
-  $ open https://api.${DOMAIN}/visualizer/locus/
-  ```
-  * Ubuntu
+        ```
+        $ open https://api.${DOMAIN}/visualizer/locus/
+        ```
+    * Ubuntu
 
-  ```
-  $ xdg-open https://api.${DOMAIN}/visualizer/locus/
-  ```
+        ```
+        $ xdg-open https://api.${DOMAIN}/visualizer/locus/
+        ```
 
 1. ユーザ名とパスワードの確認
 
