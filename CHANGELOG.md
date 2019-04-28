@@ -1,7 +1,30 @@
 # Change Log
 
 ## [Unreleased]
-* We will update components and documents to adjust [FIWARE Release 7.6](https://github.com/Fiware/catalogue/releases)
+* We will employ the example of "wirecloud" running on RoboticBase-core
+* We will employ the example of "kurento" running on RoboticBase-core
+
+## [0.4.1]
+### Changed
+* update components and documents to adjust [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6)
+    * Business Logic components
+
+        |component|version|(previous version)|
+        |:--|:--|:--|
+        |cmd-proxy|0.2.0|-|
+        |robot-visualization|0.2.1|-|
+    * Remote Deploy components
+
+        |component|version|(previous version)|
+        |:--|:--|:--|
+        |mqtt-kube-operator|0.2.0|(0.1.0)|
+    * Robot environments
+
+        |component|version|(previous version)|
+        |:--|:--|:--|
+        |OS|Ubuntu 16.04.6|(Ubuntu 16.04.5)|
+        |docker|18.09.5|(18.06.1)|
+        |minikube|1.0.0|(0.34.1)|
 
 ## [0.4.0]
 ### Changed
