@@ -146,7 +146,7 @@
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
       ${PJ_ROOT}/tools/deploy_yaml.py --delete /tmp/fiware-ros-turtlebot3-bridge-secret.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
-    rm /tmp/fiware-ros-turtlebot3-bridge-secret.yaml
+    $ rm /tmp/fiware-ros-turtlebot3-bridge-secret.yaml
     ```
 
 

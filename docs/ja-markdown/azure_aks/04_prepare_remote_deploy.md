@@ -297,8 +297,8 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     - 実行結果(例）
 
         ```
-        ?  Stopping "minikube" in none ...
-        "minikube" stopped.
+        :   Stopping "minikube" in none ...
+        -   "minikube" stopped.
         ```
 
 1. minikubeの環境の削除【turtlebot3-pc】
@@ -310,9 +310,9 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     - 実行結果(例）
 
         ```
-        Uninstalling Kubernetes v1.13.5 using kubeadm ...
-        Deleting "minikube" from none ...
-        The "minikube" cluster has been deleted.
+        #   Uninstalling Kubernetes v1.13.5 using kubeadm ...
+        x   Deleting "minikube" from none ...
+        -   The "minikube" cluster has been deleted.
         ```
 
    ```
@@ -441,10 +441,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## minikubeのDNS設定確認
 
-1. 名前解決ができるかの確認
+1. 名前解決ができるかの確認【turtlebot3-pc】
 
     ```
-    $ kubectl run -it --rm --restart=Never dig --image tutum/dnsutils -- dig www.google.com
+    turtlebot3-pc$ kubectl run -it --rm --restart=Never dig --image tutum/dnsutils -- dig www.google.com
     ```
 
     - 実行結果(例）
@@ -464,10 +464,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## ネームサーバをkube-dnsに設定  
 
-1. `/tmp/kube-dns-configmap.yaml` を作成
+1. `/tmp/kube-dns-configmap.yaml` を作成【turtlebot3-pc】
 
     ```
-    $ cat << __EOF__ > /tmp/kube-dns-configmap.yaml
+    turtlebot3-pc$ cat << __EOF__ > /tmp/kube-dns-configmap.yaml
     apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -481,10 +481,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     __EOF__
     ```
 
-1. kube-dns-configmapの作成
+1. kube-dns-configmapの作成【turtlebot3-pc】
 
     ```
-    $ kubectl apply -f /tmp/kube-dns-configmap.yaml
+    turtlebot3-pc$ kubectl apply -f /tmp/kube-dns-configmap.yaml
     ```
 
     - 実行結果（例）
@@ -493,10 +493,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         configmap/kube-dns created
         ```
 
-1. kube-dnsのpodの削除 (自動的にkube-dns再起動)
+1. kube-dnsのpodの削除 (自動的にkube-dns再起動)【turtlebot3-pc】
 
     ```
-    $ kubectl delete pod -n kube-system $(kubectl get pods -n kube-system -l k8s-app=kube-dns -o template --template "{{(index .items 0).metadata.name}}")
+    turtlebot3-pc$ kubectl delete pod -n kube-system $(kubectl get pods -n kube-system -l k8s-app=kube-dns -o template --template "{{(index .items 0).metadata.name}}")
     ```
 
     - 実行結果（例）
@@ -505,10 +505,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         pod "kube-dns-86f4d74b45-l842v" deleted
         ```
 
-    1. kube-dnsの起動確認
+    1. kube-dnsの起動確認【turtlebot3-pc】
 
         ```
-        $ kubectl get pods -n kube-system -l k8s-app=kube-dns
+        turtlebot3-pc$ kubectl get pods -n kube-system -l k8s-app=kube-dns
         ```
 
         - 実行結果（例）
@@ -518,10 +518,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
             kube-dns-86f4d74b45-vnjhz   3/3     Running   0          1m
             ```
 
-    1. 名前解決ができることを確認
+    1. 名前解決ができることを確認【turtlebot3-pc】
 
         ```
-        $ kubectl run -it --rm --restart=Never dig --image tutum/dnsutils -- dig www.google.com
+        turtlebot3-pc$ kubectl run -it --rm --restart=Never dig --image tutum/dnsutils -- dig www.google.com
         ```
 
         - 実行結果（例）
@@ -855,7 +855,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## deployerをTurtlebot3に設定
 
-1. ユーザ名とパスワードを登録するコマンドを生成
+1. MQTT Brokerのユーザ名とパスワードを登録するコマンドを生成
 
     ```
     $ echo "kubectl create secret generic mqtt-username-password --from-literal=mqtt_username=ros --from-literal=mqtt_password=${MQTT__ros}"
@@ -867,7 +867,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         kubectl create secret generic mqtt-username-password --from-lititeral=mqtt_password=password_of_ros
         ```
 
-1. ユーザ名とパスワードの設定【turtlebot3-pc】
+1. 生成したコマンドを用いて、turtlebot3-pcのminikubeへMQTT Brokerのユーザ名とパスワードの設定【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl create secret generic mqtt-username-password --from-lititeral=mqtt_password=password_of_ros
@@ -888,10 +888,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     - 実行結果(例）
 
         ```
-        $ kubectl create configmap mqtt-config --from-literal=mqtt_use_tls=true --from-literal=mqtt_host=mqtt.cloudconductor.jp --from-literal=mqtt_port=8883 --from-literal=device_type=deployer --from-literal=device_id=deployer_01
+        kubectl create configmap mqtt-config --from-literal=mqtt_use_tls=true --from-literal=mqtt_host=mqtt.cloudconductor.jp --from-literal=mqtt_port=8883 --from-literal=device_type=deployer --from-literal=device_id=deployer_01
         ```
 
-1. MQTTエンドポイントのConfigmapの設定【turtlebot3-pc】
+1. 生成したコマンドを用いて、turtlebot3-pcのminikubeへMQTTエンドポイントのConfigmapの設定【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl create configmap mqtt-config --from-literal=mqtt_use_tls=true --from-literal=mqtt_host=mqtt.cloudconductor.jp --from-literal=mqtt_port=8883 --from-literal=device_type=deployer --from-literal=device_id=deployer_01
@@ -906,10 +906,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## MQTT通信でリソースを操作するdeployerの起動【turtlebot3-pc】
 
-1. `/tmp/mqtt-kube-operator.yaml` を作成
+1. `/tmp/mqtt-kube-operator.yaml` を作成【turtlebot3-pc】
 
     ```
-    $ cat << __EOF__ > /tmp/mqtt-kube-operator.yaml
+    turtlebot3-pc$ cat << __EOF__ > /tmp/mqtt-kube-operator.yaml
     apiVersion: v1
     kind: ServiceAccount
     metadata:

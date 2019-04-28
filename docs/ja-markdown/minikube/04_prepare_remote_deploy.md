@@ -396,26 +396,26 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 # 仮想化なしでminikubeを起動【turtlebot3-pc】
 
-## リポジトリ登録コマンドの作成【turtlebot3-pc】
+## リポジトリ登録コマンドの作成
 
-1. リポジトリ登録コマンドの作成【turtlebot3-pc】
+1. リポジトリ登録コマンドの作成
     * macOS
 
         ```
-        turtlebot3-pc$ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
-        turtlebot3-pc$ HOST_IPADDR=$(ifconfig ${NWNAME} | awk '/inet / {print $2}')
-        turtlebot3-pc$ NETMASK_HEX=$(ifconfig ${NWNAME} | awk '/netmask / {print $4}')
-        turtlebot3-pc$ NETMASK=$(echo "${NETMASK_HEX:2}" | perl -pe '$_ = unpack("B32", pack("H*", $_)); s/0+$//g; $_ = length')
-        turtlebot3-pc$ echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
+        $ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
+        $ HOST_IPADDR=$(ifconfig ${NWNAME} | awk '/inet / {print $2}')
+        $ NETMASK_HEX=$(ifconfig ${NWNAME} | awk '/netmask / {print $4}')
+        $ NETMASK=$(echo "${NETMASK_HEX:2}" | perl -pe '$_ = unpack("B32", pack("H*", $_)); s/0+$//g; $_ = length')
+        $ echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
         ```
     * Ubuntu
 
         ```
-        turtlebot3-pc$ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
-        turtlebot3-pc$ HOST_IPADDR=$(ifconfig ${NWNAME}  | awk '/inet / {print $2}' | cut -d: -f2)
-        turtlebot3-pc$ NETMASK_IP=$(ifconfig ${NWNAME} | awk '/Mask/ {print $4}' | cut -d: -f2)
-        turtlebot3-pc$ NETMASK=$(ipcalc ${HOST_IPADDR} ${NETMASK_IP} | awk '/Netmask: / {print $4}')
-        echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
+        $ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
+        $ HOST_IPADDR=$(ifconfig ${NWNAME}  | awk '/inet / {print $2}' | cut -d: -f2)
+        $ NETMASK_IP=$(ifconfig ${NWNAME} | awk '/Mask/ {print $4}' | cut -d: -f2)
+        $ NETMASK=$(ipcalc ${HOST_IPADDR} ${NETMASK_IP} | awk '/Netmask: / {print $4}')
+        $ echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
         ```
 
     - 実行結果(例）
@@ -663,10 +663,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## ネームサーバをkube-dnsに設定【turtlebot3-pc】
 
-1. `/tmp/kube-dns-configmap.yaml` を作成
+1. `/tmp/kube-dns-configmap.yaml` を作成【turtlebot3-pc】
 
     ```
-    $ cat << __EOF__ > /tmp/kube-dns-configmap.yaml
+    turtlebot3-pc$ cat << __EOF__ > /tmp/kube-dns-configmap.yaml
     apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -1055,7 +1055,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## deployerをTurtlebot3に設定
 
-1. ユーザ名とパスワードを登録するコマンドを生成
+1. MQTT Brokerのユーザ名とパスワードを登録するコマンドを生成
 
     ```
     $ echo "kubectl create secret generic mqtt-username-password --from-literal=mqtt_username=ros --from-literal=mqtt_password=${MQTT__ros}"
@@ -1067,7 +1067,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         kubectl create secret generic mqtt-username-password --from-literal=mqtt_username=ros --from-literal=mqtt_password=password_of_ros
         ```
 
-1. ユーザ名とパスワードの設定【turtlebot3-pc】
+1. 生成したコマンドを用いて、turtlebot3-pcのminikubeへMQTT Brokerのユーザ名とパスワードの設定【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl create secret generic mqtt-username-password --from-literal=mqtt_username=ros --from-literal=mqtt_password=password_of_ros
@@ -1091,7 +1091,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         kubectl create configmap mqtt-config --from-literal=mqtt_use_tls=false --from-literal=mqtt_host=192.168.0.3 --from-literal=mqtt_port=1883 --from-literal=device_type=deployer --from-literal=device_id=deployer_01
         ```
 
-1. MQTTエンドポイントのConfigmapの設定【turtlebot3-pc】
+1. 生成したコマンドを用いて、turtlebot3-pcのminikubeへMQTTエンドポイントのConfigmapの設定【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl create configmap mqtt-config --from-literal=mqtt_use_tls=false --from-literal=mqtt_host=192.168.0.3 --from-literal=mqtt_port=1883 --from-literal=device_type=deployer --from-literal=device_id=deployer_01
@@ -1106,10 +1106,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## MQTT通信でリソースを操作するdeployerの起動【turtlebot3-pc】
 
-1. `/tmp/mqtt-kube-operator.yaml` を作成
+1. `/tmp/mqtt-kube-operator.yaml` を作成【turtlebot3-pc】
 
     ```
-    $ cat << __EOF__ > /tmp/mqtt-kube-operator.yaml
+    turtlebot3-pc$ cat << __EOF__ > /tmp/mqtt-kube-operator.yaml
     apiVersion: v1
     kind: ServiceAccount
     metadata:
