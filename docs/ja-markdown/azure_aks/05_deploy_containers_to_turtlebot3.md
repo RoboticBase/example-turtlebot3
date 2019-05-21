@@ -2780,5 +2780,3 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
     ![grafana012](images/grafana/grafana012.png)
 
 1. ブラウザを終了
-
-1. Ctrl-Cでport-forwardingを終了し、別ターミナル閉じる
