@@ -32,27 +32,27 @@
 
 ## turtlebot3の軌跡を表示
 
+1. ユーザ名とパスワードの確認
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.basic_auths[0].username' -r
+    ```
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.basic_auths[0].password' -r
+    ```
+
 1. turtlebot3の軌跡を表示
     * macOS
 
         ```
-        $ open https://api.${DOMAIN}/visualizer/locus/
+        $ open https://web.${DOMAIN}/visualizer/locus/
         ```
     * Ubuntu
 
         ```
-        $ xdg-open https://api.${DOMAIN}/visualizer/locus/
+        $ xdg-open https://web.${DOMAIN}/visualizer/locus/
         ```
-
-1. ユーザ名とパスワードの確認
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/visualizer/locus/"))) | .[0].username' -r
-    ```
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/visualizer/locus/"))) | .[0].password' -r
-    ```
 
 1. turtlebot3側で下記を実施
 
