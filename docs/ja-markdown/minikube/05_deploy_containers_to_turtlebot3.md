@@ -493,7 +493,7 @@
         ---> Running in 330b544b6b68
         Removing intermediate container 330b544b6b68
         ---> a75fedde9b7d
-        Step 8/12 : ARG BRIDGE_GIT_REPO="https://github.com/RoboticBase/fiware_ros_turtlebot3_bridge.git"
+        Step 8/12 : ARG BRIDGE_GIT_REPO="https://github.com/RoboticBase/fiware_ros_bridge.git"
         ---> Running in 342302a4b3f3
         Removing intermediate container 342302a4b3f3
         ---> 5d7ae314971e
