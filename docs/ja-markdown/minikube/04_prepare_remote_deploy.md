@@ -1238,52 +1238,34 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 
 ## applyコマンドでdeployerの確認
-
-1. applyを指示するコマンドの作成
-
-    ```
-    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ echo -e "curl -i -H \"Authorization: bearer ${TOKEN}\" -H \"Fiware-Service: ${FIWARE_SERVICE}\" -H \"Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}\" -H \"Content-Type: application/json\" http://${HOST_IPADDR}:8080/orion/v2/entities/${DEPLOYER_ID}/attrs?type=${DEPLOYER_TYPE} -X PATCH -d @-<<__EOS__
-    {
-      \"apply\": {
-        \"value\": \"{}\"
-      }
-    }
-    __EOS__"
-    ```
-
-    - 実行結果(例）
-
-        ```
-        curl -i -H "Authorization: bearer nPxrJvT287w8SxQxG8fbZbYOT7JyMveU" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /deployer" -H "Content-Type: application/json" http://192.168.99.1:8080/orion/v2/entities/deployer_01/attrs?type=deployer -X PATCH -d @-<<__EOS__
-        {
-            "apply": {
-                "value": "{}"
-            }
-        }
-        __EOS__ 
-        ```
-
-1. コマンドの受信待機
+1. 全てのTopicをsubscribeするコマンドを作成
 
     ```
-    $ mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#
+    $ echo "mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#"
     ```
-
     - 実行結果（例）
 
         ```
-        Client mosqsub/21225-roboticba sending CONNECT
-        Client mosqsub/21225-roboticba received CONNACK
-        Client mosqsub/21225-roboticba sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub/21225-roboticba received SUBACK
+        mosquitto_sub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /#
+        ```
+
+1. 別ターミナルで上記のコマンドを実行
+    - 実行結果（例）
+
+        ```
+        Client mosqsub/31214-roboticba sending CONNECT
+        Client mosqsub/31214-roboticba received CONNACK
+        Client mosqsub/31214-roboticba sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
+
+        Client mosqsub/31214-roboticba received SUBACK
         Subscribed (mid: 1): 0
         ```
 
-1. 別ターミナルで作成したコマンドの実行
+1. ダミーデータをapply
 
     ```
-    $ curl -i -H "Authorization: bearer 5Z9KpEAE5z3XR7ZsV5cGGeefZUOJFLv0" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /deployer" -H "Content-Type: application/json" http://192.168.99.1:8080/orion/v2/entities/deployer_01/attrs?type=deployer -X PATCH -d @-<<__EOS__
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/orion/v2/entities/${DEPLOYER_ID}/attrs?type=${DEPLOYER_TYPE} -X PATCH -d @-<<__EOS__
     {
       "apply": {
         "value": "{}"
@@ -1292,7 +1274,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     __EOS__
     ```
 
-    - 実行結果（例）
+    - 実行結果(例）
 
         ```
         HTTP/1.1 204 No Content
@@ -1303,7 +1285,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         server: envoy
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     - 実行結果（例）
 
@@ -1542,15 +1524,14 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         ```
 
 1. ブラウザでkibanaにアクセス
-  * macOS
-    ```
-    $ open http://localhost:5601/
-    ```
-
-  * Ubuntu
-    ```
-    $ xdg-open http://localhost:5601/
-    ```
+    * macOS
+        ```
+        $ open http://localhost:5601/
+        ```
+    * Ubuntu
+        ```
+        $ xdg-open http://localhost:5601/
+        ```
 
 1. 「Management」をクリック
 
@@ -1604,16 +1585,16 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         ```
 
 1. ブラウザでgrafanaにアクセス
-  * macOS
+    * macOS
 
-    ```
-    $ open http://localhost:3000
-    ```
-  * Ubuntu
+        ```
+        $ open http://localhost:3000
+        ```
+    * Ubuntu
 
-    ```
-    $ xdg-open http://localhost:3000
-    ```
+        ```
+        $ xdg-open http://localhost:3000
+        ```
 
 1. grafanaのWEB管理画面が表示されたことを確認
 

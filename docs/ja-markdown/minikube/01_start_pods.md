@@ -74,6 +74,123 @@
     $ source $PJ_ROOT/docs/environments/minikube/env
     ```
 
+
+## example-turtlebot3用のTokenやBasic認証の設定を `auth-tokens.json` に追加
+
+1. `auth-tokens.json` を更新
+    * macOS
+
+        ```
+        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens|=.+[
+          {
+            "token": "'$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 32)'",
+            "allowed_paths": ["^/visualizer/positions/$"]
+          }
+        ]' | jq '.[0].settings.basic_auths|=.+[
+          {
+            "username": "'$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 8)'",
+            "password": "'$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 16)'",
+            "allowed_paths": ["/controller/web/", "/visualizer/locus/"]
+          }
+        ]' | jq '.[0].settings.no_auths.allowed_paths|=.+[
+          "^.*/static/.*$"
+        ]' | tee /tmp/auth-tokens.json
+        ```
+        ```
+        $ mv ${CORE_ROOT}/secrets/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json.back
+        ```
+        ```
+        $ mv /tmp/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json
+        ```
+    * Ubuntu
+
+        ```
+        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens|=.+[
+          {
+            "token": "'$(cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 32)'",
+            "allowed_paths": ["^/visualizer/positions/$"]
+          }
+        ]' | jq '.[0].settings.basic_auths|=.+[
+          {
+            "username": "'$(cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 8)'",
+            "password": "'$(cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 16)'",
+            "allowed_paths": ["/controller/web/", "/visualizer/locus/"]
+          }
+        ]' | jq '.[0].settings.no_auths.allowed_paths|=.+[
+          "^.*/static/.*$"
+        ]' | tee /tmp/auth-tokens.json
+        ```
+        ```
+        $ mv ${CORE_ROOT}/secrets/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json.back
+        ```
+        ```
+        $ mv /tmp/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json
+        ```
+
+    * 実行結果（例）
+
+        ```json
+        [
+            {
+                "host": ".*",
+                "settings": {
+                    "bearer_tokens": [
+                        {
+                            "token": "1IqNHfjQsD84mPHvciATObXM3ozfHmX1",
+                            "allowed_paths": ["^/orion/.*$", "^/idas/.*$"]
+                        }, {
+                            "token": "mgMVtijGi6JWX9HT2PFXkZ6xqSdOZVVd",
+                            "allowed_paths": ["^/visualizer/positions/$"]
+                        }
+                    ],
+                    "basic_auths": [
+                      {
+                        "username": "1JMF6D46",
+                        "password": "6u5M0bUhfjj7wMdM",
+                        "allowed_paths": ["/controller/web/", "/visualizer/locus/"]
+                      }
+                    ],
+                    "no_auths": {
+                        "allowed_paths": ["^.*/static/.*$"]
+                    }
+                }
+            }
+        ]
+        ```
+
+1. `auth` のログを監視
+    * 別ターミナルを開いて、次のコマンドを実行
+
+        ```
+        $ kubectl logs -f -lapp=auth --all-containers=true
+        ```
+1. Kubernetesのsecretに登録されている `auth-tokens` を削除
+    * secretを削除しても、 `auth` のログには変化が無い
+
+        ```
+        $ kubectl delete secret auth-tokens
+        ```
+1. secretsに更新済みの `auth-tokens` を再登録
+
+    ```
+    $ kubectl create secret generic auth-tokens --from-file=${CORE_ROOT}/secrets/auth-tokens.json
+    ```
+1. `auth-tokens` が更新されたことを確認
+    * `auth` Podがsecretの変更を自動で検知し、認証認可情報をリロードする（数分間かかる場合がある）
+    * 認証情報がリロードされると、次のようなログが表示される
+
+        ```
+        --------
+        2019/05/21 10:10:27 hosts: [.*]
+        --------
+        2019/05/21 10:10:27 bearerTokenAllowedPaths: map[.*:map[cQB5mONfXwP8tHqPQ6kWpRKNzqvbUdfq:[^/orion/.*$ ^/idas/.*$] Tx2b6WD0rYH6uz6Gwe6F2hfaFxp0geg8:[^/visualizer/positions/$]]]
+        --------
+        2019/05/21 10:10:27 basicAuthPaths, map[.*:map[/controller/web/:map[xQdM56jY:jKwHUgGGYDYt0UJJ] /visualizer/locus/:map[xQdM56jY:jKwHUgGGYDYt0UJJ]]]
+        --------
+        2019/05/21 10:10:27 noAuthPaths, map[.*:[^.*/static/.*$]]
+        --------
+        ```
+
 ## command proxy serviceの設定
 
 1. cmd-proxy-minikube-serviceの作成
