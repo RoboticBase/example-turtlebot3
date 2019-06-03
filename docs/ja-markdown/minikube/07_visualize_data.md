@@ -29,6 +29,16 @@
     ```
 ## turtlebot3の軌跡を表示
 
+1. ユーザ名とパスワードの確認
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/visualizer/locus/"))) | .[0].username' -r
+    ```
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/visualizer/locus/"))) | .[0].password' -r
+    ```
+
 1. turtlebot3の軌跡を表示
     * macOS
 
@@ -40,16 +50,6 @@
         ```
         $ xdg-open http://${HOST_IPADDR}:8080/visualizer/locus/
         ```
-
-1. ユーザ名とパスワードの確認
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/visualizer/locus/"))) | .[0].username' -r
-    ```
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/visualizer/locus/"))) | .[0].password' -r
-    ```
 
 1. turtlebot3側で下記を実施
 

@@ -151,8 +151,17 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
 ### Webコントローラの起動
 
-1. web controllerの表示
+1. ユーザ名とパスワードの確認
 
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].username' -r
+    ```
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].password' -r
+    ```
+
+1. web controllerの表示
     * macOS
 
         ```
@@ -163,16 +172,6 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
         ```
         $ xdg-open http://${HOST_IPADDR}:8080/controller/web/
         ```
-
-1. ユーザ名とパスワードの確認
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].username' -r
-    ```
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].password' -r
-    ```
 
 ### turtlebot3の動作確認
 
@@ -264,6 +263,8 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     1. turtlebot3が移動したことを確認（先ほどより小さい円で動作）
 
         ![webcontroller004](images/webcontroller/webcontroller004.png)
+
+## robotのプログラムを元に戻す
 
 1. fiware-ros-turtlebot3-operator-deployment-acr-narrowを削除
 
