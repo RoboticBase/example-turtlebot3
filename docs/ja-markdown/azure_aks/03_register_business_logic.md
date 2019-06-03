@@ -142,40 +142,33 @@
 
 
 ## gamepadのボタンを押下時、robotに送信されたコマンドの確認
-
-1. ゲームパッドをエミュレーションするコマンドの作成
+1. 全てのTopicをsubscribeするコマンドを作成
 
     ```
-    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
-    $ echo "mosquitto_pub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m \"${d}|button|triangle\""
+    $ echo "mosquitto_sub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /#"
     ```
-
     - 実行結果（例）
 
         ```
-        mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-04-25T21:21:59.1556194919+0900|button|triangle"
+        mosquitto_sub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /#
         ```
 
-1. エミュレーションコマンドの受信待機
-
-    ```
-    $ mosquitto_sub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /#
-    ```
-
+1. 別ターミナルで上記のコマンドを実行
     - 実行結果（例）
 
         ```
-        Client mosqsub|27000-FIWARE-PC sending CONNECT
-        Client mosqsub|27000-FIWARE-PC received CONNACK (0)
-        Client mosqsub|27000-FIWARE-PC sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub|27000-FIWARE-PC received SUBACK
+        Client mosq/e2bUj8YgCn16fupuXH sending CONNECT
+        Client mosq/e2bUj8YgCn16fupuXH received CONNACK (0)
+        Client mosq/e2bUj8YgCn16fupuXH sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0, Options: 0x00)
+        Client mosq/e2bUj8YgCn16fupuXH received SUBACK
         Subscribed (mid: 1): 0
         ```
 
-1. 別ターミナルで作成したエミュレーションコマンドの実行
+1. gamepadをエミュレーションするコマンドを実行
 
     ```
-    $ mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-04-25T21:21:59.1556194919+0900|button|triangle"
+    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
+    $ mosquitto_pub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m "${d}|button|triangle"
     ```
 
     - 実行結果（例）
@@ -187,7 +180,7 @@
         Client mosqpub|27040-FIWARE-PC sending DISCONNECT
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     - 実行結果（例）
 
@@ -345,40 +338,11 @@
         }
         ```
 
-1. コマンド受信結果をエミュレーションするコマンドの作成
+1. コマンド実行結果の送信処理をエミュレート
 
     ```
-    $ echo "mosquitto_pub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/cmdexe -m \"${ROBOT_ID}@move|executed triangle command\""
+    $ mosquitto_pub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/cmdexe -m "${ROBOT_ID}@move|executed triangle command"
     ```
-
-    - 実行結果（例）
-
-        ```
-        mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /robot/turtlebot3/cmdexe -m "turtlebot3@move|executed triangle command"
-        ```
-
-1. エミュレーションコマンドの受信待機
-
-    ```
-    $ mosquitto_sub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /#
-    ```
-
-    - 実行結果（例）
-
-        ```
-        Client mosqsub|27388-FIWARE-PC sending CONNECT
-        Client mosqsub|27388-FIWARE-PC received CONNACK (0)
-        Client mosqsub|27388-FIWARE-PC sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub|27388-FIWARE-PC received SUBACK
-        Subscribed (mid: 1): 0
-        ```
-
-1. 別ターミナルで作成したエミュレーションコマンドの実行
-
-    ```
-    $ mosquitto_pub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /robot/turtlebot3/cmdexe -m "turtlebot3@move|executed triangle command"
-    ```
-
     - 実行結果（例）
 
         ```
@@ -388,7 +352,7 @@
         Client mosqpub|27400-FIWARE-PC sending DISCONNECT
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     ```
     Client mosqsub|27388-FIWARE-PC received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/cmdexe', ... (41 bytes))

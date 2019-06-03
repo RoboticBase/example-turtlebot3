@@ -1037,54 +1037,33 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         ```
 
 ## applyコマンドでdeployerの確認
-
-1. applyを指示するコマンドの作成
-
-    ```
-    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ echo -e "curl -i -H \"Authorization: bearer ${TOKEN}\" -H \"Fiware-Service: ${FIWARE_SERVICE}\" -H \"Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}\" -H \"Content-Type: application/json\" https://api.${DOMAIN}/orion/v2/entities/${DEPLOYER_ID}/attrs?type=${DEPLOYER_TYPE} -X PATCH -d @-<<__EOS__
-    {
-      \"apply\": {
-        \"value\": \"{}\"
-      }
-    }
-    __EOS__"
-    ```
-
-    - 実行結果(例）
-
-        ```
-        curl -i -H "Authorization: bearer upiQx3NcixLDYlQo5sW0ExMSnsRgTXwi" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /deployer" -H "Content-Type: application/json" https://api.example.com/orion/v2/entities/deployer_01/attrs?type=deployer -X PATCH -d @-<<__EOS__
-        {
-            "apply": {
-                "value": "{}"
-            }
-        }
-        __EOS__ 
-        ```
-
-
-1. コマンドの受信待機
+1. 全てのTopicをsubscribeするコマンドを作成
 
     ```
-    $ mosquitto_sub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /#
+    $ echo "mosquitto_sub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /#"
     ```
-
     - 実行結果（例）
 
         ```
-        Client mosqsub|5838-FIWARE-PC sending CONNECT
-        Client mosqsub|5838-FIWARE-PC received CONNACK (0)
-        Client mosqsub|5838-FIWARE-PC sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub|5838-FIWARE-PC received SUBACK
+        mosquitto_sub -h mqtt.example.com -p 8883 --cafile /home/fiware/core/secrets/DST_Root_CA_X3.pem -d -u iotagent -P password_of_iotagent -t /#
+        ```
+
+1. 別ターミナルで上記のコマンドを実行
+    - 実行結果（例）
+
+        ```
+        Client mosq/e2bUj8YgCn16fupuXH sending CONNECT
+        Client mosq/e2bUj8YgCn16fupuXH received CONNACK (0)
+        Client mosq/e2bUj8YgCn16fupuXH sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0, Options: 0x00)
+        Client mosq/e2bUj8YgCn16fupuXH received SUBACK
         Subscribed (mid: 1): 0
         ```
 
-
-1. 別ターミナルで作成したコマンドの実行
+1. ダミーデータをapply
 
     ```
-    $ curl -i -H "Authorization: bearer upiQx3NcixLDYlQo5sW0ExMSnsRgTXwi" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /deployer" -H "Content-Type: application/json" https://api.example.com/orion/v2/entities/deployer_01/attrs?type=deployer -X PATCH -d @-<<__EOS__
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-Servicepath: ${DEPLOYER_SERVICEPATH}" -H "Content-Type: application/json" https://api.${DOMAIN}/orion/v2/entities/${DEPLOYER_ID}/attrs?type=${DEPLOYER_TYPE} -X PATCH -d @-<<__EOS__
     {
       "apply": {
         "value": "{}"
@@ -1093,7 +1072,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     __EOS__
     ```
 
-    - 実行結果（例）
+    - 実行結果(例）
 
         ```
         HTTP/1.1 204 No Content
@@ -1104,7 +1083,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         server: envoy
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     - 実行結果（例）
 
@@ -1329,93 +1308,80 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## kibanaの設定
 
-1. 別ターミナルでKibanaのポートフォワーディングを開始
-
-    ```
-    $ kubectl --namespace monitoring port-forward $(kubectl get pod -l k8s-app=kibana-logging --namespace monitoring -o template --template "{{(index .items 0).metadata.name}}") 5601:5601
-    ```
-
-    - 実行結果（例）
+1. ユーザ名とパスワードの確認
+    * ユーザ名
 
         ```
-        Forwarding from 127.0.0.1:5601 -> 5601
-        Forwarding from [::1]:5601 -> 5601
+        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "kibana\\..+$")|.settings.basic_auths[0].username' -r
         ```
+    * パスワード
 
+        ```
+        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "kibana\\..+$")|.settings.basic_auths[0].password' -r
+        ```
 1. ブラウザでkibanaにアクセス
-  * macOS
-    ```
-    $ open http://localhost:5601/
-    ```
+    * macOS
 
-  * Ubuntu
-    ```
-    $ xdg-open http://localhost:5601/
-    ```
+        ```
+        $ open https://kibana.${DOMAIN}/
+        ```
+    * Ubuntu
 
-1. 「Management」をクリック
+        ```
+        $ xdg-open https://kibana.${DOMAIN}/
+        ```
+1. ユーザ名とパスワードを入力し、ログイン
 
     ![kibana001](images/kibana/kibana001.png)
 
-1. 「Index Patterns」をクリック
+1. 「Management」をクリック
 
     ![kibana002](images/kibana/kibana002.png)
 
-1. 「+Create Index Pattern」をクリック
+1. 「Index Patterns」をクリック
 
     ![kibana003](images/kibana/kibana003.png)
 
-1. 「Index pattern」に「cygnus-fiwaredemo-deployer-*」を入力し「Next step」をクリック
+1. 「+Create Index Pattern」をクリック
 
     ![kibana004](images/kibana/kibana004.png)
 
+1. 「Index pattern」に「cygnus-fiwaredemo-deployer-*」を入力し「Next step」をクリック
+
+    ![kibana004](images/kibana/kibana005.png)
+
 1. 「Time Filter field name」で「revTime」を選択し「Create Index pattern」をクリック
-
-    ![kibana005](images/kibana/kibana005.png)
-
-1. cygnus-fiwaredemo-deployer-* の画面が表示されていることを確認
 
     ![kibana006](images/kibana/kibana006.png)
 
-1. 「Discover」をクリックした後、「logstash-*」のプルダウンリストをクリック
+1. cygnus-fiwaredemo-deployer-* の画面が表示されていることを確認
 
     ![kibana007](images/kibana/kibana007.png)
 
-1. 「cygnus-fiwaredemo-deployer-*」を選択すると、デプロイログが表示される
+1. 「Discover」をクリックした後、「logstash-*」のプルダウンリストをクリック
 
     ![kibana008](images/kibana/kibana008.png)
 
+1. 「cygnus-fiwaredemo-deployer-*」を選択すると、デプロイログが表示される
+
+    ![kibana009](images/kibana/kibana009.png)
+
 1. ブラウザを終了
 
-1. Ctrl-Cでport-forwardingを終了し、別ターミナル閉じる
 
 ## grafanaの設定
 
-1. 別ターミナルでgrafanaのポートフォワーディングを開始
-
-    ```
-    $ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monitoring -l app=kp-grafana -o template --template "{{(index .items 0).metadata.name}}") 3000:3000
-    ```
-
-    - 実行結果（例）
-
-        ```
-        Forwarding from 127.0.0.1:3000 -> 3000
-        Forwarding from [::1]:3000 -> 3000
-        ```
-
 1. ブラウザでgrafanaにアクセス
-  * macOS
+    * macOS
 
-    ```
-    $ open http://localhost:3000
-    ```
-  * Ubuntu
+        ```
+        $ open https://grafana.${DOMAIN}/login
+        ```
+    * Ubuntu
 
-    ```
-    $ xdg-open http://localhost:3000
-    ```
-
+        ```
+        $ xdg-open https://grafana.${DOMAIN}/login
+        ```
 1. grafanaのWEB管理画面が表示されたことを確認
 
     ![grafana001](images/grafana/grafana001.png)

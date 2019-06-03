@@ -89,6 +89,35 @@
     $ docker rm remote_deployer
     ```
 
+    - 実行結果（例）
+
+        ```
+        Collecting requests>=2.19 (from -r /Users/nmatsui/example-turtlebot3/tools/requirements.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/51/bd/23c926cd341ea6b7dd0b2a00aba99ae0f828be89d72b2190f27c11d4b7fb/requests-2.22.0-py2.py3-none-any.whl (57kB)
+        Collecting PyYAML>=3.13 (from -r /Users/nmatsui/example-turtlebot3/tools/requirements.txt (line 2))
+          Downloading https://files.pythonhosted.org/packages/9f/2c/9417b5c774792634834e730932745bc09a7d36754ca00acf1ccd1ac2594d/PyYAML-5.1.tar.gz (274kB)
+        Collecting urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 (from requests>=2.19->-r /Users/nmatsui/example-turtlebot3/tools/requirements.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/e6/60/247f23a7121ae632d62811ba7f273d0e58972d75e58a94d329d51550a47d/urllib3-1.25.3-py2.py3-none-any.whl (150kB)
+        Collecting idna<2.9,>=2.5 (from requests>=2.19->-r /Users/nmatsui/example-turtlebot3/tools/requirements.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/14/2c/cd551d81dbe15200be1cf41cd03869a46fe7226e7450af7a6545bfc474c9/idna-2.8-py2.py3-none-any.whl (58kB)
+        Collecting chardet<3.1.0,>=3.0.2 (from requests>=2.19->-r /Users/nmatsui/example-turtlebot3/tools/requirements.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/bc/a9/01ffebfb562e4274b6487b4bb1ddec7ca55ec7510b22e4c51f14098443b8/chardet-3.0.4-py2.py3-none-any.whl (133kB)
+        Collecting certifi>=2017.4.17 (from requests>=2.19->-r /Users/nmatsui/example-turtlebot3/tools/requirements.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/60/75/f692a584e85b7eaba0e03827b3d51f45f571c2e793dd731e598828d380aa/certifi-2019.3.9-py2.py3-none-any.whl (158kB)
+        Building wheels for collected packages: PyYAML
+          Building wheel for PyYAML (setup.py): started
+          Building wheel for PyYAML (setup.py): finished with status 'done'
+          Stored in directory: /root/.cache/pip/wheels/ad/56/bc/1522f864feb2a358ea6f1a92b4798d69ac783a28e80567a18b
+        Successfully built PyYAML
+        Installing collected packages: urllib3, idna, chardet, certifi, requests, PyYAML
+        Successfully installed PyYAML-5.1 certifi-2019.3.9 chardet-3.0.4 idna-2.8 requests-2.22.0 urllib3-1.25.3
+        WARNING: You are using pip version 19.1, however version 19.1.1 is available.
+        You should consider upgrading via the 'pip install --upgrade pip' command.
+        sha256:05f652cd0e3dda6e9b4765b7cc8ebac7b579330534a1103f6a70e11005deb035
+        remote_deployer
+        ```
+
+
 ## turtlebot3の準備
 
 ### ros-masterの起動
@@ -441,62 +470,92 @@
         ```
 
 
-## fiware-ros-turtlebot3-brigeの設定
-
-1. fiware-ros-turtlebot3-brigeコンテナイメージの作成
+## fiware-ros-brigeの設定
+1. tagを指定
 
     ```
-    $ docker build -t ${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-bridge:0.2.2 ros/fiware-ros-turtlebot3-bridge
+    $ export BRIDGE_GIT_REV="0.3.0"
+    ```
+
+1. fiware-ros-brigeコンテナイメージの作成
+
+    ```
+    $ docker build -t ${REPOSITORY}/roboticbase/fiware-ros-bridge:${BRIDGE_GIT_REV} ros/fiware-ros-bridge
     ```
 
     - 実行結果（例）
 
         ```
-        Sending build context to Docker daemon  15.87kB
-        Step 1/7 : FROM ubuntu:16.04
-        ---> 7e87e2b3bf7a
-        Step 2/7 : MAINTAINER Nobuyuki Matsui <nobuyuki.matsui@gmail.com>
-        ---> Using cache
-        ---> d895242d74e0
-        Step 3/7 : ENV PYTHONUNBUFFERED 1
-        ---> Using cache
-        ---> d2f9fa1e1484
-        Step 4/7 : COPY ./kube_entrypoint.sh /opt/kube_entrypoint.sh
-        ---> 61b31f96666e
-        Step 5/7 : COPY ./certs/DST_Root_CA_X3.pem /etc/fiware_ros_turtlebot3_bridge/certs/ca.crt
-        ---> 00652e60124d
-        Step 6/7 : WORKDIR /opt/ros_ws
-        ---> Running in dfe15b7ac07f
-        Removing intermediate container dfe15b7ac07f
-        ---> 803d13988d26
-        Step 7/7 : RUN apt update && apt upgrade -y && apt install -y git ca-certificates python-setuptools python-pip --no-install-recommends &&     mkdir -p /opt/ros_ws/src &&     git clone https://github.com/RoboticBase/fiware_ros_turtlebot3_bridge.git src/fiware_ros_turtlebot3_bridge &&     git clone https://github.com/RoboticBase/fiware_ros_turtlebot3_msgs.git src/fiware_ros_turtlebot3_msgs &&     pip install wheel --user &&     pip install -r /opt/ros_ws/src/fiware_ros_turtlebot3_bridge/requirements/common.txt --user &&     rm -rf /var/lib/apt/lists/* &&     apt-get purge -y --auto-remove git
-        ---> Running in 66619cb3d2dd
+        Sending build context to Docker daemon  13.82kB
+        Step 1/12 : FROM ubuntu:16.04
+         ---> b9e15a5d1e1a
+        Step 2/12 : MAINTAINER Nobuyuki Matsui <nobuyuki.matsui@gmail.com>
+         ---> Using cache
+         ---> f9cf7efe23ef
+        Step 3/12 : ENV PYTHONUNBUFFERED 1
+         ---> Using cache
+         ---> f4b707c2cf0a
+        Step 4/12 : ARG MSGS_NAME="fiware_ros_msgs"
+         ---> Running in acd1c35c6a0a
+        Removing intermediate container acd1c35c6a0a
+         ---> c70e98192d76
+        Step 5/12 : ARG MSGS_GIT_REPO="https://github.com/RoboticBase/fiware_ros_msgs.git"
+         ---> Running in 453b3774f1b1
+        Removing intermediate container 453b3774f1b1
+         ---> 2cca8cf0b1a3
+        Step 6/12 : ARG MSGS_GIT_REV="master"
+         ---> Running in 2536a7cc898f
+        Removing intermediate container 2536a7cc898f
+         ---> 33ce5bd3b955
+        Step 7/12 : ARG BRIDGE_NAME="fiware_ros_bridge"
+         ---> Running in 34fa81a0c390
+        Removing intermediate container 34fa81a0c390
+         ---> f2846511866f
+        Step 8/12 : ARG BRIDGE_GIT_REPO="https://github.com/RoboticBase/fiware_ros_bridge.git"
+         ---> Running in 754d917e9c86
+        Removing intermediate container 754d917e9c86
+         ---> 3f7c51b48192
+        Step 9/12 : ARG BRIDGE_GIT_REV="0.3.0"
+         ---> Running in 2c5fb146f640
+        Removing intermediate container 2c5fb146f640
+         ---> 70676edeee6e
+        Step 10/12 : COPY ./kube_entrypoint.sh /opt/kube_entrypoint.sh
+         ---> d714b6f52709
+        Step 11/12 : WORKDIR /opt/ros_ws
+         ---> Running in 76832dd0e15b
+        Removing intermediate container 76832dd0e15b
+         ---> 3066a7ec0c5a
+        Step 12/12 : RUN apt update && apt upgrade -y && apt install -y git ca-certificates python-setuptools python-pip --no-install-recommends &&     mkdir -p /opt/ros_ws/src &&     git clone ${MSGS_GIT_REPO} src/${MSGS_NAME} && cd src/${MSGS_NAME} && git checkout ${MSGS_GIT_REV} && cd ../.. &&     git clone ${BRIDGE_GIT_REPO} src/${BRIDGE_NAME} && cd src/${BRIDGE_NAME} && git checkout ${BRIDGE_GIT_REV} && cd ../.. &&     pip install wheel --user &&     pip install -r /opt/ros_ws/src/${BRIDGE_NAME}/requirements/common.txt --user &&     rm -rf /var/lib/apt/lists/* &&     apt-get purge -y --auto-remove git
+         ---> Running in bfc22ab1017c
 
         WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 
         Get:1 http://security.ubuntu.com/ubuntu xenial-security InRelease [109 kB]
         Get:2 http://archive.ubuntu.com/ubuntu xenial InRelease [247 kB]
-        Get:3 http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages [789 kB]
-        Get:4 http://archive.ubuntu.com/ubuntu xenial-updates InRelease [109 kB]
+        Get:3 http://security.ubuntu.com/ubuntu xenial-security/universe Sources [130 kB]
+        Get:4 http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages [833 kB]
         Get:5 http://security.ubuntu.com/ubuntu xenial-security/restricted amd64 Packages [12.7 kB]
-        Get:6 http://security.ubuntu.com/ubuntu xenial-security/universe amd64 Packages [543 kB]
-        Get:7 http://security.ubuntu.com/ubuntu xenial-security/multiverse amd64 Packages [6116 B]
-        Get:8 http://archive.ubuntu.com/ubuntu xenial-backports InRelease [107 kB]
-        Get:9 http://archive.ubuntu.com/ubuntu xenial/main amd64 Packages [1558 kB]
-        Get:10 http://archive.ubuntu.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
-        Get:11 http://archive.ubuntu.com/ubuntu xenial/universe amd64 Packages [9827 kB]
-        Get:12 http://archive.ubuntu.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
-        Get:13 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [1183 kB]
-        Get:14 http://archive.ubuntu.com/ubuntu xenial-updates/restricted amd64 Packages [13.1 kB]
-        Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [947 kB]
-        Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/multiverse amd64 Packages [19.1 kB]
-        Get:17 http://archive.ubuntu.com/ubuntu xenial-backports/main amd64 Packages [7942 B]
-        Get:18 http://archive.ubuntu.com/ubuntu xenial-backports/universe amd64 Packages [8532 B]
-        Fetched 15.7 MB in 5s (2692 kB/s)
+        Get:6 http://security.ubuntu.com/ubuntu xenial-security/universe amd64 Packages [554 kB]
+        Get:7 http://archive.ubuntu.com/ubuntu xenial-updates InRelease [109 kB]
+        Get:8 http://security.ubuntu.com/ubuntu xenial-security/multiverse amd64 Packages [6113 B]
+        Get:9 http://archive.ubuntu.com/ubuntu xenial-backports InRelease [107 kB]
+        Get:10 http://archive.ubuntu.com/ubuntu xenial/universe Sources [9802 kB]
+        Get:11 http://archive.ubuntu.com/ubuntu xenial/main amd64 Packages [1558 kB]
+        Get:12 http://archive.ubuntu.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
+        Get:13 http://archive.ubuntu.com/ubuntu xenial/universe amd64 Packages [9827 kB]
+        Get:14 http://archive.ubuntu.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
+        Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/universe Sources [321 kB]
+        Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [1237 kB]
+        Get:17 http://archive.ubuntu.com/ubuntu xenial-updates/restricted amd64 Packages [13.1 kB]
+        Get:18 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [966 kB]
+        Get:19 http://archive.ubuntu.com/ubuntu xenial-updates/multiverse amd64 Packages [19.1 kB]
+        Get:20 http://archive.ubuntu.com/ubuntu xenial-backports/main amd64 Packages [7942 B]
+        Get:21 http://archive.ubuntu.com/ubuntu xenial-backports/universe amd64 Packages [8532 B]
+        Fetched 26.1 MB in 9s (2787 kB/s)
         Reading package lists...
         Building dependency tree...
         Reading state information...
-        9 packages can be upgraded. Run 'apt list --upgradable' to see them.
+        29 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
         WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 
@@ -505,22 +564,44 @@
         Reading state information...
         Calculating upgrade...
         The following packages will be upgraded:
-            base-files libc-bin libc6 libkmod2 libsystemd0 libudev1 multiarch-support
-            systemd systemd-sysv
-        9 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-        Need to get 7377 kB of archives.
-        After this operation, 4096 B of additional disk space will be used.
+          apt base-files bash bsdutils debconf dpkg gcc-5-base libapparmor1
+          libapt-pkg5.0 libblkid1 libc-bin libc6 libfdisk1 libkmod2 libmount1
+          libseccomp2 libsmartcols1 libstdc++6 libsystemd0 libudev1 libuuid1 login
+          mount multiarch-support passwd perl-base systemd systemd-sysv util-linux
+        29 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+        Need to get 16.1 MB of archives.
+        After this operation, 255 kB of additional disk space will be used.
         Get:1 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 base-files amd64 9.4ubuntu4.8 [69.4 kB]
-        Get:2 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc6 amd64 2.23-0ubuntu11 [2577 kB]
-        Get:3 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc-bin amd64 2.23-0ubuntu11 [631 kB]
-        Get:4 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libkmod2 amd64 22-1ubuntu5.2 [39.9 kB]
-        Get:5 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsystemd0 amd64 229-4ubuntu21.16 [204 kB]
-        Get:6 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd amd64 229-4ubuntu21.16 [3784 kB]
-        Get:7 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd-sysv amd64 229-4ubuntu21.16 [11.6 kB]
-        Get:8 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libudev1 amd64 229-4ubuntu21.16 [54.1 kB]
-        Get:9 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 multiarch-support amd64 2.23-0ubuntu11 [6822 B]
+        Get:2 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 bash amd64 4.3-14ubuntu1.3 [583 kB]
+        Get:3 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 bsdutils amd64 1:2.27.1-6ubuntu3.7 [51.1 kB]
+        Get:4 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 dpkg amd64 1.18.4ubuntu1.5 [2085 kB]
+        Get:5 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 login amd64 1:4.2-3.1ubuntu5.4 [304 kB]
+        Get:6 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 util-linux amd64 2.27.1-6ubuntu3.7 [849 kB]
+        Get:7 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 mount amd64 2.27.1-6ubuntu3.7 [121 kB]
+        Get:8 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 perl-base amd64 5.22.1-9ubuntu0.6 [1283 kB]
+        Get:9 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc6 amd64 2.23-0ubuntu11 [2577 kB]
+        Get:10 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc-bin amd64 2.23-0ubuntu11 [631 kB]
+        Get:11 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 gcc-5-base amd64 5.4.0-6ubuntu1~16.04.11 [17.3 kB]
+        Get:12 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libstdc++6 amd64 5.4.0-6ubuntu1~16.04.11 [393 kB]
+        Get:13 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libapt-pkg5.0 amd64 1.2.31 [712 kB]
+        Get:14 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 apt amd64 1.2.31 [1087 kB]
+        Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 debconf all 1.5.58ubuntu2 [136 kB]
+        Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libapparmor1 amd64 2.10.95-0ubuntu2.10 [29.7 kB]
+        Get:17 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 passwd amd64 1:4.2-3.1ubuntu5.4 [780 kB]
+        Get:18 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libuuid1 amd64 2.27.1-6ubuntu3.7 [14.9 kB]
+        Get:19 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libblkid1 amd64 2.27.1-6ubuntu3.7 [107 kB]
+        Get:20 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libkmod2 amd64 22-1ubuntu5.2 [39.9 kB]
+        Get:21 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libmount1 amd64 2.27.1-6ubuntu3.7 [115 kB]
+        Get:22 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libseccomp2 amd64 2.4.1-0ubuntu0.16.04.2 [38.5 kB]
+        Get:23 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsystemd0 amd64 229-4ubuntu21.21 [204 kB]
+        Get:24 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd amd64 229-4ubuntu21.21 [3629 kB]
+        Get:25 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd-sysv amd64 229-4ubuntu21.21 [11.1 kB]
+        Get:26 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libfdisk1 amd64 2.27.1-6ubuntu3.7 [138 kB]
+        Get:27 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsmartcols1 amd64 2.27.1-6ubuntu3.7 [62.5 kB]
+        Get:28 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libudev1 amd64 229-4ubuntu21.21 [53.6 kB]
+        Get:29 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 multiarch-support amd64 2.23-0ubuntu11 [6822 B]
         debconf: delaying package configuration, since apt-utils is not installed
-        Fetched 7377 kB in 3s (2103 kB/s)
+        Fetched 16.1 MB in 6s (2373 kB/s)
         (Reading database ... 4768 files and directories currently installed.)
         Preparing to unpack .../base-files_9.4ubuntu4.8_amd64.deb ...
         Unpacking base-files (9.4ubuntu4.8) over (9.4ubuntu4.7) ...
@@ -528,6 +609,36 @@
         Installing new version of config file /etc/issue ...
         Installing new version of config file /etc/issue.net ...
         Installing new version of config file /etc/lsb-release ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../bash_4.3-14ubuntu1.3_amd64.deb ...
+        Unpacking bash (4.3-14ubuntu1.3) over (4.3-14ubuntu1.2) ...
+        Setting up bash (4.3-14ubuntu1.3) ...
+        update-alternatives: using /usr/share/man/man7/bash-builtins.7.gz to provide /usr/share/man/man7/builtins.7.gz (builtins.7.gz) in auto mode
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../bsdutils_1%3a2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking bsdutils (1:2.27.1-6ubuntu3.7) over (1:2.27.1-6ubuntu3.6) ...
+        Setting up bsdutils (1:2.27.1-6ubuntu3.7) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../dpkg_1.18.4ubuntu1.5_amd64.deb ...
+        Unpacking dpkg (1.18.4ubuntu1.5) over (1.18.4ubuntu1.4) ...
+        Setting up dpkg (1.18.4ubuntu1.5) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../login_1%3a4.2-3.1ubuntu5.4_amd64.deb ...
+        Unpacking login (1:4.2-3.1ubuntu5.4) over (1:4.2-3.1ubuntu5.3) ...
+        Setting up login (1:4.2-3.1ubuntu5.4) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../util-linux_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking util-linux (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Setting up util-linux (2.27.1-6ubuntu3.7) ...
+        Processing triggers for systemd (229-4ubuntu21.4) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../mount_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking mount (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Setting up mount (2.27.1-6ubuntu3.7) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../perl-base_5.22.1-9ubuntu0.6_amd64.deb ...
+        Unpacking perl-base (5.22.1-9ubuntu0.6) over (5.22.1-9ubuntu0.5) ...
+        Setting up perl-base (5.22.1-9ubuntu0.6) ...
         (Reading database ... 4768 files and directories currently installed.)
         Preparing to unpack .../libc6_2.23-0ubuntu11_amd64.deb ...
         debconf: unable to initialize frontend: Dialog
@@ -550,35 +661,114 @@
         Unpacking libc-bin (2.23-0ubuntu11) over (2.23-0ubuntu10) ...
         Setting up libc-bin (2.23-0ubuntu11) ...
         (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../gcc-5-base_5.4.0-6ubuntu1~16.04.11_amd64.deb ...
+        Unpacking gcc-5-base:amd64 (5.4.0-6ubuntu1~16.04.11) over (5.4.0-6ubuntu1~16.04.10) ...
+        Setting up gcc-5-base:amd64 (5.4.0-6ubuntu1~16.04.11) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../libstdc++6_5.4.0-6ubuntu1~16.04.11_amd64.deb ...
+        Unpacking libstdc++6:amd64 (5.4.0-6ubuntu1~16.04.11) over (5.4.0-6ubuntu1~16.04.10) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libstdc++6:amd64 (5.4.0-6ubuntu1~16.04.11) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../libapt-pkg5.0_1.2.31_amd64.deb ...
+        Unpacking libapt-pkg5.0:amd64 (1.2.31) over (1.2.27) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libapt-pkg5.0:amd64 (1.2.31) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../archives/apt_1.2.31_amd64.deb ...
+        Unpacking apt (1.2.31) over (1.2.27) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up apt (1.2.31) ...
+        Installing new version of config file /etc/apt/apt.conf.d/01autoremove ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../debconf_1.5.58ubuntu2_all.deb ...
+        Unpacking debconf (1.5.58ubuntu2) over (1.5.58ubuntu1) ...
+        Setting up debconf (1.5.58ubuntu2) ...
+        debconf: unable to initialize frontend: Dialog
+        debconf: (TERM is not set, so the dialog frontend is not usable.)
+        debconf: falling back to frontend: Readline
+        debconf: unable to initialize frontend: Readline
+        debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.22.1 /usr/local/share/perl/5.22.1 /usr/lib/x86_64-linux-gnu/perl5/5.22 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl/5.22 /usr/share/perl/5.22 /usr/local/lib/site_perl /usr/lib/x86_64-linux-gnu/perl-base .) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+        debconf: falling back to frontend: Teletype
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libapparmor1_2.10.95-0ubuntu2.10_amd64.deb ...
+        Unpacking libapparmor1:amd64 (2.10.95-0ubuntu2.10) over (2.10.95-0ubuntu2.9) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libapparmor1:amd64 (2.10.95-0ubuntu2.10) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../passwd_1%3a4.2-3.1ubuntu5.4_amd64.deb ...
+        Unpacking passwd (1:4.2-3.1ubuntu5.4) over (1:4.2-3.1ubuntu5.3) ...
+        Setting up passwd (1:4.2-3.1ubuntu5.4) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libuuid1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libuuid1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libuuid1:amd64 (2.27.1-6ubuntu3.7) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libblkid1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libblkid1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libblkid1:amd64 (2.27.1-6ubuntu3.7) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
         Preparing to unpack .../libkmod2_22-1ubuntu5.2_amd64.deb ...
-        Unpacking libkmod2:amd64 (22-1ubuntu5.2) over (22-1ubuntu5.1) ...
+        Unpacking libkmod2:amd64 (22-1ubuntu5.2) over (22-1ubuntu5) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
         Setting up libkmod2:amd64 (22-1ubuntu5.2) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../libsystemd0_229-4ubuntu21.16_amd64.deb ...
-        Unpacking libsystemd0:amd64 (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libmount1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libmount1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        Setting up libsystemd0:amd64 (229-4ubuntu21.16) ...
+        Setting up libmount1:amd64 (2.27.1-6ubuntu3.7) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../systemd_229-4ubuntu21.16_amd64.deb ...
-        Unpacking systemd (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
-        Setting up systemd (229-4ubuntu21.16) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libseccomp2_2.4.1-0ubuntu0.16.04.2_amd64.deb ...
+        Unpacking libseccomp2:amd64 (2.4.1-0ubuntu0.16.04.2) over (2.3.1-2.1ubuntu2~16.04.1) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libseccomp2:amd64 (2.4.1-0ubuntu0.16.04.2) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libsystemd0_229-4ubuntu21.21_amd64.deb ...
+        Unpacking libsystemd0:amd64 (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libsystemd0:amd64 (229-4ubuntu21.21) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../systemd_229-4ubuntu21.21_amd64.deb ...
+        Unpacking systemd (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Setting up systemd (229-4ubuntu21.21) ...
         Initializing machine ID from random generator.
         addgroup: The group `systemd-journal' already exists as a system group. Exiting.
         Operation failed: No such file or directory
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../systemd-sysv_229-4ubuntu21.16_amd64.deb ...
-        Unpacking systemd-sysv (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
-        Setting up systemd-sysv (229-4ubuntu21.16) ...
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../libudev1_229-4ubuntu21.16_amd64.deb ...
-        Unpacking libudev1:amd64 (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../systemd-sysv_229-4ubuntu21.21_amd64.deb ...
+        Unpacking systemd-sysv (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Setting up systemd-sysv (229-4ubuntu21.21) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libfdisk1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libfdisk1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        Setting up libudev1:amd64 (229-4ubuntu21.16) ...
+        Setting up libfdisk1:amd64 (2.27.1-6ubuntu3.7) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        (Reading database ... 4768 files and directories currently installed.)
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libsmartcols1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libsmartcols1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libsmartcols1:amd64 (2.27.1-6ubuntu3.7) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libudev1_229-4ubuntu21.21_amd64.deb ...
+        Unpacking libudev1:amd64 (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libudev1:amd64 (229-4ubuntu21.21) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
         Preparing to unpack .../multiarch-support_2.23-0ubuntu11_amd64.deb ...
         Unpacking multiarch-support (2.23-0ubuntu11) over (2.23-0ubuntu10) ...
         Setting up multiarch-support (2.23-0ubuntu11) ...
@@ -589,37 +779,37 @@
         Building dependency tree...
         Reading state information...
         The following additional packages will be installed:
-            git-man libasn1-8-heimdal libcurl3-gnutls liberror-perl libexpat1 libffi6
-            libgdbm3 libgmp10 libgnutls30 libgssapi-krb5-2 libgssapi3-heimdal
-            libhcrypto4-heimdal libheimbase1-heimdal libheimntlm0-heimdal libhogweed4
-            libhx509-5-heimdal libidn11 libk5crypto3 libkeyutils1 libkrb5-26-heimdal
-            libkrb5-3 libkrb5support0 libldap-2.4-2 libnettle6 libp11-kit0 libperl5.22
-            libpython-stdlib libpython2.7-minimal libpython2.7-stdlib libroken18-heimdal
-            librtmp1 libsasl2-2 libsasl2-modules-db libsqlite3-0 libssl1.0.0 libtasn1-6
-            libwind0-heimdal mime-support openssl perl perl-modules-5.22 python
-            python-minimal python-pip-whl python-pkg-resources python2.7
-            python2.7-minimal
+          git-man libasn1-8-heimdal libcurl3-gnutls liberror-perl libexpat1 libffi6
+          libgdbm3 libgmp10 libgnutls30 libgssapi-krb5-2 libgssapi3-heimdal
+          libhcrypto4-heimdal libheimbase1-heimdal libheimntlm0-heimdal libhogweed4
+          libhx509-5-heimdal libidn11 libk5crypto3 libkeyutils1 libkrb5-26-heimdal
+          libkrb5-3 libkrb5support0 libldap-2.4-2 libnettle6 libp11-kit0 libperl5.22
+          libpython-stdlib libpython2.7-minimal libpython2.7-stdlib libroken18-heimdal
+          librtmp1 libsasl2-2 libsasl2-modules-db libsqlite3-0 libssl1.0.0 libtasn1-6
+          libwind0-heimdal mime-support openssl perl perl-modules-5.22 python
+          python-minimal python-pip-whl python-pkg-resources python2.7
+          python2.7-minimal
         Suggested packages:
-            gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-el git-email
-            git-gui gitk gitweb git-arch git-cvs git-mediawiki git-svn gnutls-bin
-            krb5-doc krb5-user perl-doc libterm-readline-gnu-perl
-            | libterm-readline-perl-perl make python-doc python-tk python-setuptools-doc
-            python2.7-doc binutils binfmt-support
+          gettext-base git-daemon-run | git-daemon-sysvinit git-doc git-el git-email
+          git-gui gitk gitweb git-arch git-cvs git-mediawiki git-svn gnutls-bin
+          krb5-doc krb5-user perl-doc libterm-readline-gnu-perl
+          | libterm-readline-perl-perl make python-doc python-tk python-setuptools-doc
+          python2.7-doc binutils binfmt-support
         Recommended packages:
-            patch less rsync ssh-client krb5-locales libsasl2-modules file netbase
-            rename build-essential python-all-dev python-wheel
+          patch less rsync ssh-client krb5-locales libsasl2-modules file netbase
+          rename build-essential python-all-dev python-wheel
         The following NEW packages will be installed:
-            ca-certificates git git-man libasn1-8-heimdal libcurl3-gnutls liberror-perl
-            libexpat1 libffi6 libgdbm3 libgmp10 libgnutls30 libgssapi-krb5-2
-            libgssapi3-heimdal libhcrypto4-heimdal libheimbase1-heimdal
-            libheimntlm0-heimdal libhogweed4 libhx509-5-heimdal libidn11 libk5crypto3
-            libkeyutils1 libkrb5-26-heimdal libkrb5-3 libkrb5support0 libldap-2.4-2
-            libnettle6 libp11-kit0 libperl5.22 libpython-stdlib libpython2.7-minimal
-            libpython2.7-stdlib libroken18-heimdal librtmp1 libsasl2-2
-            libsasl2-modules-db libsqlite3-0 libssl1.0.0 libtasn1-6 libwind0-heimdal
-            mime-support openssl perl perl-modules-5.22 python python-minimal python-pip
-            python-pip-whl python-pkg-resources python-setuptools python2.7
-            python2.7-minimal
+          ca-certificates git git-man libasn1-8-heimdal libcurl3-gnutls liberror-perl
+          libexpat1 libffi6 libgdbm3 libgmp10 libgnutls30 libgssapi-krb5-2
+          libgssapi3-heimdal libhcrypto4-heimdal libheimbase1-heimdal
+          libheimntlm0-heimdal libhogweed4 libhx509-5-heimdal libidn11 libk5crypto3
+          libkeyutils1 libkrb5-26-heimdal libkrb5-3 libkrb5support0 libldap-2.4-2
+          libnettle6 libp11-kit0 libperl5.22 libpython-stdlib libpython2.7-minimal
+          libpython2.7-stdlib libroken18-heimdal librtmp1 libsasl2-2
+          libsasl2-modules-db libsqlite3-0 libssl1.0.0 libtasn1-6 libwind0-heimdal
+          mime-support openssl perl perl-modules-5.22 python python-minimal python-pip
+          python-pip-whl python-pkg-resources python-setuptools python2.7
+          python2.7-minimal
         0 upgraded, 51 newly installed, 0 to remove and 0 not upgraded.
         Need to get 20.9 MB of archives.
         After this operation, 100 MB of additional disk space will be used.
@@ -645,7 +835,7 @@
         Get:20 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libidn11 amd64 1.32-3ubuntu1.2 [46.5 kB]
         Get:21 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libp11-kit0 amd64 0.23.2-5~ubuntu16.04.1 [105 kB]
         Get:22 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libtasn1-6 amd64 4.7-3ubuntu0.16.04.3 [43.5 kB]
-        Get:23 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgnutls30 amd64 3.4.10-4ubuntu1.4 [548 kB]
+        Get:23 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgnutls30 amd64 3.4.10-4ubuntu1.5 [548 kB]
         Get:24 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 openssl amd64 1.0.2g-1ubuntu4.15 [492 kB]
         Get:25 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 ca-certificates all 20170717~16.04.2 [167 kB]
         Get:26 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libroken18-heimdal amd64 1.7~git20150920+dfsg-4ubuntu1.16.04.1 [41.4 kB]
@@ -664,9 +854,9 @@
         Get:39 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgssapi3-heimdal amd64 1.7~git20150920+dfsg-4ubuntu1.16.04.1 [96.1 kB]
         Get:40 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsasl2-modules-db amd64 2.1.26.dfsg1-14ubuntu0.1 [14.5 kB]
         Get:41 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsasl2-2 amd64 2.1.26.dfsg1-14ubuntu0.1 [48.6 kB]
-        Get:42 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libldap-2.4-2 amd64 2.4.42+dfsg-2ubuntu3.4 [160 kB]
+        Get:42 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libldap-2.4-2 amd64 2.4.42+dfsg-2ubuntu3.5 [161 kB]
         Get:43 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d-1ubuntu0.1 [54.4 kB]
-        Get:44 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libcurl3-gnutls amd64 7.47.0-1ubuntu2.12 [185 kB]
+        Get:44 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libcurl3-gnutls amd64 7.47.0-1ubuntu2.13 [184 kB]
         Get:45 http://archive.ubuntu.com/ubuntu xenial/main amd64 liberror-perl all 0.17-1.2 [19.6 kB]
         Get:46 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 git-man all 1:2.7.4-0ubuntu1.6 [736 kB]
         Get:47 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 git amd64 1:2.7.4-0ubuntu1.6 [3176 kB]
@@ -675,9 +865,9 @@
         Get:50 http://archive.ubuntu.com/ubuntu xenial/main amd64 python-pkg-resources all 20.7.0-1 [108 kB]
         Get:51 http://archive.ubuntu.com/ubuntu xenial/main amd64 python-setuptools all 20.7.0-1 [169 kB]
         debconf: delaying package configuration, since apt-utils is not installed
-        Fetched 20.9 MB in 6s (3273 kB/s)
+        Fetched 20.9 MB in 8s (2596 kB/s)
         Selecting previously unselected package libgdbm3:amd64.
-        (Reading database ... 4768 files and directories currently installed.)
+        (Reading database ... 4777 files and directories currently installed.)
         Preparing to unpack .../libgdbm3_1.8.3-13.1_amd64.deb ...
         Unpacking libgdbm3:amd64 (1.8.3-13.1) ...
         Selecting previously unselected package perl-modules-5.22.
@@ -728,7 +918,7 @@
         Linking and byte-compiling packages for runtime python2.7...
         Setting up python-minimal (2.7.12-1~16.04) ...
         Selecting previously unselected package python.
-        (Reading database ... 7354 files and directories currently installed.)
+        (Reading database ... 7363 files and directories currently installed.)
         Preparing to unpack .../python_2.7.12-1~16.04_amd64.deb ...
         Unpacking python (2.7.12-1~16.04) ...
         Selecting previously unselected package libgmp10:amd64.
@@ -750,8 +940,8 @@
         Preparing to unpack .../libtasn1-6_4.7-3ubuntu0.16.04.3_amd64.deb ...
         Unpacking libtasn1-6:amd64 (4.7-3ubuntu0.16.04.3) ...
         Selecting previously unselected package libgnutls30:amd64.
-        Preparing to unpack .../libgnutls30_3.4.10-4ubuntu1.4_amd64.deb ...
-        Unpacking libgnutls30:amd64 (3.4.10-4ubuntu1.4) ...
+        Preparing to unpack .../libgnutls30_3.4.10-4ubuntu1.5_amd64.deb ...
+        Unpacking libgnutls30:amd64 (3.4.10-4ubuntu1.5) ...
         Selecting previously unselected package openssl.
         Preparing to unpack .../openssl_1.0.2g-1ubuntu4.15_amd64.deb ...
         Unpacking openssl (1.0.2g-1ubuntu4.15) ...
@@ -807,14 +997,14 @@
         Preparing to unpack .../libsasl2-2_2.1.26.dfsg1-14ubuntu0.1_amd64.deb ...
         Unpacking libsasl2-2:amd64 (2.1.26.dfsg1-14ubuntu0.1) ...
         Selecting previously unselected package libldap-2.4-2:amd64.
-        Preparing to unpack .../libldap-2.4-2_2.4.42+dfsg-2ubuntu3.4_amd64.deb ...
-        Unpacking libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
+        Preparing to unpack .../libldap-2.4-2_2.4.42+dfsg-2ubuntu3.5_amd64.deb ...
+        Unpacking libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
         Selecting previously unselected package librtmp1:amd64.
         Preparing to unpack .../librtmp1_2.4+20151223.gitfa8646d-1ubuntu0.1_amd64.deb ...
         Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d-1ubuntu0.1) ...
         Selecting previously unselected package libcurl3-gnutls:amd64.
-        Preparing to unpack .../libcurl3-gnutls_7.47.0-1ubuntu2.12_amd64.deb ...
-        Unpacking libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.12) ...
+        Preparing to unpack .../libcurl3-gnutls_7.47.0-1ubuntu2.13_amd64.deb ...
+        Unpacking libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.13) ...
         Selecting previously unselected package liberror-perl.
         Preparing to unpack .../liberror-perl_0.17-1.2_all.deb ...
         Unpacking liberror-perl (0.17-1.2) ...
@@ -860,7 +1050,7 @@
         Setting up libidn11:amd64 (1.32-3ubuntu1.2) ...
         Setting up libp11-kit0:amd64 (0.23.2-5~ubuntu16.04.1) ...
         Setting up libtasn1-6:amd64 (4.7-3ubuntu0.16.04.3) ...
-        Setting up libgnutls30:amd64 (3.4.10-4ubuntu1.4) ...
+        Setting up libgnutls30:amd64 (3.4.10-4ubuntu1.5) ...
         Setting up openssl (1.0.2g-1ubuntu4.15) ...
         Setting up ca-certificates (20170717~16.04.2) ...
         debconf: unable to initialize frontend: Dialog
@@ -882,9 +1072,9 @@
         Setting up libgssapi3-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
         Setting up libsasl2-modules-db:amd64 (2.1.26.dfsg1-14ubuntu0.1) ...
         Setting up libsasl2-2:amd64 (2.1.26.dfsg1-14ubuntu0.1) ...
-        Setting up libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
+        Setting up libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
         Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d-1ubuntu0.1) ...
-        Setting up libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.12) ...
+        Setting up libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.13) ...
         Setting up liberror-perl (0.17-1.2) ...
         Setting up git-man (1:2.7.4-0ubuntu1.6) ...
         Setting up git (1:2.7.4-0ubuntu1.6) ...
@@ -898,47 +1088,61 @@
         148 added, 0 removed; done.
         Running hooks in /etc/ca-certificates/update.d...
         done.
-        Cloning into 'src/fiware_ros_turtlebot3_bridge'...
-        Cloning into 'src/fiware_ros_turtlebot3_msgs'...
+        Cloning into 'src/fiware_ros_msgs'...
+        Already on 'master'
+        Your branch is up-to-date with 'origin/master'.
+        Cloning into 'src/fiware_ros_bridge'...
+        Note: checking out '0.3.0'.
+
+        You are in 'detached HEAD' state. You can look around, make experimental
+        changes and commit them, and you can discard any commits you make in this
+        state without impacting any branches by performing another checkout.
+
+        If you want to create a new branch to retain commits you create, you may
+        do so (now or later) by using -b with the checkout command again. Example:
+
+          git checkout -b <new-branch-name>
+
+        HEAD is now at 2f2bb80... Merge branch 'develop'
         Collecting wheel
-            Downloading https://files.pythonhosted.org/packages/96/ba/a4702cbb6a3a485239fbe9525443446203f00771af9ac000fa3ef2788201/wheel-0.33.1-py2.py3-none-any.whl
+          Downloading https://files.pythonhosted.org/packages/bb/10/44230dd6bf3563b8f227dbf344c908d412ad2ff48066476672f3a72e174e/wheel-0.33.4-py2.py3-none-any.whl
         Installing collected packages: wheel
         Successfully installed wheel
-        You are using pip version 8.1.1, however version 19.0.3 is available.
+        You are using pip version 8.1.1, however version 19.1.1 is available.
         You should consider upgrading via the 'pip install --upgrade pip' command.
-        Collecting pytz==2018.5 (from -r /opt/ros_ws/src/fiware_ros_turtlebot3_bridge/requirements/common.txt (line 1))
-            Downloading https://files.pythonhosted.org/packages/30/4e/27c34b62430286c6d59177a0842ed90dc789ce5d1ed740887653b898779a/pytz-2018.5-py2.py3-none-any.whl (510kB)
-        Collecting paho-mqtt>=1.3 (from -r /opt/ros_ws/src/fiware_ros_turtlebot3_bridge/requirements/common.txt (line 2))
-            Downloading https://files.pythonhosted.org/packages/25/63/db25e62979c2a716a74950c9ed658dce431b5cb01fde29eb6cba9489a904/paho-mqtt-1.4.0.tar.gz (88kB)
+        Collecting pytz==2018.5 (from -r /opt/ros_ws/src/fiware_ros_bridge/requirements/common.txt (line 1))
+          Downloading https://files.pythonhosted.org/packages/30/4e/27c34b62430286c6d59177a0842ed90dc789ce5d1ed740887653b898779a/pytz-2018.5-py2.py3-none-any.whl (510kB)
+        Collecting paho-mqtt>=1.3 (from -r /opt/ros_ws/src/fiware_ros_bridge/requirements/common.txt (line 2))
+          Downloading https://files.pythonhosted.org/packages/25/63/db25e62979c2a716a74950c9ed658dce431b5cb01fde29eb6cba9489a904/paho-mqtt-1.4.0.tar.gz (88kB)
         Building wheels for collected packages: paho-mqtt
-            Running setup.py bdist_wheel for paho-mqtt: started
-            Running setup.py bdist_wheel for paho-mqtt: finished with status 'done'
-            Stored in directory: /root/.cache/pip/wheels/82/e5/de/d90d0f397648a1b58ffeea1b5742ac8c77f71fd43b550fa5a5
+          Running setup.py bdist_wheel for paho-mqtt: started
+          Running setup.py bdist_wheel for paho-mqtt: finished with status 'done'
+          Stored in directory: /root/.cache/pip/wheels/82/e5/de/d90d0f397648a1b58ffeea1b5742ac8c77f71fd43b550fa5a5
         Successfully built paho-mqtt
         Installing collected packages: pytz, paho-mqtt
         Successfully installed paho-mqtt-1.4.0 pytz-2018.5
-        You are using pip version 8.1.1, however version 19.0.3 is available.
+        You are using pip version 8.1.1, however version 19.1.1 is available.
         You should consider upgrading via the 'pip install --upgrade pip' command.
         Reading package lists...
         Building dependency tree...
         Reading state information...
         The following packages will be REMOVED:
-            git* git-man* libasn1-8-heimdal* libcurl3-gnutls* liberror-perl* libgdbm3*
-            libgmp10* libgnutls30* libgssapi-krb5-2* libgssapi3-heimdal*
-            libhcrypto4-heimdal* libheimbase1-heimdal* libheimntlm0-heimdal*
-            libhogweed4* libhx509-5-heimdal* libidn11* libk5crypto3* libkeyutils1*
-            libkrb5-26-heimdal* libkrb5-3* libkrb5support0* libldap-2.4-2* libnettle6*
-            libp11-kit0* libperl5.22* libroken18-heimdal* librtmp1* libsasl2-2*
-            libsasl2-modules-db* libtasn1-6* libwind0-heimdal* perl* perl-modules-5.22*
+          git* git-man* libasn1-8-heimdal* libcurl3-gnutls* liberror-perl* libgdbm3*
+          libgmp10* libgnutls30* libgssapi-krb5-2* libgssapi3-heimdal*
+          libhcrypto4-heimdal* libheimbase1-heimdal* libheimntlm0-heimdal*
+          libhogweed4* libhx509-5-heimdal* libidn11* libk5crypto3* libkeyutils1*
+          libkrb5-26-heimdal* libkrb5-3* libkrb5support0* libldap-2.4-2* libnettle6*
+          libp11-kit0* libperl5.22* libroken18-heimdal* librtmp1* libsasl2-2*
+          libsasl2-modules-db* libtasn1-6* libwind0-heimdal* perl* perl-modules-5.22*
         0 upgraded, 0 newly installed, 33 to remove and 0 not upgraded.
         After this operation, 74.7 MB disk space will be freed.
-        (Reading database ... 8895 files and directories currently installed.)
+        (Reading database ... 8904 files and directories currently installed.)
         Removing git (1:2.7.4-0ubuntu1.6) ...
         Purging configuration files for git (1:2.7.4-0ubuntu1.6) ...
         Removing git-man (1:2.7.4-0ubuntu1.6) ...
-        Removing libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.12) ...
-        Removing libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
-        Purging configuration files for libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
+        Removing libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.13) ...
+        Removing libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
+        Purging configuration files for libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
         Removing libgssapi3-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
         Removing libheimntlm0-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
         Removing libkrb5-26-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
@@ -953,7 +1157,7 @@
         Removing libgdbm3:amd64 (1.8.3-13.1) ...
         Purging configuration files for libgdbm3:amd64 (1.8.3-13.1) ...
         Removing librtmp1:amd64 (2.4+20151223.gitfa8646d-1ubuntu0.1) ...
-        Removing libgnutls30:amd64 (3.4.10-4ubuntu1.4) ...
+        Removing libgnutls30:amd64 (3.4.10-4ubuntu1.5) ...
         Removing libhogweed4:amd64 (3.2-1ubuntu0.16.04.1) ...
         Removing libgmp10:amd64 (2:6.1.0+dfsg-2) ...
         Removing libgssapi-krb5-2:amd64 (1.13.2+dfsg-5ubuntu2.1) ...
@@ -973,10 +1177,10 @@
         Removing libtasn1-6:amd64 (4.7-3ubuntu0.16.04.3) ...
         Removing perl-modules-5.22 (5.22.1-9ubuntu0.6) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        Removing intermediate container 66619cb3d2dd
-        ---> f818658cd8d0
-        Successfully built f818658cd8d0
-        Successfully tagged rbcacr.azurecr.io/roboticbase/fiware-ros-turtlebot3-bridge:0.2.2
+        Removing intermediate container bfc22ab1017c
+         ---> f8401f4da2c3
+        Successfully built f8401f4da2c3
+        Successfully tagged rbcacr.azurecr.io/roboticbase/fiware-ros-bridge:0.3.0
         ```
 
 1. ACRのログイン
@@ -994,16 +1198,16 @@
         https://docs.docker.com/engine/reference/commandline/login/#credentials-store
         ```
 
-1. Azure ACRにfiware-ros-turtlebot3-bridgeのイメージ登録
+1. Azure ACRにfiware-ros-bridgeのイメージ登録
 
     ```
-    $ docker push ${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-bridge:0.2.2
+    $ docker push ${REPOSITORY}/roboticbase/fiware-ros-bridge:${BRIDGE_GIT_REV}
     ```
 
     - 実行結果（例）
 
         ```
-        The push refers to repository [rbcacr.azurecr.io/roboticbase/fiware-ros-turtlebot3-bridge]
+        The push refers to repository [rbcacr.azurecr.io/roboticbase/fiware-ros-bridge]
         907bfd21b038: Pushed
         3ab1fe801172: Pushed
         dacf0636941f: Pushed
@@ -1012,10 +1216,10 @@
         f67191ae09b8: Mounted from roboticbase/ros-master
         b2fd8b4c3da7: Mounted from roboticbase/ros-master
         0de2edf7bff4: Mounted from roboticbase/ros-master
-        0.2.2: digest: sha256:1c3918f512a7810a36e8a35d1bac2182ab58edd5fe2585391005af5a11dc14e6 size: 1984
+        0.3.0: digest: sha256:e0505a22c46caf9e4db4ce5b0469d61227a11e89b7b5cbf22a08aa85ecbe9b83 size: 1983
         ```
 
-1. ユーザ名とパスワードの設定
+1. RabbitMQのユーザ名とパスワードの設定
    * macOS
 
        ```
@@ -1042,24 +1246,24 @@
        )
        ```
 
-1. fiware-ros-turtlebot3-bridge用のsecret作成
+1. fiware-ros-bridge用のsecret作成
 
     ```
-    $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-secret.yaml > /tmp/fiware-ros-turtlebot3-bridge-secret.yaml
+    $ envsubst < ${PJ_ROOT}/ros/fiware-ros-bridge/yaml/fiware-ros-bridge-secret.yaml > /tmp/fiware-ros-bridge-secret.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
-      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-bridge-secret.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
-    $ rm /tmp/fiware-ros-turtlebot3-bridge-secret.yaml
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-bridge-secret.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ rm /tmp/fiware-ros-bridge-secret.yaml
     ```
 
     - 実行結果（例）
 
         ```
-        apply /tmp/fiware-ros-turtlebot3-bridge-secret.yaml to https://api.example.com
+        apply /tmp/fiware-ros-bridge-secret.yaml to https://api.example.com
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridge用のsecrets確認【turtlebot3-pc】
+1. fiware-ros-bridge用のsecrets確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get secrets -l app=ros-bridge
@@ -1072,22 +1276,22 @@
         ros-bridge-secrets   Opaque    1         7m
         ```
 
-1. fiware-ros-turtlebot3-bridge用のconfigmapの作成
+1. fiware-ros-bridge用のconfigmapの作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
-      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-bridge/yaml/fiware-ros-bridge-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
 
         ```
-        apply /home/fiware/example-turtlebot3/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-configmap.yaml to https://api.example.com
+        apply /home/fiware/example-turtlebot3/ros/fiware-ros-bridge/yaml/fiware-ros-bridge-configmap.yaml to https://api.example.com
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridge用のconfigmaps確認【turtlebot3-pc】
+1. fiware-ros-bridge用のconfigmaps確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get configmaps -l app=ros-bridge
@@ -1100,22 +1304,22 @@
         ros-bridge-configmaps   2         20h
         ```
 
-1. fiware-ros-turtlebot3-bridgeのservice作成
+1. fiware-ros-bridgeのservice作成
 
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
-      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-bridge/yaml/fiware-ros-bridge-service.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
 
         ```
-        apply /home/fiware/example-turtlebot3/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-service.yaml to https://api.example.com
+        apply /home/fiware/example-turtlebot3/ros/fiware-ros-bridge/yaml/fiware-ros-bridge-service.yaml to https://api.example.com
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridgeのservices確認【turtlebot3-pc】
+1. fiware-ros-bridgeのservices確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get services -l app=ros-bridge
@@ -1128,24 +1332,24 @@
         ros-bridge   ClusterIP   None         <none>        11311/TCP   20h
         ```
 
-1. fiware-ros-turtlebot3-bridgeのdeployment作成
+1. fiware-ros-bridgeのdeployment作成
 
     ```
-    $ envsubst < ${PJ_ROOT}/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-deployment-acr.yaml > /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml
+    $ envsubst < ${PJ_ROOT}/ros/fiware-ros-bridge/yaml/fiware-ros-bridge-deployment-acr.yaml > /tmp/fiware-ros-bridge-deployment-acr.yaml
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -v /tmp:/tmp -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
-      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
-    $ rm /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml
+      ${PJ_ROOT}/tools/deploy_yaml.py /tmp/fiware-ros-bridge-deployment-acr.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+    $ rm /tmp/fiware-ros-bridge-deployment-acr.yaml
     ```
 
     - 実行結果（例）
 
         ```
-        apply /home/fiware/example-turtlebot3/ros/fiware-ros-turtlebot3-bridge/yaml/fiware-ros-turtlebot3-bridge-service.yaml to https://api.example.com
+        apply /tmp/fiware-ros-turtlebot3-bridge-deployment-acr.yaml to https://api.example.com
         status_code=204, body=
         ```
 
-1. fiware-ros-turtlebot3-bridge-deployment-acrのdeployments確認【turtlebot3-pc】
+1. fiware-ros-bridge-deployment-acrのdeployments確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get deployments -l app=ros-bridge
@@ -1158,7 +1362,7 @@
         ros-bridge   1/1     1            1           18s
         ```
 
-1. fiware-ros-turtlebot3-bridge-deployment-acrのpods確認【turtlebot3-pc】
+1. fiware-ros-bridge-deployment-acrのpods確認【turtlebot3-pc】
 
     ```
     turtlebot3-pc$ kubectl get pods -l app=ros-bridge
@@ -1229,162 +1433,190 @@
         -- BUILD_SHARED_LIBS is on
         -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         -- ~~  traversing 2 packages in topological order:
-        -- ~~  - fiware_ros_turtlebot3_msgs
-        -- ~~  - fiware_ros_turtlebot3_bridge
+        -- ~~  - fiware_ros_msgs
+        -- ~~  - fiware_ros_bridge
         -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        -- +++ processing catkin package: 'fiware_ros_turtlebot3_msgs'
-        -- ==> add_subdirectory(fiware_ros_turtlebot3_msgs)
+        -- +++ processing catkin package: 'fiware_ros_msgs'
+        -- ==> add_subdirectory(fiware_ros_msgs)
         -- Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
-        -- fiware_ros_turtlebot3_msgs: 1 messages, 0 services
-        -- +++ processing catkin package: 'fiware_ros_turtlebot3_bridge'
-        -- ==> add_subdirectory(fiware_ros_turtlebot3_bridge)
+        -- fiware_ros_msgs: 1 messages, 0 services
+        -- +++ processing catkin package: 'fiware_ros_bridge'
+        -- ==> add_subdirectory(fiware_ros_bridge)
         -- Configuring done
         -- Generating done
         -- Build files have been written to: /opt/ros_ws/build
         ####
         #### Running command: "make -j2 -l2" in "/opt/ros_ws/build"
         ####
-        Scanning dependencies of target std_msgs_generate_messages_nodejs
-        Scanning dependencies of target _fiware_ros_turtlebot3_msgs_generate_messages_check_deps_r_pos
-        [  0%] Built target std_msgs_generate_messages_nodejs
-        Scanning dependencies of target std_msgs_generate_messages_eus
-        [  0%] Built target std_msgs_generate_messages_eus
-        Scanning dependencies of target std_msgs_generate_messages_cpp
-        [  0%] Built target _fiware_ros_turtlebot3_msgs_generate_messages_check_deps_r_pos
-        Scanning dependencies of target std_msgs_generate_messages_lisp
-        [  0%] Built target std_msgs_generate_messages_cpp
+        Scanning dependencies of target _fiware_ros_msgs_generate_messages_check_deps_r_pos
         Scanning dependencies of target std_msgs_generate_messages_py
-        [  0%] Built target std_msgs_generate_messages_lisp
         [  0%] Built target std_msgs_generate_messages_py
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_nodejs
-        [ 14%] Generating Javascript code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_eus
-        [ 28%] Generating EusLisp code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [ 28%] Built target fiware_ros_turtlebot3_msgs_generate_messages_nodejs
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_cpp
-        [ 42%] Generating EusLisp manifest code for fiware_ros_turtlebot3_msgs
-        [ 57%] Generating C++ code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [ 57%] Built target fiware_ros_turtlebot3_msgs_generate_messages_cpp
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_lisp
-        [ 71%] Generating Lisp code from fiware_ros_turtlebot3_msgs/r_pos.msg
-        [ 71%] Built target fiware_ros_turtlebot3_msgs_generate_messages_lisp
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages_py
-        [ 85%] Generating Python from MSG fiware_ros_turtlebot3_msgs/r_pos
-        [100%] Generating Python msg __init__.py for fiware_ros_turtlebot3_msgs
-        [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages_py
-        [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages_eus
-        Scanning dependencies of target fiware_ros_turtlebot3_msgs_generate_messages
-        [100%] Built target fiware_ros_turtlebot3_msgs_generate_messages
-        ... logging to /root/.ros/log/a5f74462-6764-11e9-a94c-0242ac110004/roslaunch-ros-bridge-7645695cd6-wbsq4-458.log
+        Scanning dependencies of target std_msgs_generate_messages_cpp
+        [  0%] Built target std_msgs_generate_messages_cpp
+        [  0%] Built target _fiware_ros_msgs_generate_messages_check_deps_r_pos
+        Scanning dependencies of target std_msgs_generate_messages_lisp
+        Scanning dependencies of target std_msgs_generate_messages_eus
+        [  0%] Built target std_msgs_generate_messages_lisp
+        [  0%] Built target std_msgs_generate_messages_eus
+        Scanning dependencies of target std_msgs_generate_messages_nodejs
+        Scanning dependencies of target fiware_ros_msgs_generate_messages_py
+        [  0%] Built target std_msgs_generate_messages_nodejs
+        [ 14%] Generating Python from MSG fiware_ros_msgs/r_pos
+        Scanning dependencies of target fiware_ros_msgs_generate_messages_cpp
+        [ 28%] Generating C++ code from fiware_ros_msgs/r_pos.msg
+        [ 42%] Generating Python msg __init__.py for fiware_ros_msgs
+        [ 42%] Built target fiware_ros_msgs_generate_messages_cpp
+        Scanning dependencies of target fiware_ros_msgs_generate_messages_lisp
+        [ 57%] Generating Lisp code from fiware_ros_msgs/r_pos.msg
+        [ 57%] Built target fiware_ros_msgs_generate_messages_py
+        Scanning dependencies of target fiware_ros_msgs_generate_messages_eus
+        [ 57%] Built target fiware_ros_msgs_generate_messages_lisp
+        [ 71%] Generating EusLisp code from fiware_ros_msgs/r_pos.msg
+        Scanning dependencies of target fiware_ros_msgs_generate_messages_nodejs
+        [ 85%] Generating Javascript code from fiware_ros_msgs/r_pos.msg
+        [ 85%] Built target fiware_ros_msgs_generate_messages_nodejs
+        [100%] Generating EusLisp manifest code for fiware_ros_msgs
+        [100%] Built target fiware_ros_msgs_generate_messages_eus
+        Scanning dependencies of target fiware_ros_msgs_generate_messages
+        [100%] Built target fiware_ros_msgs_generate_messages
+        ... logging to /root/.ros/log/8b92b622-85a2-11e9-af13-0242ac110004/roslaunch-ros-bridge-5fdd6f8654-vrbh9-459.log
         Checking log directory for disk usage. This may take awhile.
         Press Ctrl-C to interrupt
         Done checking log file disk usage. Usage is <1GB.
 
-        started roslaunch server http://ros-bridge:33483/
+        started roslaunch server http://ros-bridge:37487/
 
         SUMMARY
         ========
 
         PARAMETERS
+         * /robot_attrs/mqtt/cafile: /opt/ros_ws/src/f...
+         * /robot_attrs/mqtt/host: mqtt.example.com
+         * /robot_attrs/mqtt/password: password_of_ros
+         * /robot_attrs/mqtt/port: 8883
+         * /robot_attrs/mqtt/use_ca: True
+         * /robot_attrs/mqtt/username: ros
+         * /robot_attrs/thresholds/send_delta_millisec: 1000
+         * /robot_attrs/timezone: Asia/Tokyo
+         * /robot_attrs/topics/mqtt: /robot/turtlebot3...
+         * /robot_attrs/topics/ros/battery_state: /battery_state
+         * /robot_attrs/topics/ros/pos: /turtlebot3_bridg...
+         * /robot_attrs/topics/ros/r_mode: /r_mode
+         * /robot_cmd/mqtt/cafile: /opt/ros_ws/src/f...
+         * /robot_cmd/mqtt/host: mqtt.example.com
+         * /robot_cmd/mqtt/password: password_of_ros
+         * /robot_cmd/mqtt/port: 8883
+         * /robot_cmd/mqtt/use_ca: True
+         * /robot_cmd/mqtt/username: ros
+         * /robot_cmd/topics/mqtt/cmd: /robot/turtlebot3...
+         * /robot_cmd/topics/mqtt/result: /robot/turtlebot3...
+         * /robot_cmd/topics/ros: /turtlebot3_bridg...
          * /rosdistro: kinetic
          * /rosversion: 1.12.14
-         * /turtlebot3_attrs/mqtt/cafile: /opt/ros_ws/src/f...
-         * /turtlebot3_attrs/mqtt/host: mqtt.cloudconduct...
-         * /turtlebot3_attrs/mqtt/password: ros_0GC
-         * /turtlebot3_attrs/mqtt/port: 8883
-         * /turtlebot3_attrs/mqtt/use_ca: True
-         * /turtlebot3_attrs/mqtt/username: ros
-         * /turtlebot3_attrs/thresholds/battery_state/send_delta_millisec: 1000
-         * /turtlebot3_attrs/timezone: Asia/Tokyo
-         * /turtlebot3_attrs/topics/mqtt: /robot/turtlebot3...
-         * /turtlebot3_attrs/topics/ros/battery_state: /battery_state
-         * /turtlebot3_attrs/topics/ros/pos: /turtlebot3_bridg...
-         * /turtlebot3_cmd/mqtt/cafile: /opt/ros_ws/src/f...
-         * /turtlebot3_cmd/mqtt/host: mqtt.cloudconduct...
-         * /turtlebot3_cmd/mqtt/password: ros_0GC
-         * /turtlebot3_cmd/mqtt/port: 8883
-         * /turtlebot3_cmd/mqtt/use_ca: True
-         * /turtlebot3_cmd/mqtt/username: ros
-         * /turtlebot3_cmd/topics/mqtt/cmd: /robot/turtlebot3...
-         * /turtlebot3_cmd/topics/mqtt/result: /robot/turtlebot3...
-         * /turtlebot3_cmd/topics/ros: /turtlebot3_bridg...
 
         NODES
           /
-            turtlebot3_attrs (fiware_ros_turtlebot3_bridge/turtlebot3_attrs.py)
-            turtlebot3_cmd (fiware_ros_turtlebot3_bridge/turtlebot3_cmd.py)
+            robot_attrs (fiware_ros_bridge/robot_attrs.py)
+            robot_cmd (fiware_ros_bridge/robot_cmd.py)
 
         ROS_MASTER_URI=http://ros-master:11311
 
-        running rosparam delete /turtlebot3_cmd/
-        ERROR: parameter [/turtlebot3_cmd] is not set
-        running rosparam delete /turtlebot3_attrs/
-        ERROR: parameter [/turtlebot3_attrs] is not set
-        process[turtlebot3_cmd-1]: started with pid [475]
-        process[turtlebot3_attrs-2]: started with pid [476]
-        [INFO] [1556202217.750522]: [fiware_ros_turtlebot3_bridge.base:CmdBridge.connect] try to Connect mqtt broker, host=mqtt.example.com
-        [INFO] [1556202217.863663]: [fiware_ros_turtlebot3_bridge.cmd_bridge:CmdBridge.start] CmdBridge start
-        [INFO] [1556202217.878809]: [fiware_ros_turtlebot3_bridge.base:CmdBridge._on_connect] connected to mqtt broker, status=0
-        [INFO] [1556202217.998204]: [fiware_ros_turtlebot3_bridge.base:AttrsBridge.connect] try to Connect mqtt broker, host=mqtt.example.com
-        [INFO] [1556202218.118933]: [fiware_ros_turtlebot3_bridge.attrs_bridge:AttrsBridge.start] AttrsBridge start
-        [INFO] [1556202218.134209]: [fiware_ros_turtlebot3_bridge.base:AttrsBridge._on_connect] connected to mqtt broker, status=0
+        running rosparam delete /robot_cmd/
+        running rosparam delete /robot_attrs/
+        process[robot_cmd-1]: started with pid [476]
+        [INFO] [1559529339.850576]: [fiware_ros_bridge.base:CmdBridge.connect] try to Connect mqtt broker, host=mqtt.example.com
+        process[robot_attrs-2]: started with pid [477]
+        [INFO] [1559529339.966050]: [fiware_ros_bridge.cmd_bridge:CmdBridge.start] CmdBridge start
+        [INFO] [1559529339.979330]: [fiware_ros_bridge.base:CmdBridge._on_connect] connected to mqtt broker, status=0
+        [INFO] [1559529340.199076]: [fiware_ros_bridge.base:AttrsBridge.connect] try to Connect mqtt broker, host=mqtt.example.com
+        [INFO] [1559529340.338059]: [fiware_ros_bridge.attrs_bridge:AttrsBridge.start] AttrsBridge start
+        [INFO] [1559529340.375505]: [fiware_ros_bridge.base:AttrsBridge._on_connect] connected to mqtt broker, status=0
         ```
 
 
 ## fiware-ros-turtlebot3-operatorの設定
+1. tagを指定
+
+    ```
+    $ export OPERATOR_GIT_REV="0.3.0"
+    ```
 
 1. fiware-ros-turtlebot3-operatorコンテナイメージの作成
 
     ```
-    $ docker build -t ${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-operator:0.2.1 ros/fiware-ros-turtlebot3-operator
+    $ docker build -t ${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-operator:${OPERATOR_GIT_REV} ros/fiware-ros-turtlebot3-operator
     ```
 
     - 実行結果（例）
       
         ```
         Sending build context to Docker daemon  18.94kB
-        Step 1/6 : FROM ubuntu:16.04
-        ---> 7e87e2b3bf7a
-        Step 2/6 : MAINTAINER Nobuyuki Matsui <nobuyuki.matsui@gmail.com>
-        ---> Using cache
-        ---> d895242d74e0
-        Step 3/6 : ENV PYTHONUNBUFFERED 1
-        ---> Using cache
-        ---> d2f9fa1e1484
-        Step 4/6 : COPY ./kube_entrypoint.sh /opt/kube_entrypoint.sh
-        ---> 4597545740d9
-        Step 5/6 : WORKDIR /opt/ros_ws
-        ---> Running in 627ed561d71c
-        Removing intermediate container 627ed561d71c
-        ---> 948a1b717136
-        Step 6/6 : RUN apt update && apt upgrade -y && apt install -y git ca-certificates --no-install-recommends &&     mkdir -p /opt/ros_ws/src &&     git clone https://github.com/RoboticBase/fiware_ros_turtlebot3_operator.git src/fiware_ros_turtlebot3_operator &&     git clone https://github.com/RoboticBase/fiware_ros_turtlebot3_msgs.git src/fiware_ros_turtlebot3_msgs &&     rm -rf /var/lib/apt/lists/* &&     apt-get purge -y --auto-remove git
-        ---> Running in 78470f00468f
+        Step 1/12 : FROM ubuntu:16.04
+         ---> b9e15a5d1e1a
+        Step 2/12 : MAINTAINER Nobuyuki Matsui <nobuyuki.matsui@gmail.com>
+         ---> Using cache
+         ---> f9cf7efe23ef
+        Step 3/12 : ENV PYTHONUNBUFFERED 1
+         ---> Using cache
+         ---> f4b707c2cf0a
+        Step 4/12 : ARG MSGS_NAME="fiware_ros_msgs"
+         ---> Using cache
+         ---> c70e98192d76
+        Step 5/12 : ARG MSGS_GIT_REPO="https://github.com/RoboticBase/fiware_ros_msgs.git"
+         ---> Using cache
+         ---> 2cca8cf0b1a3
+        Step 6/12 : ARG MSGS_GIT_REV="master"
+         ---> Using cache
+         ---> 33ce5bd3b955
+        Step 7/12 : ARG OPERATOR_NAME="fiware_ros_turtlebot3_operator"
+         ---> Running in cc8e288ee7c4
+        Removing intermediate container cc8e288ee7c4
+         ---> 68fc37d8009a
+        Step 8/12 : ARG OPERATOR_GIT_REPO="https://github.com/RoboticBase/fiware_ros_turtlebot3_operator.git"
+         ---> Running in 3d908b18316b
+        Removing intermediate container 3d908b18316b
+         ---> db0fba9b6a68
+        Step 9/12 : ARG OPERATOR_GIT_REV="0.3.0"
+         ---> Running in c19a1e4900e2
+        Removing intermediate container c19a1e4900e2
+         ---> c85ef86cc092
+        Step 10/12 : COPY ./kube_entrypoint.sh /opt/kube_entrypoint.sh
+         ---> b23a9370c9f4
+        Step 11/12 : WORKDIR /opt/ros_ws
+         ---> Running in 2d8cd2f237d8
+        Removing intermediate container 2d8cd2f237d8
+         ---> 1e99ce81cbea
+        Step 12/12 : RUN apt update && apt upgrade -y && apt install -y git ca-certificates --no-install-recommends &&     mkdir -p /opt/ros_ws/src &&     git clone ${MSGS_GIT_REPO} src/${MSGS_NAME} && cd src/${MSGS_NAME} && git checkout ${MSGS_GIT_REV} && cd ../.. &&     git clone ${OPERATOR_GIT_REPO} src/${OPERATOR_NAME} && cd src/${OPERATOR_NAME} && git checkout ${OPERATOR_GIT_REV} && cd ../.. &&     rm -rf /var/lib/apt/lists/* &&     apt-get purge -y --auto-remove git
+         ---> Running in 72e2c56365b5
 
         WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 
-        Get:1 http://archive.ubuntu.com/ubuntu xenial InRelease [247 kB]
-        Get:2 http://security.ubuntu.com/ubuntu xenial-security InRelease [109 kB]
-        Get:3 http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages [789 kB]
-        Get:4 http://archive.ubuntu.com/ubuntu xenial-updates InRelease [109 kB]
-        Get:5 http://archive.ubuntu.com/ubuntu xenial-backports InRelease [107 kB]
-        Get:6 http://archive.ubuntu.com/ubuntu xenial/main amd64 Packages [1558 kB]
-        Get:7 http://security.ubuntu.com/ubuntu xenial-security/restricted amd64 Packages [12.7 kB]
-        Get:8 http://security.ubuntu.com/ubuntu xenial-security/universe amd64 Packages [543 kB]
-        Get:9 http://security.ubuntu.com/ubuntu xenial-security/multiverse amd64 Packages [6116 B]
-        Get:10 http://archive.ubuntu.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
-        Get:11 http://archive.ubuntu.com/ubuntu xenial/universe amd64 Packages [9827 kB]
-        Get:12 http://archive.ubuntu.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
-        Get:13 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [1183 kB]
-        Get:14 http://archive.ubuntu.com/ubuntu xenial-updates/restricted amd64 Packages [13.1 kB]
-        Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [947 kB]
-        Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/multiverse amd64 Packages [19.1 kB]
-        Get:17 http://archive.ubuntu.com/ubuntu xenial-backports/main amd64 Packages [7942 B]
-        Get:18 http://archive.ubuntu.com/ubuntu xenial-backports/universe amd64 Packages [8532 B]
-        Fetched 15.7 MB in 6s (2417 kB/s)
+        Get:1 http://security.ubuntu.com/ubuntu xenial-security InRelease [109 kB]
+        Get:2 http://archive.ubuntu.com/ubuntu xenial InRelease [247 kB]
+        Get:3 http://security.ubuntu.com/ubuntu xenial-security/universe Sources [130 kB]
+        Get:4 http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages [833 kB]
+        Get:5 http://archive.ubuntu.com/ubuntu xenial-updates InRelease [109 kB]
+        Get:6 http://security.ubuntu.com/ubuntu xenial-security/restricted amd64 Packages [12.7 kB]
+        Get:7 http://security.ubuntu.com/ubuntu xenial-security/universe amd64 Packages [554 kB]
+        Get:8 http://archive.ubuntu.com/ubuntu xenial-backports InRelease [107 kB]
+        Get:9 http://security.ubuntu.com/ubuntu xenial-security/multiverse amd64 Packages [6113 B]
+        Get:10 http://archive.ubuntu.com/ubuntu xenial/universe Sources [9802 kB]
+        Get:11 http://archive.ubuntu.com/ubuntu xenial/main amd64 Packages [1558 kB]
+        Get:12 http://archive.ubuntu.com/ubuntu xenial/restricted amd64 Packages [14.1 kB]
+        Get:13 http://archive.ubuntu.com/ubuntu xenial/universe amd64 Packages [9827 kB]
+        Get:14 http://archive.ubuntu.com/ubuntu xenial/multiverse amd64 Packages [176 kB]
+        Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/universe Sources [321 kB]
+        Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages [1237 kB]
+        Get:17 http://archive.ubuntu.com/ubuntu xenial-updates/restricted amd64 Packages [13.1 kB]
+        Get:18 http://archive.ubuntu.com/ubuntu xenial-updates/universe amd64 Packages [966 kB]
+        Get:19 http://archive.ubuntu.com/ubuntu xenial-updates/multiverse amd64 Packages [19.1 kB]
+        Get:20 http://archive.ubuntu.com/ubuntu xenial-backports/main amd64 Packages [7942 B]
+        Get:21 http://archive.ubuntu.com/ubuntu xenial-backports/universe amd64 Packages [8532 B]
+        Fetched 26.1 MB in 8s (2901 kB/s)
         Reading package lists...
         Building dependency tree...
         Reading state information...
-        9 packages can be upgraded. Run 'apt list --upgradable' to see them.
+        29 packages can be upgraded. Run 'apt list --upgradable' to see them.
 
         WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 
@@ -1393,22 +1625,44 @@
         Reading state information...
         Calculating upgrade...
         The following packages will be upgraded:
-          base-files libc-bin libc6 libkmod2 libsystemd0 libudev1 multiarch-support
-          systemd systemd-sysv
-        9 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
-        Need to get 7377 kB of archives.
-        After this operation, 4096 B of additional disk space will be used.
+          apt base-files bash bsdutils debconf dpkg gcc-5-base libapparmor1
+          libapt-pkg5.0 libblkid1 libc-bin libc6 libfdisk1 libkmod2 libmount1
+          libseccomp2 libsmartcols1 libstdc++6 libsystemd0 libudev1 libuuid1 login
+          mount multiarch-support passwd perl-base systemd systemd-sysv util-linux
+        29 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+        Need to get 16.1 MB of archives.
+        After this operation, 255 kB of additional disk space will be used.
         Get:1 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 base-files amd64 9.4ubuntu4.8 [69.4 kB]
-        Get:2 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc6 amd64 2.23-0ubuntu11 [2577 kB]
-        Get:3 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc-bin amd64 2.23-0ubuntu11 [631 kB]
-        Get:4 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libkmod2 amd64 22-1ubuntu5.2 [39.9 kB]
-        Get:5 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsystemd0 amd64 229-4ubuntu21.16 [204 kB]
-        Get:6 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd amd64 229-4ubuntu21.16 [3784 kB]
-        Get:7 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd-sysv amd64 229-4ubuntu21.16 [11.6 kB]
-        Get:8 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libudev1 amd64 229-4ubuntu21.16 [54.1 kB]
-        Get:9 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 multiarch-support amd64 2.23-0ubuntu11 [6822 B]
+        Get:2 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 bash amd64 4.3-14ubuntu1.3 [583 kB]
+        Get:3 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 bsdutils amd64 1:2.27.1-6ubuntu3.7 [51.1 kB]
+        Get:4 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 dpkg amd64 1.18.4ubuntu1.5 [2085 kB]
+        Get:5 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 login amd64 1:4.2-3.1ubuntu5.4 [304 kB]
+        Get:6 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 util-linux amd64 2.27.1-6ubuntu3.7 [849 kB]
+        Get:7 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 mount amd64 2.27.1-6ubuntu3.7 [121 kB]
+        Get:8 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 perl-base amd64 5.22.1-9ubuntu0.6 [1283 kB]
+        Get:9 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc6 amd64 2.23-0ubuntu11 [2577 kB]
+        Get:10 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libc-bin amd64 2.23-0ubuntu11 [631 kB]
+        Get:11 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 gcc-5-base amd64 5.4.0-6ubuntu1~16.04.11 [17.3 kB]
+        Get:12 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libstdc++6 amd64 5.4.0-6ubuntu1~16.04.11 [393 kB]
+        Get:13 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libapt-pkg5.0 amd64 1.2.31 [712 kB]
+        Get:14 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 apt amd64 1.2.31 [1087 kB]
+        Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 debconf all 1.5.58ubuntu2 [136 kB]
+        Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libapparmor1 amd64 2.10.95-0ubuntu2.10 [29.7 kB]
+        Get:17 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 passwd amd64 1:4.2-3.1ubuntu5.4 [780 kB]
+        Get:18 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libuuid1 amd64 2.27.1-6ubuntu3.7 [14.9 kB]
+        Get:19 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libblkid1 amd64 2.27.1-6ubuntu3.7 [107 kB]
+        Get:20 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libkmod2 amd64 22-1ubuntu5.2 [39.9 kB]
+        Get:21 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libmount1 amd64 2.27.1-6ubuntu3.7 [115 kB]
+        Get:22 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libseccomp2 amd64 2.4.1-0ubuntu0.16.04.2 [38.5 kB]
+        Get:23 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsystemd0 amd64 229-4ubuntu21.21 [204 kB]
+        Get:24 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd amd64 229-4ubuntu21.21 [3629 kB]
+        Get:25 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 systemd-sysv amd64 229-4ubuntu21.21 [11.1 kB]
+        Get:26 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libfdisk1 amd64 2.27.1-6ubuntu3.7 [138 kB]
+        Get:27 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsmartcols1 amd64 2.27.1-6ubuntu3.7 [62.5 kB]
+        Get:28 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libudev1 amd64 229-4ubuntu21.21 [53.6 kB]
+        Get:29 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 multiarch-support amd64 2.23-0ubuntu11 [6822 B]
         debconf: delaying package configuration, since apt-utils is not installed
-        Fetched 7377 kB in 4s (1611 kB/s)
+        Fetched 16.1 MB in 6s (2459 kB/s)
         (Reading database ... 4768 files and directories currently installed.)
         Preparing to unpack .../base-files_9.4ubuntu4.8_amd64.deb ...
         Unpacking base-files (9.4ubuntu4.8) over (9.4ubuntu4.7) ...
@@ -1416,6 +1670,36 @@
         Installing new version of config file /etc/issue ...
         Installing new version of config file /etc/issue.net ...
         Installing new version of config file /etc/lsb-release ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../bash_4.3-14ubuntu1.3_amd64.deb ...
+        Unpacking bash (4.3-14ubuntu1.3) over (4.3-14ubuntu1.2) ...
+        Setting up bash (4.3-14ubuntu1.3) ...
+        update-alternatives: using /usr/share/man/man7/bash-builtins.7.gz to provide /usr/share/man/man7/builtins.7.gz (builtins.7.gz) in auto mode
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../bsdutils_1%3a2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking bsdutils (1:2.27.1-6ubuntu3.7) over (1:2.27.1-6ubuntu3.6) ...
+        Setting up bsdutils (1:2.27.1-6ubuntu3.7) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../dpkg_1.18.4ubuntu1.5_amd64.deb ...
+        Unpacking dpkg (1.18.4ubuntu1.5) over (1.18.4ubuntu1.4) ...
+        Setting up dpkg (1.18.4ubuntu1.5) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../login_1%3a4.2-3.1ubuntu5.4_amd64.deb ...
+        Unpacking login (1:4.2-3.1ubuntu5.4) over (1:4.2-3.1ubuntu5.3) ...
+        Setting up login (1:4.2-3.1ubuntu5.4) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../util-linux_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking util-linux (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Setting up util-linux (2.27.1-6ubuntu3.7) ...
+        Processing triggers for systemd (229-4ubuntu21.4) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../mount_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking mount (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Setting up mount (2.27.1-6ubuntu3.7) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../perl-base_5.22.1-9ubuntu0.6_amd64.deb ...
+        Unpacking perl-base (5.22.1-9ubuntu0.6) over (5.22.1-9ubuntu0.5) ...
+        Setting up perl-base (5.22.1-9ubuntu0.6) ...
         (Reading database ... 4768 files and directories currently installed.)
         Preparing to unpack .../libc6_2.23-0ubuntu11_amd64.deb ...
         debconf: unable to initialize frontend: Dialog
@@ -1438,35 +1722,114 @@
         Unpacking libc-bin (2.23-0ubuntu11) over (2.23-0ubuntu10) ...
         Setting up libc-bin (2.23-0ubuntu11) ...
         (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../gcc-5-base_5.4.0-6ubuntu1~16.04.11_amd64.deb ...
+        Unpacking gcc-5-base:amd64 (5.4.0-6ubuntu1~16.04.11) over (5.4.0-6ubuntu1~16.04.10) ...
+        Setting up gcc-5-base:amd64 (5.4.0-6ubuntu1~16.04.11) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../libstdc++6_5.4.0-6ubuntu1~16.04.11_amd64.deb ...
+        Unpacking libstdc++6:amd64 (5.4.0-6ubuntu1~16.04.11) over (5.4.0-6ubuntu1~16.04.10) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libstdc++6:amd64 (5.4.0-6ubuntu1~16.04.11) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../libapt-pkg5.0_1.2.31_amd64.deb ...
+        Unpacking libapt-pkg5.0:amd64 (1.2.31) over (1.2.27) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libapt-pkg5.0:amd64 (1.2.31) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4768 files and directories currently installed.)
+        Preparing to unpack .../archives/apt_1.2.31_amd64.deb ...
+        Unpacking apt (1.2.31) over (1.2.27) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up apt (1.2.31) ...
+        Installing new version of config file /etc/apt/apt.conf.d/01autoremove ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../debconf_1.5.58ubuntu2_all.deb ...
+        Unpacking debconf (1.5.58ubuntu2) over (1.5.58ubuntu1) ...
+        Setting up debconf (1.5.58ubuntu2) ...
+        debconf: unable to initialize frontend: Dialog
+        debconf: (TERM is not set, so the dialog frontend is not usable.)
+        debconf: falling back to frontend: Readline
+        debconf: unable to initialize frontend: Readline
+        debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.22.1 /usr/local/share/perl/5.22.1 /usr/lib/x86_64-linux-gnu/perl5/5.22 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl/5.22 /usr/share/perl/5.22 /usr/local/lib/site_perl /usr/lib/x86_64-linux-gnu/perl-base .) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+        debconf: falling back to frontend: Teletype
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libapparmor1_2.10.95-0ubuntu2.10_amd64.deb ...
+        Unpacking libapparmor1:amd64 (2.10.95-0ubuntu2.10) over (2.10.95-0ubuntu2.9) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libapparmor1:amd64 (2.10.95-0ubuntu2.10) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../passwd_1%3a4.2-3.1ubuntu5.4_amd64.deb ...
+        Unpacking passwd (1:4.2-3.1ubuntu5.4) over (1:4.2-3.1ubuntu5.3) ...
+        Setting up passwd (1:4.2-3.1ubuntu5.4) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libuuid1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libuuid1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libuuid1:amd64 (2.27.1-6ubuntu3.7) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libblkid1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libblkid1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libblkid1:amd64 (2.27.1-6ubuntu3.7) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
         Preparing to unpack .../libkmod2_22-1ubuntu5.2_amd64.deb ...
-        Unpacking libkmod2:amd64 (22-1ubuntu5.2) over (22-1ubuntu5.1) ...
+        Unpacking libkmod2:amd64 (22-1ubuntu5.2) over (22-1ubuntu5) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
         Setting up libkmod2:amd64 (22-1ubuntu5.2) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../libsystemd0_229-4ubuntu21.16_amd64.deb ...
-        Unpacking libsystemd0:amd64 (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libmount1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libmount1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        Setting up libsystemd0:amd64 (229-4ubuntu21.16) ...
+        Setting up libmount1:amd64 (2.27.1-6ubuntu3.7) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../systemd_229-4ubuntu21.16_amd64.deb ...
-        Unpacking systemd (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
-        Setting up systemd (229-4ubuntu21.16) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libseccomp2_2.4.1-0ubuntu0.16.04.2_amd64.deb ...
+        Unpacking libseccomp2:amd64 (2.4.1-0ubuntu0.16.04.2) over (2.3.1-2.1ubuntu2~16.04.1) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libseccomp2:amd64 (2.4.1-0ubuntu0.16.04.2) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libsystemd0_229-4ubuntu21.21_amd64.deb ...
+        Unpacking libsystemd0:amd64 (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libsystemd0:amd64 (229-4ubuntu21.21) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../systemd_229-4ubuntu21.21_amd64.deb ...
+        Unpacking systemd (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Setting up systemd (229-4ubuntu21.21) ...
         Initializing machine ID from random generator.
         addgroup: The group `systemd-journal' already exists as a system group. Exiting.
         Operation failed: No such file or directory
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../systemd-sysv_229-4ubuntu21.16_amd64.deb ...
-        Unpacking systemd-sysv (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
-        Setting up systemd-sysv (229-4ubuntu21.16) ...
-        (Reading database ... 4768 files and directories currently installed.)
-        Preparing to unpack .../libudev1_229-4ubuntu21.16_amd64.deb ...
-        Unpacking libudev1:amd64 (229-4ubuntu21.16) over (229-4ubuntu21.15) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../systemd-sysv_229-4ubuntu21.21_amd64.deb ...
+        Unpacking systemd-sysv (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Setting up systemd-sysv (229-4ubuntu21.21) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libfdisk1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libfdisk1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        Setting up libudev1:amd64 (229-4ubuntu21.16) ...
+        Setting up libfdisk1:amd64 (2.27.1-6ubuntu3.7) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        (Reading database ... 4768 files and directories currently installed.)
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libsmartcols1_2.27.1-6ubuntu3.7_amd64.deb ...
+        Unpacking libsmartcols1:amd64 (2.27.1-6ubuntu3.7) over (2.27.1-6ubuntu3.6) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libsmartcols1:amd64 (2.27.1-6ubuntu3.7) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
+        Preparing to unpack .../libudev1_229-4ubuntu21.21_amd64.deb ...
+        Unpacking libudev1:amd64 (229-4ubuntu21.21) over (229-4ubuntu21.4) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        Setting up libudev1:amd64 (229-4ubuntu21.21) ...
+        Processing triggers for libc-bin (2.23-0ubuntu11) ...
+        (Reading database ... 4777 files and directories currently installed.)
         Preparing to unpack .../multiarch-support_2.23-0ubuntu11_amd64.deb ...
         Unpacking multiarch-support (2.23-0ubuntu11) over (2.23-0ubuntu10) ...
         Setting up multiarch-support (2.23-0ubuntu11) ...
@@ -1515,7 +1878,7 @@
         Get:10 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libidn11 amd64 1.32-3ubuntu1.2 [46.5 kB]
         Get:11 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libp11-kit0 amd64 0.23.2-5~ubuntu16.04.1 [105 kB]
         Get:12 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libtasn1-6 amd64 4.7-3ubuntu0.16.04.3 [43.5 kB]
-        Get:13 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgnutls30 amd64 3.4.10-4ubuntu1.4 [548 kB]
+        Get:13 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgnutls30 amd64 3.4.10-4ubuntu1.5 [548 kB]
         Get:14 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsqlite3-0 amd64 3.11.0-1ubuntu1.1 [396 kB]
         Get:15 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libssl1.0.0 amd64 1.0.2g-1ubuntu4.15 [1084 kB]
         Get:16 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 openssl amd64 1.0.2g-1ubuntu4.15 [492 kB]
@@ -1536,16 +1899,16 @@
         Get:31 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libgssapi3-heimdal amd64 1.7~git20150920+dfsg-4ubuntu1.16.04.1 [96.1 kB]
         Get:32 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsasl2-modules-db amd64 2.1.26.dfsg1-14ubuntu0.1 [14.5 kB]
         Get:33 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libsasl2-2 amd64 2.1.26.dfsg1-14ubuntu0.1 [48.6 kB]
-        Get:34 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libldap-2.4-2 amd64 2.4.42+dfsg-2ubuntu3.4 [160 kB]
+        Get:34 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libldap-2.4-2 amd64 2.4.42+dfsg-2ubuntu3.5 [161 kB]
         Get:35 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d-1ubuntu0.1 [54.4 kB]
-        Get:36 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libcurl3-gnutls amd64 7.47.0-1ubuntu2.12 [185 kB]
+        Get:36 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 libcurl3-gnutls amd64 7.47.0-1ubuntu2.13 [184 kB]
         Get:37 http://archive.ubuntu.com/ubuntu xenial/main amd64 liberror-perl all 0.17-1.2 [19.6 kB]
         Get:38 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 git-man all 1:2.7.4-0ubuntu1.6 [736 kB]
         Get:39 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 git amd64 1:2.7.4-0ubuntu1.6 [3176 kB]
         debconf: delaying package configuration, since apt-utils is not installed
-        Fetched 15.4 MB in 5s (2578 kB/s)
+        Fetched 15.4 MB in 6s (2393 kB/s)
         Selecting previously unselected package libgdbm3:amd64.
-        (Reading database ... 4768 files and directories currently installed.)
+        (Reading database ... 4777 files and directories currently installed.)
         Preparing to unpack .../libgdbm3_1.8.3-13.1_amd64.deb ...
         Unpacking libgdbm3:amd64 (1.8.3-13.1) ...
         Selecting previously unselected package perl-modules-5.22.
@@ -1582,8 +1945,8 @@
         Preparing to unpack .../libtasn1-6_4.7-3ubuntu0.16.04.3_amd64.deb ...
         Unpacking libtasn1-6:amd64 (4.7-3ubuntu0.16.04.3) ...
         Selecting previously unselected package libgnutls30:amd64.
-        Preparing to unpack .../libgnutls30_3.4.10-4ubuntu1.4_amd64.deb ...
-        Unpacking libgnutls30:amd64 (3.4.10-4ubuntu1.4) ...
+        Preparing to unpack .../libgnutls30_3.4.10-4ubuntu1.5_amd64.deb ...
+        Unpacking libgnutls30:amd64 (3.4.10-4ubuntu1.5) ...
         Selecting previously unselected package libsqlite3-0:amd64.
         Preparing to unpack .../libsqlite3-0_3.11.0-1ubuntu1.1_amd64.deb ...
         Unpacking libsqlite3-0:amd64 (3.11.0-1ubuntu1.1) ...
@@ -1645,14 +2008,14 @@
         Preparing to unpack .../libsasl2-2_2.1.26.dfsg1-14ubuntu0.1_amd64.deb ...
         Unpacking libsasl2-2:amd64 (2.1.26.dfsg1-14ubuntu0.1) ...
         Selecting previously unselected package libldap-2.4-2:amd64.
-        Preparing to unpack .../libldap-2.4-2_2.4.42+dfsg-2ubuntu3.4_amd64.deb ...
-        Unpacking libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
+        Preparing to unpack .../libldap-2.4-2_2.4.42+dfsg-2ubuntu3.5_amd64.deb ...
+        Unpacking libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
         Selecting previously unselected package librtmp1:amd64.
         Preparing to unpack .../librtmp1_2.4+20151223.gitfa8646d-1ubuntu0.1_amd64.deb ...
         Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d-1ubuntu0.1) ...
         Selecting previously unselected package libcurl3-gnutls:amd64.
-        Preparing to unpack .../libcurl3-gnutls_7.47.0-1ubuntu2.12_amd64.deb ...
-        Unpacking libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.12) ...
+        Preparing to unpack .../libcurl3-gnutls_7.47.0-1ubuntu2.13_amd64.deb ...
+        Unpacking libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.13) ...
         Selecting previously unselected package liberror-perl.
         Preparing to unpack .../liberror-perl_0.17-1.2_all.deb ...
         Unpacking liberror-perl (0.17-1.2) ...
@@ -1676,7 +2039,7 @@
         Setting up libidn11:amd64 (1.32-3ubuntu1.2) ...
         Setting up libp11-kit0:amd64 (0.23.2-5~ubuntu16.04.1) ...
         Setting up libtasn1-6:amd64 (4.7-3ubuntu0.16.04.3) ...
-        Setting up libgnutls30:amd64 (3.4.10-4ubuntu1.4) ...
+        Setting up libgnutls30:amd64 (3.4.10-4ubuntu1.5) ...
         Setting up libsqlite3-0:amd64 (3.11.0-1ubuntu1.1) ...
         Setting up libssl1.0.0:amd64 (1.0.2g-1ubuntu4.15) ...
         debconf: unable to initialize frontend: Dialog
@@ -1703,9 +2066,9 @@
         Setting up libgssapi3-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
         Setting up libsasl2-modules-db:amd64 (2.1.26.dfsg1-14ubuntu0.1) ...
         Setting up libsasl2-2:amd64 (2.1.26.dfsg1-14ubuntu0.1) ...
-        Setting up libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
+        Setting up libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
         Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d-1ubuntu0.1) ...
-        Setting up libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.12) ...
+        Setting up libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.13) ...
         Setting up liberror-perl (0.17-1.2) ...
         Setting up git-man (1:2.7.4-0ubuntu1.6) ...
         Setting up git (1:2.7.4-0ubuntu1.6) ...
@@ -1715,8 +2078,22 @@
         148 added, 0 removed; done.
         Running hooks in /etc/ca-certificates/update.d...
         done.
+        Cloning into 'src/fiware_ros_msgs'...
+        Already on 'master'
+        Your branch is up-to-date with 'origin/master'.
         Cloning into 'src/fiware_ros_turtlebot3_operator'...
-        Cloning into 'src/fiware_ros_turtlebot3_msgs'...
+        Note: checking out '0.3.0'.
+
+        You are in 'detached HEAD' state. You can look around, make experimental
+        changes and commit them, and you can discard any commits you make in this
+        state without impacting any branches by performing another checkout.
+
+        If you want to create a new branch to retain commits you create, you may
+        do so (now or later) by using -b with the checkout command again. Example:
+
+          git checkout -b <new-branch-name>
+
+        HEAD is now at 6055467... Merge pull request #1 from RoboticBase/feature/commonalize
         Reading package lists...
         Building dependency tree...
         Reading state information...
@@ -1731,13 +2108,13 @@
           libwind0-heimdal* perl* perl-modules-5.22*
         0 upgraded, 0 newly installed, 36 to remove and 0 not upgraded.
         After this operation, 76.1 MB disk space will be freed.
-        (Reading database ... 7844 files and directories currently installed.)
+        (Reading database ... 7853 files and directories currently installed.)
         Removing git (1:2.7.4-0ubuntu1.6) ...
         Purging configuration files for git (1:2.7.4-0ubuntu1.6) ...
         Removing git-man (1:2.7.4-0ubuntu1.6) ...
-        Removing libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.12) ...
-        Removing libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
-        Purging configuration files for libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.4) ...
+        Removing libcurl3-gnutls:amd64 (7.47.0-1ubuntu2.13) ...
+        Removing libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
+        Purging configuration files for libldap-2.4-2:amd64 (2.4.42+dfsg-2ubuntu3.5) ...
         Removing libgssapi3-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
         Removing libheimntlm0-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
         Removing libkrb5-26-heimdal:amd64 (1.7~git20150920+dfsg-4ubuntu1.16.04.1) ...
@@ -1747,7 +2124,7 @@
         Removing liberror-perl (0.17-1.2) ...
         Removing libexpat1:amd64 (2.1.0-7ubuntu0.16.04.3) ...
         Removing librtmp1:amd64 (2.4+20151223.gitfa8646d-1ubuntu0.1) ...
-        Removing libgnutls30:amd64 (3.4.10-4ubuntu1.4) ...
+        Removing libgnutls30:amd64 (3.4.10-4ubuntu1.5) ...
         Removing libp11-kit0:amd64 (0.23.2-5~ubuntu16.04.1) ...
         Removing libffi6:amd64 (3.2.1-4) ...
         Removing perl (5.22.1-9ubuntu0.6) ...
@@ -1775,10 +2152,10 @@
         Removing libtasn1-6:amd64 (4.7-3ubuntu0.16.04.3) ...
         Removing perl-modules-5.22 (5.22.1-9ubuntu0.6) ...
         Processing triggers for libc-bin (2.23-0ubuntu11) ...
-        Removing intermediate container 78470f00468f
-        ---> 53d57dca000d
-        Successfully built 53d57dca000d
-        Successfully tagged rbcacr.azurecr.io/roboticbase/fiware-ros-turtlebot3-operator:0.2.1
+        Removing intermediate container 72e2c56365b5
+         ---> 2e85b296316a
+        Successfully built 2e85b296316a
+        Successfully tagged rbcacr.azurecr.io/roboticbase/fiware-ros-turtlebot3-operator:0.3.0
         ```
 
 1. Azure ACRにログイン
@@ -1799,7 +2176,7 @@
 1. fiware-ros-turtlebot3-operatorのイメージ登録
 
     ```
-    $ docker push ${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-operator:0.2.1
+    $ docker push ${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-operator:${OPERATOR_GIT_REV}
     ```
 
     - 実行結果（例）
@@ -1813,7 +2190,7 @@
         f67191ae09b8: Mounted from roboticbase/fiware-ros-turtlebot3-bridge
         b2fd8b4c3da7: Mounted from roboticbase/fiware-ros-turtlebot3-bridge
         0de2edf7bff4: Mounted from roboticbase/fiware-ros-turtlebot3-bridge
-        0.2.1: digest: sha256:40cfb5dbe42a076161aa2403d8829256c2825b1ba0ee89c873088e309e459b8a size: 1776
+        0.3.0: digest: sha256:9a041f2292ee3826427050217909fd7e70c7e9a44b120186a5cbd635848994b0 size: 1983
         ```
 
 1. fiware-ros-turtlebot3-operator用のconfigmap作成
@@ -1821,7 +2198,7 @@
     ```
     $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
     $ docker run -it --rm -v ${PJ_ROOT}:${PJ_ROOT} -w ${PJ_ROOT} example_turtlebot3:0.0.1 \
-      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE}     ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
+      ${PJ_ROOT}/tools/deploy_yaml.py ${PJ_ROOT}/ros/fiware-ros-turtlebot3-operator/yaml/fiware-ros-turtlebot3-operator-configmap.yaml https://api.${DOMAIN} ${TOKEN} ${FIWARE_SERVICE} ${DEPLOYER_SERVICEPATH} ${DEPLOYER_TYPE} ${DEPLOYER_ID}
     ```
 
     - 実行結果（例）
@@ -2780,5 +3157,3 @@ OpenGLのトラブルが原因でturtlebot3-fakeのポッドが起動しない�
     ![grafana012](images/grafana/grafana012.png)
 
 1. ブラウザを終了
-
-1. Ctrl-Cでport-forwardingを終了し、別ターミナル閉じる

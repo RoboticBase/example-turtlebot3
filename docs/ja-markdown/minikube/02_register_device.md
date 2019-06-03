@@ -711,26 +711,18 @@
         ```
 
 ## gamepadのボタンテスト
-
-1. gamepadをエミュレーションするコマンドの作成
+1. 全てのTopicをsubscribeするコマンドを作成
 
     ```
-    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
-    $ echo "mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m \"${d}|button|circle\""
+    $ echo "mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#"
     ```
-
     - 実行結果（例）
 
         ```
-        mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-03-07T13:53:29.1551934409+0900|button|circle"
+        mosquitto_sub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /#
         ```
 
-1. エミュレーションコマンドの受信待機
-
-    ```
-    $ mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#
-    ```
-
+1. 別ターミナルで上記のコマンドを実行
     - 実行結果（例）
 
         ```
@@ -742,21 +734,23 @@
         Subscribed (mid: 1): 0
         ```
 
-1. 別ターミナルで作成したエミュレーションコマンドの実行
+1. gamepadをエミュレーションするコマンドを実行
 
     ```
-    $ mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /gamepad/gamepad/attrs -m "2019-03-07T13:53:29.1551934409+0900|button|circle"
+    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
+    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m "${d}|button|circle"
     ```
 
     - 実行結果（例）
 
         ```
-        Client mosqsub/31214-roboticba sending CONNECT
-        Client mosqsub/31214-roboticba received CONNACK
-        Client mosqsub/31214-roboticba sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
+        Client mosqpub|21891-FIWARE-PC sending CONNECT
+        Client mosqpub|21891-FIWARE-PC received CONNACK (0)
+        Client mosqpub|21891-FIWARE-PC sending PUBLISH (d0, q0, r0, m1, '/gamepad/gamepad/attrs', ... (49 bytes))
+        Client mosqpub|21891-FIWARE-PC sending DISCONNECT
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     - 実行結果（例）
 
@@ -814,40 +808,34 @@
 
 
 ## robotのx、y、z、thetaテスト
-
-1. robotをエミュレーションするコマンドの作成
+1. 全てのTopicをsubscribeするコマンドを作成
 
     ```
-    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
-    $ echo "mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/attrs -m \"${d}|x|0.1|y|0.2|z|0.3|theta|0.4\""
+    $ echo "mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#"
     ```
-
     - 実行結果（例）
 
         ```
-        mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /robot/turtlebot3/attrs -m "2019-03-07T14:18:18.1551935898+0900|x|0.1|y|0.2|z|0.3|theta|0.4"
+        mosquitto_sub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /#
         ```
 
-1. エミュレーションコマンドの受信待機
-
-    ```
-    $ mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#
-    ```
-
+1. 別ターミナルで上記のコマンドを実行
     - 実行結果（例）
 
         ```
-        Client mosqsub/1414-roboticbas sending CONNECT
-        Client mosqsub/1414-roboticbas received CONNACK
-        Client mosqsub/1414-roboticbas sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub/1414-roboticbas received SUBACK
+        Client mosqsub/31214-roboticba sending CONNECT
+        Client mosqsub/31214-roboticba received CONNACK
+        Client mosqsub/31214-roboticba sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
+
+        Client mosqsub/31214-roboticba received SUBACK
         Subscribed (mid: 1): 0
         ```
 
-1. 別ターミナルで作成したエミュレーションコマンドの実行
+1. robotをエミュレーションするコマンドを実行
 
     ```
-    $ mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /robot/turtlebot3/attrs -m "2019-03-07T14:18:18.1551935898+0900|x|0.1|y|0.2|z|0.3|theta|0.4"
+    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
+    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/attrs -m "${d}|x|0.1|y|0.2|z|0.3|theta|0.4"
     ```
 
     - 実行結果（例）
@@ -859,7 +847,7 @@
         Client mosqpub/1431-roboticbas sending DISCONNECT
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     ```
     Client mosqsub/1414-roboticbas received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/attrs', ... (63 bytes))
@@ -996,56 +984,38 @@
 
 
 ## robotのmoveテスト
-
-1. robotをエミュレーションするコマンドの作成
+1. 全てのTopicをsubscribeするコマンドを作成
 
     ```
-    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
-    $ echo -e "curl -i -H \"Authorization: bearer ${TOKEN}\" -H \"Fiware-Service: ${FIWARE_SERVICE}\" -H \"Fiware-Servicepath: ${ROBOT_SERVICEPATH}\" -H \"Content-Type: application/json\" http://${HOST_IPADDR}:8080/orion/v2/entities/${ROBOT_ID}/attrs?type=${ROBOT_TYPE} -X PATCH -d @-<<__EOS__
-    {
-      \"move\": {
-        \"value\": \"square\"
-      }
-    }
-    __EOS__"
+    $ echo "mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#"
     ```
-
     - 実行結果（例）
 
         ```
-        curl -i -H "Authorization: bearer 5Z9KpEAE5z3XR7ZsV5cGGeefZUOJFLv0" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /robot" -H "Content-Type: application/json" http://192.168.99.1:8080/orion/v2/entities/turtlebot3/attrs?type=robot -X PATCH -d @-<<__EOS__
-        {
-          "move": {
-            "value": "square"
-          }
-        }
-        __EOS__
+        mosquitto_sub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /#
         ```
 
-1. エミュレーションコマンドの受信待機
-
-    ```
-    $ mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#
-    ```
-
+1. 別ターミナルで上記のコマンドを実行
     - 実行結果（例）
 
         ```
-        Client mosqsub/1763-roboticbas sending CONNECT
-        Client mosqsub/1763-roboticbas received CONNACK
-        Client mosqsub/1763-roboticbas sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub/1763-roboticbas received SUBACK
+        Client mosqsub/31214-roboticba sending CONNECT
+        Client mosqsub/31214-roboticba received CONNACK
+        Client mosqsub/31214-roboticba sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
+
+        Client mosqsub/31214-roboticba received SUBACK
         Subscribed (mid: 1): 0
         ```
 
-1. 別ターミナルで作成したエミュレーションコマンドの実行
+1. robotへ命令するコマンドを実行
 
     ```
-    $ curl -i -H "Authorization: bearer 5Z9KpEAE5z3XR7ZsV5cGGeefZUOJFLv0" -H "Fiware-Service: fiwaredemo" -H "Fiware-Servicepath: /robot" -H "Content-Type: application/json" http://192.168.99.1:8080/orion/v2/entities/turtlebot3/attrs?type=robot -X PATCH -d @-<<__EOS__
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -i -H "Authorization: bearer ${TOKEN}" -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-Servicepath: ${ROBOT_SERVICEPATH}" -H "Content-Type: application/json" http://${HOST_IPADDR}:8080/orion/v2/entities/${ROBOT_ID}/attrs?type=${ROBOT_TYPE} -X PATCH -d @-<<__EOS__
     {
-        "move": {
+      "move": {
         "value": "square"
-        }
+      }
     }
     __EOS__
     ```
@@ -1061,7 +1031,7 @@
         server: envoy
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     ```
     Client mosqsub/1763-roboticbas received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/cmd', ... (22 bytes))
@@ -1179,38 +1149,12 @@
         }
         ```
 
-1. コマンド実行結果の送信処理をエミュレーションするコマンドの作成
+1. コマンド実行結果の送信処理をエミュレート
 
     ```
-    $ echo "mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/cmdexe -m \"${ROBOT_ID}@move|executed square command\""
+    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/cmdexe -m "${ROBOT_ID}@move|executed square command"
     ```
 
-    - 実行結果（例）
-
-        ```
-        mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /robot/turtlebot3/cmdexe -m "turtlebot3@move|executed square command"
-        ```
-
-1. コマンド実行結果の受信待機
-
-    ```
-    $ mosquitto_sub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /#
-    ```
-
-    - 実行結果（例）
-
-        ```
-        Client mosqsub/3056-roboticbas sending CONNECT
-        Client mosqsub/3056-roboticbas received CONNACK
-        Client mosqsub/3056-roboticbas sending SUBSCRIBE (Mid: 1, Topic: /#, QoS: 0)
-        Client mosqsub/3056-roboticbas received SUBACK
-        Subscribed (mid: 1): 0
-        ```
-
-1. 別ターミナルで作成したエミュレーションコマンドの実行
-    ```
-    $ mosquitto_pub -h 192.168.99.1 -p 1883 -d -u iotagent -P password_of_iotagent -t /robot/turtlebot3/cmdexe -m "turtlebot3@move|executed square command"
-    ```
 
     - 実行結果（例）
 
@@ -1221,7 +1165,7 @@
         Client mosqpub/3091-roboticbas sending DISCONNECT
         ```
 
-1. 受信待機側の端末で下記が表示されていることを確認
+1. 別ターミナルで下記が表示されていることを確認
 
     ```
     Client mosqsub/3056-roboticbas received PUBLISH (d0, q0, r0, m0, '/robot/turtlebot3/cmdexe', ... (39 bytes))

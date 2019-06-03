@@ -1,6 +1,6 @@
 # RoboticBase example: Deploy robot programs on TurtleBot3
 
-This repository is example of "RoboticBase-core". The latest version (0.4.1) conforms to [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6).
+This repository is example of "RoboticBase-core". The latest version (0.4.2) conforms to [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6).
 
 ## Description
 "RoboticBase" is a robot management platform based on [FIWARE](http://www.fiware.org/) which enables you to manage and operate many kinds of robots and IoT devices as interactions of contexts.
@@ -28,7 +28,7 @@ For example, you can deploy a ROS program to the robot and access the raw data o
 |:--|:--|:--|
 |[kubernetes](https://kubernetes.io/)|Container Orchestration Platform|1.14.1|
 |[deployer](https://github.com/RoboticBase/mqtt-kube-operator)|MQTT client to deploy (or delete) a resource to its own Kubernetes|0.2.0|
-|[bridge](https://github.com/RoboticBase/fiware_ros_turtlebot3_bridge)|ROS package to act as a bridge FIWARE orion and ROS|0.2.2|
+|[bridge](https://github.com/RoboticBase/fiware_ros_bridge)|ROS package to act as a bridge FIWARE orion and ROS|0.2.2|
 |[operator](https://github.com/RoboticBase/fiware_ros_turtlebot3_operator)|ROS package to control turtlebot3 (simulator and physical robot)|0.2.1|
 
 ## An experiment to prove our concept
@@ -143,7 +143,7 @@ Please see this repository [ogcaizu/ogc-poc1](https://github.com/ogcaizu/ogc-poc
     * An android application for Xperia Hello! It connect to FIWARE using MQTT(S).
 
 ### ROS package
-* [RoboticBase/fiware_ros_turtlebot3_bridge](https://github.com/RoboticBase/fiware_ros_turtlebot3_bridge)
+* [RoboticBase/fiware_ros_bridge](https://github.com/RoboticBase/fiware_ros_bridge)
     * A [ROS](http://wiki.ros.org/) pakage witten by python2 in order to act as a bridge between FIWARE and ROS nodes.
     * When a MQTT message is received from a MQTT topic, this package create ROS message and publish a ROS message to a ROS topic.
     * At the opposite, when a ROS message is received from a ROS topic, this package publish a MQTT message to a MQTT topic.

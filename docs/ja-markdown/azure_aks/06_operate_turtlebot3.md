@@ -128,28 +128,26 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
 ### Webコントローラでturtlebot3を操作
 
+1. ユーザ名とパスワードの確認
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.basic_auths[0].username' -r
+    ```
+
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.basic_auths[0].password' -r
+    ```
 1. web controllerの表示
     * macOS
 
         ```
-        $ open https://api.${DOMAIN}/controller/web/
+        $ open https://web.${DOMAIN}/controller/web/
         ```
     * Ubuntu
 
         ```
-        $ xdg-open https://api.${DOMAIN}/controller/web/
+        $ xdg-open https://web.${DOMAIN}/controller/web/
         ```
-
-
-1. ユーザ名とパスワードの確認
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].username' -r
-    ```
-
-    ```
-    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.basic_auths | map(select(.allowed_paths[] | contains ("/controller/web"))) | .[0].password' -r
-    ```
 
 ### turtlebot3の動作確認
 1. turtlebot3の動作確認【turtlebot3-pc】
@@ -168,6 +166,11 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
 
 ## robotのプログラムを変更
+1. tagを指定
+
+    ```
+    $ export OPERATOR_GIT_REV="0.3.0"
+    ```
 
 1. fiware-ros-turtlebot3-operator-deployment-acr-wideを削除
 
@@ -235,6 +238,8 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     1. turtlebot3が移動したことを確認（先ほどより小さい円で動作）
 
         ![webcontroller004](images/webcontroller/webcontroller004.png)
+
+## robotのプログラムを元に戻す
 
 1. fiware-ros-turtlebot3-operator-deployment-acr-narrowを削除
 
