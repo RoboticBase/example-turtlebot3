@@ -19,7 +19,7 @@ spec:
       - name: "${ACR_NAME}"
       containers:
       - name: turtlebot3-operator
-        image: "${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-operator:0.2.1"
+        image: "${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-operator:${OPERATOR_GIT_REV}"
         imagePullPolicy: Always
         command:
         - "/opt/kube_entrypoint.sh"
