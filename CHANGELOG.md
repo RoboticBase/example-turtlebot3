@@ -4,6 +4,10 @@
 * We will employ the example of "wirecloud" running on RoboticBase-core
 * We will employ the example of "kurento" running on RoboticBase-core
 
+## [0.4.2]
+### Changed
+* create the subdomains and routing rules of "kibana" and "grafana", and expose them to Internet.
+
 ## [0.4.1]
 ### Changed
 * update components and documents to adjust [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6)

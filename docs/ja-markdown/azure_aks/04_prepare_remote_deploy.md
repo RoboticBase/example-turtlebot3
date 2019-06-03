@@ -1329,93 +1329,80 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
 ## kibanaの設定
 
-1. 別ターミナルでKibanaのポートフォワーディングを開始
-
-    ```
-    $ kubectl --namespace monitoring port-forward $(kubectl get pod -l k8s-app=kibana-logging --namespace monitoring -o template --template "{{(index .items 0).metadata.name}}") 5601:5601
-    ```
-
-    - 実行結果（例）
+1. ユーザ名とパスワードの確認
+    * ユーザ名
 
         ```
-        Forwarding from 127.0.0.1:5601 -> 5601
-        Forwarding from [::1]:5601 -> 5601
+        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "kibana\\..+$")|.settings.basic_auths[0].username' -r
         ```
+    * パスワード
 
+        ```
+        $ cat ${PJ_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "kibana\\..+$")|.settings.basic_auths[0].password' -r
+        ```
 1. ブラウザでkibanaにアクセス
-  * macOS
-    ```
-    $ open http://localhost:5601/
-    ```
+    * macOS
 
-  * Ubuntu
-    ```
-    $ xdg-open http://localhost:5601/
-    ```
+        ```
+        $ open https://kibana.${DOMAIN}/
+        ```
+    * Ubuntu
 
-1. 「Management」をクリック
+        ```
+        $ xdg-open https://kibana.${DOMAIN}/
+        ```
+1. ユーザ名とパスワードを入力し、ログイン
 
     ![kibana001](images/kibana/kibana001.png)
 
-1. 「Index Patterns」をクリック
+1. 「Management」をクリック
 
     ![kibana002](images/kibana/kibana002.png)
 
-1. 「+Create Index Pattern」をクリック
+1. 「Index Patterns」をクリック
 
     ![kibana003](images/kibana/kibana003.png)
 
-1. 「Index pattern」に「cygnus-fiwaredemo-deployer-*」を入力し「Next step」をクリック
+1. 「+Create Index Pattern」をクリック
 
     ![kibana004](images/kibana/kibana004.png)
 
+1. 「Index pattern」に「cygnus-fiwaredemo-deployer-*」を入力し「Next step」をクリック
+
+    ![kibana004](images/kibana/kibana005.png)
+
 1. 「Time Filter field name」で「revTime」を選択し「Create Index pattern」をクリック
-
-    ![kibana005](images/kibana/kibana005.png)
-
-1. cygnus-fiwaredemo-deployer-* の画面が表示されていることを確認
 
     ![kibana006](images/kibana/kibana006.png)
 
-1. 「Discover」をクリックした後、「logstash-*」のプルダウンリストをクリック
+1. cygnus-fiwaredemo-deployer-* の画面が表示されていることを確認
 
     ![kibana007](images/kibana/kibana007.png)
 
-1. 「cygnus-fiwaredemo-deployer-*」を選択すると、デプロイログが表示される
+1. 「Discover」をクリックした後、「logstash-*」のプルダウンリストをクリック
 
     ![kibana008](images/kibana/kibana008.png)
 
+1. 「cygnus-fiwaredemo-deployer-*」を選択すると、デプロイログが表示される
+
+    ![kibana009](images/kibana/kibana009.png)
+
 1. ブラウザを終了
 
-1. Ctrl-Cでport-forwardingを終了し、別ターミナル閉じる
 
 ## grafanaの設定
 
-1. 別ターミナルでgrafanaのポートフォワーディングを開始
-
-    ```
-    $ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monitoring -l app=kp-grafana -o template --template "{{(index .items 0).metadata.name}}") 3000:3000
-    ```
-
-    - 実行結果（例）
-
-        ```
-        Forwarding from 127.0.0.1:3000 -> 3000
-        Forwarding from [::1]:3000 -> 3000
-        ```
-
 1. ブラウザでgrafanaにアクセス
-  * macOS
+    * macOS
 
-    ```
-    $ open http://localhost:3000
-    ```
-  * Ubuntu
+        ```
+        $ open https://grafana.${DOMAIN}/login
+        ```
+    * Ubuntu
 
-    ```
-    $ xdg-open http://localhost:3000
-    ```
-
+        ```
+        $ xdg-open https://grafana.${DOMAIN}/login
+        ```
 1. grafanaのWEB管理画面が表示されたことを確認
 
     ![grafana001](images/grafana/grafana001.png)
