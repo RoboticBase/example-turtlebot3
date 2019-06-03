@@ -191,6 +191,11 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
 
 ### robotのプログラムを変更
+1. tagを指定
+
+    ```
+    $ export OPERATOR_GIT_REV="0.3.0"
+    ```
 
 1. fiware-ros-turtlebot3-operator-deployment-minikube-wideを削除
 
