@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: turtlebot3-operator
-        image: "${EXTERNAL_HOST_IPADDR}:5000/roboticbase/fiware-ros-turtlebot3-operator:0.2.1"
+        image: "${EXTERNAL_HOST_IPADDR}:5000/roboticbase/fiware-ros-turtlebot3-operator:${OPERATOR_GIT_REV}"
         imagePullPolicy: Always
         command:
         - "/opt/kube_entrypoint.sh"

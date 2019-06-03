@@ -14,11 +14,9 @@ spec:
       labels:
         app: ros-bridge
     spec:
-      imagePullSecrets:
-      - name: "${ACR_NAME}"
       containers:
       - name: ros-bridge
-        image: "${REPOSITORY}/roboticbase/fiware-ros-turtlebot3-bridge:0.2.2"
+        image: "${EXTERNAL_HOST_IPADDR}:5000/roboticbase/fiware-ros-bridge:${BRIDGE_GIT_REV}"
         imagePullPolicy: Always
         command:
         - "/opt/kube_entrypoint.sh"
@@ -28,10 +26,10 @@ spec:
         - name: ROS_MASTER_URI
           value: http://ros-master:11311
         volumeMounts:
-        - mountPath: "/etc/fiware_ros_turtlebot3_bridge/secrets"
+        - mountPath: "/etc/fiware_ros_bridge/secrets"
           name: ros-bridge-secrets
           readOnly: true
-        - mountPath: "/etc/fiware_ros_turtlebot3_bridge/configmaps"
+        - mountPath: "/etc/fiware_ros_bridge/configmaps"
           name: ros-bridge-configmaps
           readOnly: true
         - mountPath: "/usr"
