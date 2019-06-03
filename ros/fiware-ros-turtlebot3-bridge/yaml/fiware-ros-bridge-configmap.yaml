@@ -6,17 +6,17 @@ metadata:
   labels:
     app: ros-bridge
 data:
-  turtlebot3_attrs.yaml: |
+  robot_attrs.yaml: |
     topics:
       mqtt: "/robot/turtlebot3/attrs"
       ros:
         pos: "/turtlebot3_bridge/attrs"
+        r_mode: "/r_mode"
         battery_state: "/battery_state"
     thresholds:
-      battery_state:
-        send_delta_millisec: 1000
+      send_delta_millisec: 1000
     timezone: "Asia/Tokyo"
-  turtlebot3_cmd.yaml: |
+  robot_cmd.yaml: |
     topics:
       mqtt:
         cmd: "/robot/turtlebot3/cmd"
