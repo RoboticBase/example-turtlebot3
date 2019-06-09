@@ -8,7 +8,7 @@ metadata:
 data:
   robot_attrs.yaml: |
     topics:
-      mqtt: "/robot/turtlebot3/attrs"
+      mqtt: "/${ROBOT_TYPE}/${ROBOT_ID}/attrs"
       ros:
         pos: "/turtlebot3_bridge/attrs"
         r_mode: "/r_mode"
@@ -19,6 +19,6 @@ data:
   robot_cmd.yaml: |
     topics:
       mqtt:
-        cmd: "/robot/turtlebot3/cmd"
-        result: "/robot/turtlebot3/cmdexe"
+        cmd: "/${ROBOT_TYPE}/${ROBOT_ID}/cmd"
+        result: "/${ROBOT_TYPE}/${ROBOT_ID}/cmdexe"
       ros: "/turtlebot3_bridge/cmd"
