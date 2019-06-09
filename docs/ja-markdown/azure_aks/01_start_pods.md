@@ -329,7 +329,7 @@
 
     ```
     $ export MONGODB_DATABASE="sth_${FIWARE_SERVICE}"
-    $ export MONGODB_COLLECTION="sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}"
+    $ export MONGODB_COLLECTION=$(echo sth_${ROBOT_SERVICEPATH}xffff${ROBOT_ID}xffff${ROBOT_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
     $ env BEARER_AUTH=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.bearer_tokens | map(select(.allowed_paths[] | contains("^/visualizer/positions/$"))) | .[0].token' -r) envsubst < controller/robot-visualization-deployment.yaml | kubectl apply -f -
     ```
 

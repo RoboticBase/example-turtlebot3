@@ -789,7 +789,8 @@
 1. cygnus-mongoの確認
 
     ```
-    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"sth_${GAMEPAD_SERVICEPATH}_${GAMEPAD_ID}_${GAMEPAD_TYPE}\").find().sort({recvTime: -1})"
+    $ c=$(echo sth_${GAMEPAD_SERVICEPATH}xffff${GAMEPAD_ID}xffff${GAMEPAD_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
+    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"${c}\").find().sort({recvTime: -1})"
     ```
 
     - 実行結果（例）
@@ -958,8 +959,8 @@
 1. cygnus-mongoの確認
 
     ```
-    $ OP_IN='$in'
-    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}\").find().sort({recvTime: -1})"
+    $ c=$(echo sth_${ROBOT_SERVICEPATH}xffff${ROBOT_ID}xffff${ROBOT_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
+    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"${c}\").find().sort({recvTime: -1})"
     ```
 
     - 実行結果（例）
@@ -1285,8 +1286,8 @@
 1. cygnus-mongoの確認
 
     ```
-    $ OP_IN='$in'
-    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}\").find().sort({recvTime: -1})"
+    $ c=$(echo sth_${ROBOT_SERVICEPATH}xffff${ROBOT_ID}xffff${ROBOT_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
+    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"${c}\").find().sort({recvTime: -1})"
     ```
 
     - 実行結果（例）
