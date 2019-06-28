@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: fiware-robot-visualization
-        image: roboticbase/fiware-robot-visualization:0.2.1
+        image: roboticbase/fiware-robot-visualization:0.3.0
         imagePullPolicy: Always
         env:
         - name: LISTEN_PORT
@@ -25,16 +25,20 @@ spec:
           value: "DEBUG"
         - name: BEARER_AUTH
           value: "${BEARER_AUTH}"
-        - name: MONGODB_ENDPOINT
-          value: "mongodb-client:27017"
-        - name: MONGODB_REPLICASET
-          value: "rs0"
-        - name: MONGODB_DATABASE
-          value: "${MONGODB_DATABASE}"
-        - name: MONGODB_COLLECTION
-          value: "${MONGODB_COLLECTION}"
-        - name: CYGNUS_MONGO_ATTR_PERSISTENCE
-          value: "row"
+        - name: API_VERSION
+          value: "v2"
+        - name: FETCH_LIMIT
+          value: "128"
+        - name: COMET_ENDPOINT
+          value: "http://comet:8666"
+        - name: FIWARE_SERVICE
+          value: "${FIWARE_SERVICE}"
+        - name: FIWARE_SERVICEPATH
+          value: "${ROBOT_SERVICEPATH}"
+        - name: ENTITY_TYPE
+          value: "${ROBOT_TYPE}"
+        - name: ENTITY_ID
+          value: "${ROBOT_ID}"
         ports:
           - name: robot-vis
             containerPort: 8888

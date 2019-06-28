@@ -4,14 +4,18 @@
 * We will employ the example of "wirecloud" running on RoboticBase-core
 * We will employ the example of "kurento" running on RoboticBase-core
 
+## [0.4.3]
+### Changed
+* updated "fiware-robot-visualization" to 0.3.0 in order to use "sth-comet" instead of accessing mongodb directly.
+
 ## [0.4.2]
 ### Changed
-* create the subdomains and routing rules of "kibana" and "grafana", and expose them to Internet.
-* update the `auth` component to be able to change the auth tokens dynamically.
+* updated the documents to use "kibana" and "grafana" through Internet (in the case of AKS).
+* updated the documents to add the authentication information used in "cmd-proxy" and "robot-visualization" to auth-secrets.
 
 ## [0.4.1]
 ### Changed
-* update components and documents to adjust [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6)
+* updated components and documents to adjust [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6)
     * Business Logic components
 
         |component|version|(previous version)|
@@ -33,8 +37,8 @@
 
 ## [0.4.0]
 ### Changed
-* split repository ([core](https://github.com/RoboticBase/core) and [example-turtlebot3](https://github.com/RoboticBase/example-turtlebot3))
-* update components and documents to adjust [FIWARE Release 7.5.1](https://github.com/Fiware/catalogue/releases)
+* splitted repository ([core](https://github.com/RoboticBase/core) and [example-turtlebot3](https://github.com/RoboticBase/example-turtlebot3))
+* updated components and documents to adjust [FIWARE Release 7.5.1](https://github.com/Fiware/catalogue/releases)
 
 * cmd-proxy
     * techsketch/fiware-cmd-proxy:0.1.1 -> roboticbase/fiware-cmd-proxy:0.2.0
