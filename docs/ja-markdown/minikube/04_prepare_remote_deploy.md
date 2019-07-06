@@ -1574,7 +1574,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 1. 別ターミナルでgrafanaのポートフォワーディングを開始
 
     ```
-    $ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monitoring -l app=kp-grafana -o template --template "{{(index .items 0).metadata.name}}") 3000:3000
+    $ kubectl --namespace monitoring port-forward $(kubectl get pod --namespace monitoring -l app=grafana,release=po -o template --template "{{(index .items 0).metadata.name}}") 3000:3000
     ```
 
     - 実行結果（例）
@@ -1588,12 +1588,12 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     * macOS
 
         ```
-        $ open http://localhost:3000
+        $ open http://localhost:3000/login
         ```
     * Ubuntu
 
         ```
-        $ xdg-open http://localhost:3000
+        $ xdg-open http://localhost:3000/login
         ```
 
 1. grafanaのWEB管理画面が表示されたことを確認
