@@ -137,7 +137,7 @@
                     "bearer_tokens": [
                         {
                             "token": "1IqNHfjQsD84mPHvciATObXM3ozfHmX1",
-                            "allowed_paths": ["^/orion/.*$", "^/idas/.*$"]
+                            "allowed_paths": ["^/orion/.*$", "^/idas/.*$", "^/comet/.*$"]
                         }, {
                             "token": "mgMVtijGi6JWX9HT2PFXkZ6xqSdOZVVd",
                             "allowed_paths": ["^/visualizer/positions/$"]
@@ -183,7 +183,7 @@
         --------
         2019/05/21 10:10:27 hosts: [.*]
         --------
-        2019/05/21 10:10:27 bearerTokenAllowedPaths: map[.*:map[cQB5mONfXwP8tHqPQ6kWpRKNzqvbUdfq:[^/orion/.*$ ^/idas/.*$] Tx2b6WD0rYH6uz6Gwe6F2hfaFxp0geg8:[^/visualizer/positions/$]]]
+        2019/05/21 10:10:27 bearerTokenAllowedPaths: map[.*:map[cQB5mONfXwP8tHqPQ6kWpRKNzqvbUdfq:[^/orion/.*$ ^/idas/.*$ ^/comet/.*$] Tx2b6WD0rYH6uz6Gwe6F2hfaFxp0geg8:[^/visualizer/positions/$]]]
         --------
         2019/05/21 10:10:27 basicAuthPaths, map[.*:map[/controller/web/:map[xQdM56jY:jKwHUgGGYDYt0UJJ] /visualizer/locus/:map[xQdM56jY:jKwHUgGGYDYt0UJJ]]]
         --------
@@ -263,8 +263,6 @@
 1. robot-visualization-deploymentの作成
 
     ```
-    $ export MONGODB_DATABASE="sth_${FIWARE_SERVICE}"
-    $ export MONGODB_COLLECTION="sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}"
     $ env BEARER_AUTH=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens | map(select(.allowed_paths[] | contains ("^/visualizer/positions/$"))) | .[0].token' -r) envsubst < controller/robot-visualization-deployment.yaml | kubectl apply -f -
     ```
 

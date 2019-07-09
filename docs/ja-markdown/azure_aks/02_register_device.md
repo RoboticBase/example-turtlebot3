@@ -789,7 +789,8 @@
 1. cygnus-mongoの確認
 
     ```
-    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"sth_${GAMEPAD_SERVICEPATH}_${GAMEPAD_ID}_${GAMEPAD_TYPE}\").find().sort({recvTime: -1})"
+    $ c=$(echo sth_${GAMEPAD_SERVICEPATH}xffff${GAMEPAD_ID}xffff${GAMEPAD_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
+    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"${c}\").find().sort({recvTime: -1})"
     ```
 
     - 実行結果（例）
@@ -800,6 +801,45 @@
         Implicit session: session { "id" : UUID("937dccec-3160-4689-bbf4-ff38877d46a1") }
         MongoDB server version: 4.1.10
         { "_id" : ObjectId("5cc1a391650bcb0011bff77e"), "recvTime" : ISODate("2019-04-25T12:07:07.155Z"), "attrName" : "button", "attrType" : "string", "attrValue" : "circle" }
+        ```
+
+1. sth-cometの確認
+
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ curl -sS -H "Authorization: bearer ${TOKEN}"  -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${GAMEPAD_SERVICEPATH}" https://api.${DOMAIN}/comet/STH/v1/contextEntities/type/${GAMEPAD_TYPE}/id/${GAMEPAD_ID}/attributes/button?lastN=100 | jq .
+    ```
+
+    - 実行結果（例）
+
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "button",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-14T09:18:35.155Z",
+                        "attrType": "string",
+                        "attrValue": "circle"
+                      }
+                    ]
+                  }
+                ],
+                "id": "gamepad",
+                "isPattern": false,
+                "type": "gamepad"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
         ```
 
 ## robotのx、y、z、thetaテスト
@@ -958,8 +998,8 @@
 1. cygnus-mongoの確認
 
     ```
-    $ OP_IN='$in'
-    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}\").find().sort({recvTime: -1})"
+    $ c=$(echo sth_${ROBOT_SERVICEPATH}xffff${ROBOT_ID}xffff${ROBOT_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
+    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"${c}\").find().sort({recvTime: -1})"
     ```
 
     - 実行結果（例）
@@ -977,6 +1017,135 @@
         { "_id" : ObjectId("5cc1a2ad0a25f60012cd9bb4"), "recvTime" : ISODate("2019-04-25T12:06:02.803Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
         ```
 
+1. sth-cometの確認
+
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ for a in "x" "y" "z" "theta"; do
+      curl -sS -H "Authorization: bearer ${TOKEN}"  -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${ROBOT_SERVICEPATH}" https://api.${DOMAIN}/comet/STH/v1/contextEntities/type/${ROBOT_TYPE}/id/${ROBOT_ID}/attributes/${a}?lastN=100 | jq .
+    done
+    ```
+
+    - 実行結果（例）
+
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "x",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-14T09:22:19.155Z",
+                        "attrType": "float32",
+                        "attrValue": "0.1"
+                      }
+                    ]
+                  }
+                ],
+                "id": "turtlebot3",
+                "isPattern": false,
+                "type": "robot"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
+        ```
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "y",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-14T09:22:19.155Z",
+                        "attrType": "float32",
+                        "attrValue": "0.2"
+                      }
+                    ]
+                  }
+                ],
+                "id": "turtlebot3",
+                "isPattern": false,
+                "type": "robot"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
+        ```
+
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "z",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-14T09:22:19.155Z",
+                        "attrType": "float32",
+                        "attrValue": "0.3"
+                      }
+                    ]
+                  }
+                ],
+                "id": "turtlebot3",
+                "isPattern": false,
+                "type": "robot"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
+        ```
+
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "theta",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-14T09:22:19.155Z",
+                        "attrType": "float32",
+                        "attrValue": "0.4"
+                      }
+                    ]
+                  }
+                ],
+                "id": "turtlebot3",
+                "isPattern": false,
+                "type": "robot"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
+        ```
 
 ## robotのmoveテスト
 
@@ -1285,8 +1454,8 @@
 1. cygnus-mongoの確認
 
     ```
-    $ OP_IN='$in'
-    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}\").find().sort({recvTime: -1})"
+    $ c=$(echo sth_${ROBOT_SERVICEPATH}xffff${ROBOT_ID}xffff${ROBOT_TYPE} | perl -pe 's/\//x002f/g; s/\$/x0024/g; s/=/xffff/g;')
+    $ kubectl exec mongodb-0 -c mongodb-replicaset -- mongo sth_${FIWARE_SERVICE} --eval "db.getCollection(\"${c}\").find().sort({recvTime: -1})"
     ```
 
     - 実行結果（例）
@@ -1313,4 +1482,89 @@
         { "_id" : ObjectId("5cc1a5050a25f60012cd9bc1"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "z", "attrType" : "float32", "attrValue" : "0.3" }
         { "_id" : ObjectId("5cc1a5050a25f60012cd9bc2"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "theta", "attrType" : "float32", "attrValue" : "0.4" }
         { "_id" : ObjectId("5cc1a2ad0a25f60012cd9bb4"), "recvTime" : ISODate("2019-04-25T12:06:02.803Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
+        ```
+
+1. sth-cometの確認
+
+    ```
+    $ TOKEN=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[0].settings.bearer_tokens[0].token' -r)
+    $ for a in "move_status" "move_info"; do
+      curl -sS -H "Authorization: bearer ${TOKEN}"  -H "Fiware-Service: ${FIWARE_SERVICE}" -H "Fiware-ServicePath: ${ROBOT_SERVICEPATH}" https://api.${DOMAIN}/comet/STH/v1/contextEntities/type/${ROBOT_TYPE}/id/${ROBOT_ID}/attributes/${a}?lastN=100 | jq .
+    done
+    ```
+
+    - 実行結果（例）
+
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "move_status",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-14T09:22:33.167Z",
+                        "attrType": "commandStatus",
+                        "attrValue": "UNKNOWN"
+                      },
+                      {
+                        "recvTime": "2019-02-15T22:29:47.910Z",
+                        "attrType": "commandStatus",
+                        "attrValue": "UNKNOWN"
+                      },
+                      {
+                        "recvTime": "2019-02-15T22:30:29.911Z",
+                        "attrType": "commandStatus",
+                        "attrValue": "PENDING"
+                      },
+                      {
+                        "recvTime": "2019-02-15T22:30:52.006Z",
+                        "attrType": "commandStatus",
+                        "attrValue": "OK"
+                      }
+                    ]
+                  }
+                ],
+                "id": "turtlebot3",
+                "isPattern": false,
+                "type": "robot"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
+        ```
+        ```json
+        {
+          "contextResponses": [
+            {
+              "contextElement": {
+                "attributes": [
+                  {
+                    "name": "move_info",
+                    "values": [
+                      {
+                        "recvTime": "2019-02-15T22:30:52.006Z",
+                        "attrType": "commandResult",
+                        "attrValue": "executed square command"
+                      }
+                    ]
+                  }
+                ],
+                "id": "turtlebot3",
+                "isPattern": false,
+                "type": "robot"
+              },
+              "statusCode": {
+                "code": "200",
+                "reasonPhrase": "OK"
+              }
+            }
+          ]
+        }
         ```

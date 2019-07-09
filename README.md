@@ -1,6 +1,6 @@
 # RoboticBase example: Deploy robot programs on TurtleBot3
 
-This repository is example of "RoboticBase-core". The latest version (0.4.2) conforms to [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6).
+This repository is example of "RoboticBase-core". The latest version (0.4.3) conforms to [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6).
 
 ## Description
 "RoboticBase" is a robot management platform based on [FIWARE](http://www.fiware.org/) which enables you to manage and operate many kinds of robots and IoT devices as interactions of contexts.
@@ -8,13 +8,13 @@ This repository is example of "RoboticBase-core". The latest version (0.4.2) con
 "RoboticBase" allows robots to collaborate with IoT devices, Open Data, human beings and so on. You can connect a robot to "RoboticBase" using the open APIs of the robot, and operate the robot through those APIs. In turn, "RoboticBase" has an ability to manage ROS. If you connect a ROS robot to "RoboticBase", you can operate the robot directly without restrictions.  
 For example, you can deploy a ROS program to the robot and access the raw data of the robot through "RoboticBase".
 
-![roboticbase-core-architecture.png](/docs/images/roboticbase-core-architecture.png)
+![roboticbase-example-turtlebot3-architecture.png](/docs/images/roboticbase-example-turltebot3-architecture.png)
 
 |component|summary|version|
 |:--|:--|:--|
 |[kubernetes](https://kubernetes.io/)|Container Orchestration Platform|1.13 or higher|
 |[fiware-cmd-proxy](https://github.com/RoboticBase/fiware-cmd-proxy)|Business Logic component to handle the gamepad and robot|0.2.0|
-|[robot-visualization](https://github.com/RoboticBase/fiware-robot-visualization)|Business Logic component to visualize the locus of robot|0.2.1|
+|[robot-visualization](https://github.com/RoboticBase/fiware-robot-visualization)|Business Logic component to visualize the locus of robot|0.3.0|
 
 |gamepad|summary|version|
 |:--|:--|:--|
@@ -28,8 +28,8 @@ For example, you can deploy a ROS program to the robot and access the raw data o
 |:--|:--|:--|
 |[kubernetes](https://kubernetes.io/)|Container Orchestration Platform|1.14.1|
 |[deployer](https://github.com/RoboticBase/mqtt-kube-operator)|MQTT client to deploy (or delete) a resource to its own Kubernetes|0.2.0|
-|[bridge](https://github.com/RoboticBase/fiware_ros_bridge)|ROS package to act as a bridge FIWARE orion and ROS|0.2.2|
-|[operator](https://github.com/RoboticBase/fiware_ros_turtlebot3_operator)|ROS package to control turtlebot3 (simulator and physical robot)|0.2.1|
+|[bridge](https://github.com/RoboticBase/fiware_ros_bridge)|ROS package to act as a bridge FIWARE orion and ROS|0.3.0|
+|[operator](https://github.com/RoboticBase/fiware_ros_turtlebot3_operator)|ROS package to control turtlebot3 (simulator and physical robot)|0.3.0|
 
 ## An experiment to prove our concept
 We and University of Aizu have been performed an experiment to guide a visitor by collaborating with heterogeneous robots, IoT devices and people through this Robot Platform on Nov. 6th - 8th , 2018.
@@ -131,7 +131,7 @@ Please see this repository [ogcaizu/ogc-poc1](https://github.com/ogcaizu/ogc-poc
 * [RoboticBase/fiware-cmd-proxy](https://github.com/RoboticBase/fiware-cmd-proxy)
     * A web application working with [FIWARE orion context broker](https://github.com/telefonicaid/fiware-orion) in order to receive a command from gamepad or web controler and to send a command to ROS robot.
 * [RoboticBase/fiware-robot-visualization](https://github.com/RoboticBase/fiware-robot-visualization)
-    * A web application working with [FIWARE cygnus](https://github.com/telefonicaid/fiware-cygnus) in order to visualize the locus of ROS robot.
+    * A web application working with [FIWARE sth-comet](https://github.com/telefonicaid/fiware-sth-coomet) in order to visualize the locus of ROS robot.
 
 ## Related Repositories (Device & Robot)
 ### gamepad controller

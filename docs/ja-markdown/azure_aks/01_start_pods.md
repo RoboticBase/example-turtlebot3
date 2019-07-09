@@ -152,7 +152,8 @@
                   "token": "WXhHypvQL0QTBCAVrqUD6eLFen13g8vj",
                   "allowed_paths": [
                     "^/orion/.*$",
-                    "^/idas/.*$"
+                    "^/idas/.*$",
+                    "^/comet/.*$"
                   ]
                 }
               ],
@@ -248,7 +249,7 @@
         --------
         2019/05/21 01:51:07 hosts: [api\..+$ kibana\..+$ grafana\..+$ web\..+$]
         --------
-        2019/05/21 01:51:07 bearerTokenAllowedPaths: map[api\..+$:map[XbZX1LpVv7DG9fu1X3WUq5kiqZyF34zI:[^/orion/.*$ ^/idas/.*$]] web\..+$:map[Udgzdg6xMD5ymtQlInFHsM5UVD9OA2Wi:[^/visualizer/positions/$]]]
+        2019/05/21 01:51:07 bearerTokenAllowedPaths: map[api\..+$:map[XbZX1LpVv7DG9fu1X3WUq5kiqZyF34zI:[^/orion/.*$ ^/idas/.*$ ^/comet/.*$]] web\..+$:map[Udgzdg6xMD5ymtQlInFHsM5UVD9OA2Wi:[^/visualizer/positions/$]]]
         --------
         2019/05/21 01:51:07 basicAuthPaths, map[kibana\..+$:map[^.*$:map[1IGQBVF5:zRa2mxZVdBOyO6Zd]] web\..+$:map[/controller/web/:map[1JMF6D46:6u5M0bUhfjj7wMdM] /visualizer/locus/:map[1JMF6D46:6u5M0bUhfjj7wMdM]]]
         --------
@@ -328,8 +329,6 @@
 1. robot-visualization-deploymentの作成
 
     ```
-    $ export MONGODB_DATABASE="sth_${FIWARE_SERVICE}"
-    $ export MONGODB_COLLECTION="sth_${ROBOT_SERVICEPATH}_${ROBOT_ID}_${ROBOT_TYPE}"
     $ env BEARER_AUTH=$(cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.bearer_tokens | map(select(.allowed_paths[] | contains("^/visualizer/positions/$"))) | .[0].token' -r) envsubst < controller/robot-visualization-deployment.yaml | kubectl apply -f -
     ```
 
@@ -418,7 +417,7 @@
         Address: XX.XX.XX.XX
         ```
 
-1. grafanaドメインの確認
+1. webドメインの確認
 
     ```
     $ curl -i https://web.${DOMAIN}/controller/web/
