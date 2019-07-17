@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #8
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 
 # turtlebot3コンテナの削除
@@ -28,6 +28,20 @@
     $ source $PJ_ROOT/docs/environments/minikube/env
     ```
 
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"' | cut -d: -f2'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ## minikubeが動作しているPCのLAN向けIP addressの取得
 1. minikubeが動作しているPCがLANに接続しているInterfaceの名前を確認
 
@@ -45,15 +59,10 @@
     ```
 
 1. minikubeのLAN向けipを設定
-    * macOS
 
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}');echo ${EXTERNAL_HOST_IPADDR}
-        ```
-    * Ubuntu
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}' | cut -d: -f2);echo ${EXTERNAL_HOST_IPADDR}
-        ```
+    ```
+    $ export EXTERNAL_HOST_IPADDR=$(externalHostIp); echo ${EXTERNAL_HOST_IPADDR}
+    ```
 
     - 実行結果（例）
 

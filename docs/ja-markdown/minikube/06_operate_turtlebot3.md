@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #6
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 # gemepadの準備
 
@@ -116,6 +116,22 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     $ source $PJ_ROOT/docs/environments/minikube/env
     ```
 
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias openbrowser='open'
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias openbrowser='xdg-open'
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"' | cut -d: -f2'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ## minikubeが動作しているPCのLAN向けIP addressの取得
 1. minikubeが動作しているPCがLANに接続しているInterfaceの名前を確認
 
@@ -133,15 +149,10 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     ```
 
 1. minikubeのLAN向けipを設定
-    * macOS
 
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}');echo ${EXTERNAL_HOST_IPADDR}
-        ```
-    * Ubuntu
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}' | cut -d: -f2);echo ${EXTERNAL_HOST_IPADDR}
-        ```
+    ```
+    $ export EXTERNAL_HOST_IPADDR=$(externalHostIp); echo ${EXTERNAL_HOST_IPADDR}
+    ```
 
     - 実行結果（例）
 
@@ -162,16 +173,10 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     ```
 
 1. web controllerの表示
-    * macOS
 
-        ```
-        $ open http://${HOST_IPADDR}:8080/controller/web/
-        ```
-    * Ubuntu
-
-        ```
-        $ xdg-open http://${HOST_IPADDR}:8080/controller/web/
-        ```
+    ```
+    $ openbrowser http://${HOST_IPADDR}:8080/controller/web/
+    ```
 
 ### turtlebot3の動作確認
 
@@ -179,7 +184,7 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
 
     1. 「ユーザ名」と「パスワード」を入力し、「OK」をクリック
 
-	    ![webcontroller001](images/webcontroller/webcontroller001.png)
+	      ![webcontroller001](images/webcontroller/webcontroller001.png)
 
     1. web controllerの「〇」をクリック
 

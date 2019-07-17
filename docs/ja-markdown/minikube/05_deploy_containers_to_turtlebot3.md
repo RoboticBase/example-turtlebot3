@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #5
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 # Turtlebot3コンテナーの作成
 
@@ -27,6 +27,22 @@
     $ source $PJ_ROOT/docs/environments/minikube/env
     ```
 
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias b64='base64 '
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias b64='base64 -w 0 '
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"' | cut -d: -f2'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ## minikubeが動作しているPCのLAN向けIP addressの取得
 1. minikubeが動作しているPCがLANに接続しているInterfaceの名前を確認
 
@@ -44,15 +60,10 @@
     ```
 
 1. minikubeのLAN向けipを設定
-    * macOS
 
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}');echo ${EXTERNAL_HOST_IPADDR}
-        ```
-    * Ubuntu
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}' | cut -d: -f2);echo ${EXTERNAL_HOST_IPADDR}
-        ```
+    ```
+    $ export EXTERNAL_HOST_IPADDR=$(externalHostIp); echo ${EXTERNAL_HOST_IPADDR}
+    ```
 
     - 実行結果（例）
 
@@ -1220,30 +1231,17 @@
         ```
 
 1. ユーザ名とパスワードの設定
-    * macOS
 
-        ```
-        $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64
-        mqtt:
-          host: "${EXTERNAL_HOST_IPADDR}"
-          port: 1883
-          username: "ros"
-          password: "${MQTT__ros}"
-          use_ca: false
-        __EOS__)
-        ```
-    * Ubuntu
-
-        ```
-        $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64 -w 0
-        mqtt:
-          host: "${EXTERNAL_HOST_IPADDR}"
-          port: 1883
-          username: "ros"
-          password: "${MQTT__ros}"
-          use_ca: false
-        __EOS__)
-        ```
+    ```
+    $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | b64
+    mqtt:
+      host: "${EXTERNAL_HOST_IPADDR}"
+      port: 1883
+      username: "ros"
+      password: "${MQTT__ros}"
+      use_ca: false
+      __EOS__)
+    ```
 
 1. fiware-ros-bridge用のsecret作成
 

@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #7
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 
 # データの視覚化
@@ -27,6 +27,21 @@
     $ source $CORE_ROOT/docs/environments/minikube/env
     $ source $PJ_ROOT/docs/environments/minikube/env
     ```
+
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias openbrowser='open'
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias openbrowser='xdg-open'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ## turtlebot3の軌跡を表示
 
 1. ユーザ名とパスワードの確認
@@ -40,16 +55,10 @@
     ```
 
 1. turtlebot3の軌跡を表示
-    * macOS
 
-        ```
-        $ open http://${HOST_IPADDR}:8080/visualizer/locus/
-        ```
-    * Ubuntu
-
-        ```
-        $ xdg-open http://${HOST_IPADDR}:8080/visualizer/locus/
-        ```
+    ```
+    $ openbrowser http://${HOST_IPADDR}:8080/visualizer/locus/
+    ```
 
 1. turtlebot3側で下記を実施
 
