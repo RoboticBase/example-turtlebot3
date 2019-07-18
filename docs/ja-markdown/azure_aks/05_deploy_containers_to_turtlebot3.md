@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #5
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 # Turtlebot3コンテナーの作成
 
@@ -26,6 +26,20 @@
     $ source $CORE_ROOT/docs/environments/azure_aks/env
     $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
+
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+$ if [ "$(uname)" == 'Darwin' ]; then
+  alias b64='base64 '
+elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+  alias b64='base64 -w 0 '
+else
+  echo "Your platform ($(uname -a)) is not supported."
+  exit 1
+fi
+```
 
 ## minikubeにturtlebot3のprivate registryを登録
 
@@ -1220,31 +1234,17 @@
         ```
 
 1. RabbitMQのユーザ名とパスワードの設定
-   * macOS
 
-       ```
-       $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64
-       mqtt:
-         host: "mqtt.${DOMAIN}"
-         port: 8883
-         username: "ros"
-         password: "${MQTT__ros}"
-         use_ca: true
-       __EOS__)
-       ```
-   * Ubuntu
-
-       ```
-       $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | base64 -w0
-       mqtt:
-         host: "mqtt.${DOMAIN}"
-         port: 8883
-         username: "ros"
-         password: "${MQTT__ros}"
-         use_ca: true
-       __EOS__
-       )
-       ```
+    ```
+    $ export MQTT_YAML_BASE64=$(cat << __EOS__ | envsubst | b64
+    mqtt:
+      host: "mqtt.${DOMAIN}"
+      port: 8883
+      username: "ros"
+      password: "${MQTT__ros}"
+      use_ca: true
+    __EOS__)
+    ```
 
 1. fiware-ros-bridge用のsecret作成
 

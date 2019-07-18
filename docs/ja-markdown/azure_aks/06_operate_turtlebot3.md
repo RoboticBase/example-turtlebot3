@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #6
 
 
-## 構築環境(2019年3月15日現在)
+## 構築環境(2019年7月18日現在)
 
 # gemepadの準備
 
@@ -126,6 +126,20 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
 
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias openbrowser='open'
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias openbrowser='xdg-open'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ### Webコントローラでturtlebot3を操作
 
 1. ユーザ名とパスワードの確認
@@ -138,16 +152,10 @@ gamepadを利用する場合はCの手順、Webコントローラーを利用す
     $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "web\\..+$")|.settings.basic_auths[0].password' -r
     ```
 1. web controllerの表示
-    * macOS
 
-        ```
-        $ open https://web.${DOMAIN}/controller/web/
-        ```
-    * Ubuntu
-
-        ```
-        $ xdg-open https://web.${DOMAIN}/controller/web/
-        ```
+    ```
+    $ openbrowser https://web.${DOMAIN}/controller/web/
+    ```
 
 ### turtlebot3の動作確認
 1. turtlebot3の動作確認【turtlebot3-pc】

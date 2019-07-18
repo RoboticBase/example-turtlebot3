@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #1
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 
 # roboticbaseのインストール
@@ -74,71 +74,53 @@
     $ source $PJ_ROOT/docs/environments/azure_aks/env
     ```
 
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias randomstr8='cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 8'
+      alias randomstr16='cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 16'
+      alias randomstr32='cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 32'
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias randomstr8='cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 8'
+      alias randomstr16='cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 16'
+      alias randomstr32='cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 32'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ## example-turtlebot3用のTokenやBasic認証の設定を `auth-tokens.json` に追加
 
 1. `auth-tokens.json` を更新
-    * macOS
 
-        ```
-        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.|=.+[{
-          "host": "web\\..+$",
-          "settings": {
-            "bearer_tokens": [
-              {
-                "token": "'$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 32)'",
-                "allowed_paths": ["^/visualizer/positions/$"]
-              }
-            ],
-            "basic_auths": [
-              {
-                "username": "'$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 8)'",
-                "password": "'$(cat /dev/urandom | LC_CTYPE=C tr -dc 'a-zA-Z0-9' | head -c 16)'",
-                "allowed_paths": ["/controller/web/", "/visualizer/locus/"]
-              }
-            ],
-            "no_auths": {
-              "allowed_paths": ["^.*/static/.*$"]
-            }
+    ```
+    $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.|=.+[{
+      "host": "web\\..+$",
+      "settings": {
+        "bearer_tokens": [
+          {
+            "token": "'$(randomstr32)'",
+            "allowed_paths": ["^/visualizer/positions/$"]
           }
-        }]' | tee /tmp/auth-tokens.json
-        ```
-        ```
-        $ mv ${CORE_ROOT}/secrets/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json.back
-        ```
-        ```
-        $ mv /tmp/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json
-        ```
-    * Ubuntu
-
-        ```
-        $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.|=.+[{
-          "host": "web\\..+$",
-          "settings": {
-            "bearer_tokens": [
-              {
-                "token": "'$(cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 32)'",
-                "allowed_paths": ["^/visualizer/positions/$"]
-              }
-            ],
-            "basic_auths": [
-              {
-                "username": "'$(cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 8)'",
-                "password": "'$(cat /dev/urandom 2>/dev/null | head -n 40 | tr -cd 'a-zA-Z0-9' | head -c 16)'",
-                "allowed_paths": ["/controller/web/", "/visualizer/locus/"]
-              }
-            ],
-            "no_auths": {
-              "allowed_paths": ["^.*/static/.*$"]
-            }
+        ],
+        "basic_auths": [
+          {
+            "username": "'$(randomstr8)'",
+            "password": "'$(randomstr16)'",
+            "allowed_paths": ["/controller/web/", "/visualizer/locus/"]
           }
-        }]' | tee /tmp/auth-tokens.json
-        ```
-        ```
-        $ mv ${CORE_ROOT}/secrets/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json.back
-        ```
-        ```
-        $ mv /tmp/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json
-        ```
+        ],
+        "no_auths": {
+          "allowed_paths": ["^.*/static/.*$"]
+        }
+      }
+    }]' | tee /tmp/auth-tokens.json
+    $ mv ${CORE_ROOT}/secrets/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json.back
+    $ mv /tmp/auth-tokens.json ${CORE_ROOT}/secrets/auth-tokens.json
+    ```
 
     * 実行結果（例）
 
