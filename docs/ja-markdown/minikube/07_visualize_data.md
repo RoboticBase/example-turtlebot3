@@ -60,8 +60,6 @@
     $ openbrowser http://${HOST_IPADDR}:8080/visualizer/locus/
     ```
 
-1. turtlebot3側で下記を実施
-
     1. ユーザ名とパスワードを入力しログイン
 
         ![visualizer001](images/visualizer/visualizer001.png)
