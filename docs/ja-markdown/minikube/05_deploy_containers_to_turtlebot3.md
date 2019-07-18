@@ -1240,7 +1240,7 @@
       username: "ros"
       password: "${MQTT__ros}"
       use_ca: false
-      __EOS__)
+    __EOS__)
     ```
 
 1. fiware-ros-bridge用のsecret作成

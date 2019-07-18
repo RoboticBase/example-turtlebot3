@@ -31,15 +31,15 @@
 1. エイリアスの設定
 
     ```
-$ if [ "$(uname)" == 'Darwin' ]; then
-  alias b64='base64 '
-elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
-  alias b64='base64 -w 0 '
-else
-  echo "Your platform ($(uname -a)) is not supported."
-  exit 1
-fi
-```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias b64='base64 '
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias b64='base64 -w 0 '
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
 
 ## minikubeにturtlebot3のprivate registryを登録
 
