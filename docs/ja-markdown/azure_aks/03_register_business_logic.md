@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #3
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 
 # Azure Kubernetes Service(AKS)のfiwareにbusiness logicを登録
@@ -26,6 +26,13 @@
     ```
     $ source $CORE_ROOT/docs/environments/azure_aks/env
     $ source $PJ_ROOT/docs/environments/azure_aks/env
+    ```
+
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ alias now="python -c 'import datetime; print(datetime.datetime.now().strftime(\"%Y-%m-%dT%H:%M:%S.%f+09:00\"))'"
     ```
 
 ## cmd-proxyの購読者登録
@@ -167,8 +174,7 @@
 1. gamepadをエミュレーションするコマンドを実行
 
     ```
-    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
-    $ mosquitto_pub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m "${d}|button|triangle"
+    $ mosquitto_pub -h mqtt.${DOMAIN} -p 8883 --cafile ${CORE_ROOT}/secrets/DST_Root_CA_X3.pem -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m "$(now)|button|triangle"
     ```
 
     - 実行結果（例）

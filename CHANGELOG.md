@@ -4,6 +4,10 @@
 * We will employ the example of "wirecloud" running on RoboticBase-core
 * We will employ the example of "kurento" running on RoboticBase-core
 
+## [0.4.4]
+### Changed
+* updated the documents to adjust [FIWARE Release 7.7.1](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.7.1)
+
 ## [0.4.3]
 ### Changed
 * updated "fiware-robot-visualization" to 0.3.0 in order to use "sth-comet" instead of accessing mongodb directly.
