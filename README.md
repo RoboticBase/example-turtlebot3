@@ -1,6 +1,6 @@
 # RoboticBase example: Deploy robot programs on TurtleBot3
 
-This repository is example of "RoboticBase-core". The latest version (0.4.3) conforms to [FIWARE Release 7.6](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.6).
+This repository is example of "RoboticBase-core". The latest version (0.4.4) conforms to [FIWARE Release 7.7.1](https://github.com/FIWARE/catalogue/releases/tag/FIWARE_7.7.1).
 
 ## Description
 "RoboticBase" is a robot management platform based on [FIWARE](http://www.fiware.org/) which enables you to manage and operate many kinds of robots and IoT devices as interactions of contexts.

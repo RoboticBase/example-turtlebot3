@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #4
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 * turtlebot3-pc
     - Ubuntu 16.04.6 LTS
     - docker-ce  18.09.5
@@ -148,6 +148,26 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     $ source $PJ_ROOT/docs/environments/minikube/env
     ```
 
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias openbrowser='open'
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"
+      alias getHostIp='ifconfig ${NWNAME} | awk '"'"'/inet / {print $2}'"'"
+      alias netmask='NETMASK_HEX=$(ifconfig ${NWNAME} | awk '"'"'/netmask / {print $4}'"'"'); echo "${NETMASK_HEX:2}" | perl -pe '"'"'$_ = unpack("B32", pack("H*", $_)); s/0+$//g; $_ = length'"'"
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias openbrowser='xdg-open'
+      alias externalHostIp='ifconfig ${IFNAME} | awk '"'"'/inet / {print $2}'"'"' | cut -d: -f2'
+      alias getHostIp='ifconfig ${NWNAME}  | awk '"'"'/inet / {print $2}'"'"' | cut -d: -f2'
+      alias netmask='NETMASK_IP=$(ifconfig ${NWNAME} | awk '"'"'/Mask/ {print $4}'"'"' | cut -d: -f2); ipcalc ${HOST_IPADDR} ${NETMASK_IP} | awk '"'"'/Netmask: / {print $4}'"'"
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
+    ```
+
 ## minikubeが動作しているPCのLAN向けIP addressの取得
 1. minikubeが動作しているPCがLANに接続しているInterfaceの名前を確認
 
@@ -165,15 +185,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     ```
 
 1. minikubeのLAN向けipを設定
-    * macOS
 
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}');echo ${EXTERNAL_HOST_IPADDR}
-        ```
-    * Ubuntu
-        ```
-        $ export EXTERNAL_HOST_IPADDR=$(ifconfig ${IFNAME} | awk '/inet / {print $2}' | cut -d: -f2);echo ${EXTERNAL_HOST_IPADDR}
-        ```
+    ```
+    $ export EXTERNAL_HOST_IPADDR=$(externalHostIp); echo ${EXTERNAL_HOST_IPADDR}
+    ```
 
     - 実行結果（例）
 
@@ -399,24 +414,13 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 ## リポジトリ登録コマンドの作成
 
 1. リポジトリ登録コマンドの作成
-    * macOS
 
-        ```
-        $ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
-        $ HOST_IPADDR=$(ifconfig ${NWNAME} | awk '/inet / {print $2}')
-        $ NETMASK_HEX=$(ifconfig ${NWNAME} | awk '/netmask / {print $4}')
-        $ NETMASK=$(echo "${NETMASK_HEX:2}" | perl -pe '$_ = unpack("B32", pack("H*", $_)); s/0+$//g; $_ = length')
-        $ echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
-        ```
-    * Ubuntu
-
-        ```
-        $ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
-        $ HOST_IPADDR=$(ifconfig ${NWNAME}  | awk '/inet / {print $2}' | cut -d: -f2)
-        $ NETMASK_IP=$(ifconfig ${NWNAME} | awk '/Mask/ {print $4}' | cut -d: -f2)
-        $ NETMASK=$(ipcalc ${HOST_IPADDR} ${NETMASK_IP} | awk '/Netmask: / {print $4}')
-        $ echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
-        ```
+    ```
+    $ NWNAME=$(VBoxManage showvminfo ${MINIKUBE_NAME} | grep "Host-only Interface" | awk 'match($0, /vboxnet[0-9]+/){print substr($0,RSTART,RLENGTH)}')
+    $ HOST_IPADDR=$(getHostIp)
+    $ NETMASK=$(netmask)
+    $ echo 'cat ${HOME}/.minikube/machines/minikube/config.json | perl -pse '"'"'s/"InsecureRegistry": \[/"InsecureRegistry": [\n                "$h\/$m",/g;'"' -- -h=${EXTERNAL_HOST_IPADDR} -m=${NETMASK}"' > /tmp/config.json;mv /tmp/config.json ${HOME}/.minikube/machines/minikube/config.json'
+    ```
 
     - 実行結果(例）
 
@@ -1524,14 +1528,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         ```
 
 1. ブラウザでkibanaにアクセス
-    * macOS
-        ```
-        $ open http://localhost:5601/
-        ```
-    * Ubuntu
-        ```
-        $ xdg-open http://localhost:5601/
-        ```
+
+    ```
+    $ openbrowser http://localhost:5601
+    ```
 
 1. 「Management」をクリック
 
@@ -1585,16 +1585,10 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         ```
 
 1. ブラウザでgrafanaにアクセス
-    * macOS
 
-        ```
-        $ open http://localhost:3000/login
-        ```
-    * Ubuntu
-
-        ```
-        $ xdg-open http://localhost:3000/login
-        ```
+    ```
+    $ openbrowser http://localhost:3000/login
+    ```
 
 1. grafanaのWEB管理画面が表示されたことを確認
 
@@ -1635,7 +1629,7 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 
     ![grafana008](images/grafana/grafana008.png)
 
-1. 「example-turtlebot3/monitoring/dashboard_turtlebot3.json」を選択し「開く」をクリック
+1. 「example-turtlebot3/monitoring/dashboard\_turtlebot3.json」を選択し「開く」をクリック
 
     ![grafana009](images/grafana/grafana009.png)
 

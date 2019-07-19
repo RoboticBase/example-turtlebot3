@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #2
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 
 
 # minikubeのfiwareにデバイスを登録
@@ -27,6 +27,13 @@
     ```
     $ source $CORE_ROOT/docs/environments/minikube/env
     $ source $PJ_ROOT/docs/environments/minikube/env
+    ```
+
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ alias now="python -c 'import datetime; print(datetime.datetime.now().strftime(\"%Y-%m-%dT%H:%M:%S.%f+09:00\"))'"
     ```
 
 ## RabbitMQのユーザ設定
@@ -737,8 +744,7 @@
 1. gamepadをエミュレーションするコマンドを実行
 
     ```
-    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
-    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m "${d}|button|circle"
+    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${GAMEPAD_TYPE}/${GAMEPAD_ID}/attrs -m "$(now)|button|circle"
     ```
 
     - 実行結果（例）
@@ -800,10 +806,10 @@
     - 実行結果（例）
 
         ```
-        MongoDB shell version v4.1.10
+        MongoDB shell version v4.1.13
         connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?compressors=disabled&gssapiServiceName=mongodb
-        Implicit session: session { "id" : UUID("937dccec-3160-4689-bbf4-ff38877d46a1") }
-        MongoDB server version: 4.1.10
+        Implicit session: session { "id" : UUID("f1e7f9e1-f389-4edb-99de-b2627d551106") }
+        MongoDB server version: 4.1.13
         { "_id" : ObjectId("5cc1a391650bcb0011bff77e"), "recvTime" : ISODate("2019-04-25T12:07:07.155Z"), "attrName" : "button", "attrType" : "string", "attrValue" : "circle" }
         ```
 
@@ -873,8 +879,7 @@
 1. robotをエミュレーションするコマンドを実行
 
     ```
-    $ d=$(date '+%Y-%m-%dT%H:%M:%S.%s+0900')
-    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/attrs -m "${d}|x|0.1|y|0.2|z|0.3|theta|0.4"
+    $ mosquitto_pub -h ${HOST_IPADDR} -p 1883 -d -u iotagent -P ${MQTT__iotagent} -t /${ROBOT_TYPE}/${ROBOT_ID}/attrs -m "$(now)|x|0.1|y|0.2|z|0.3|theta|0.4"
     ```
 
     - 実行結果（例）
@@ -1009,10 +1014,10 @@
     - 実行結果（例）
 
         ```
-        MongoDB shell version v4.1.10
+        MongoDB shell version v4.1.13
         connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?compressors=disabled&gssapiServiceName=mongodb
-        Implicit session: session { "id" : UUID("618344b8-fabf-4b30-8883-3d5e2f05bcf5") }
-        MongoDB server version: 4.1.10
+        Implicit session: session { "id" : UUID("80d1d87c-2eed-4a86-9ebf-d53cb14c5621") }
+        MongoDB server version: 4.1.13
         { "_id" : ObjectId("5cc1a4030a25f60012cd9bb9"), "recvTime" : ISODate("2019-04-25T12:11:47.631Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "UNKNOWN" }
         { "_id" : ObjectId("5cc1a4030a25f60012cd9bb5"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "x", "attrType" : "float32", "attrValue" : "0.1" }
         { "_id" : ObjectId("5cc1a4030a25f60012cd9bb6"), "recvTime" : ISODate("2019-04-25T12:11:28.155Z"), "attrName" : "y", "attrType" : "float32", "attrValue" : "0.2" }
@@ -1464,10 +1469,10 @@
     - 実行結果（例）
 
         ```
-        MongoDB shell version v4.1.10
+        MongoDB shell version v4.1.13
         connecting to: mongodb://127.0.0.1:27017/sth_fiwaredemo?compressors=disabled&gssapiServiceName=mongodb
-        Implicit session: session { "id" : UUID("b9483e50-253b-4194-b07c-d81ec86da0cd") }
-        MongoDB server version: 4.1.10
+        Implicit session: session { "id" : UUID("53f1a2e0-a08e-41ce-bb18-ad5c666d77e9") }
+        MongoDB server version: 4.1.13
         { "_id" : ObjectId("5cc1a5050a25f60012cd9bc3"), "recvTime" : ISODate("2019-04-25T12:16:05.676Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "OK" }
         { "_id" : ObjectId("5cc1a5050a25f60012cd9bc4"), "recvTime" : ISODate("2019-04-25T12:16:05.676Z"), "attrName" : "move_info", "attrType" : "commandResult", "attrValue" : "executed square command" }
         { "_id" : ObjectId("5cc1a4b70a25f60012cd9bbe"), "recvTime" : ISODate("2019-04-25T12:14:46.714Z"), "attrName" : "move_status", "attrType" : "commandStatus", "attrValue" : "PENDING" }

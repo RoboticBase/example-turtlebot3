@@ -1,7 +1,7 @@
 # Turtlebot3 試験環境 インストールマニュアル #4
 
 
-## 構築環境(2019年4月26日現在)
+## 構築環境(2019年7月18日現在)
 * turtlebot3-pc
     - Ubuntu 16.04.6 LTS
     - docker-ce  18.09.5
@@ -151,6 +151,20 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
     ```
     $ source $CORE_ROOT/docs/environments/azure_aks/env
     $ source $PJ_ROOT/docs/environments/azure_aks/env
+    ```
+
+## コマンドのエイリアスを設定
+1. エイリアスの設定
+
+    ```
+    $ if [ "$(uname)" == 'Darwin' ]; then
+      alias openbrowser='open'
+    elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+      alias openbrowser='xdg-open'
+    else
+      echo "Your platform ($(uname -a)) is not supported."
+      exit 1
+    fi
     ```
 
 ## turtlebot3-pcの設定【turtlebot3-pc】
@@ -1320,16 +1334,11 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
         $ cat ${CORE_ROOT}/secrets/auth-tokens.json | jq '.[]|select(.host == "kibana\\..+$")|.settings.basic_auths[0].password' -r
         ```
 1. ブラウザでkibanaにアクセス
-    * macOS
 
-        ```
-        $ open https://kibana.${DOMAIN}/
-        ```
-    * Ubuntu
+    ```
+    $ openbrowser https://kibana.${DOMAIN}/
+    ```
 
-        ```
-        $ xdg-open https://kibana.${DOMAIN}/
-        ```
 1. ユーザ名とパスワードを入力し、ログイン
 
     ![kibana001](images/kibana/kibana001.png)
@@ -1372,16 +1381,11 @@ turtlebot3シミュレータを利用する場合はAの手順、実機のturtle
 ## grafanaの設定
 
 1. ブラウザでgrafanaにアクセス
-    * macOS
 
-        ```
-        $ open https://grafana.${DOMAIN}/login
-        ```
-    * Ubuntu
+    ```
+    $ openbrowser https://grafana.${DOMAIN}/login
+    ```
 
-        ```
-        $ xdg-open https://grafana.${DOMAIN}/login
-        ```
 1. grafanaのWEB管理画面が表示されたことを確認
 
     ![grafana001](images/grafana/grafana001.png)
